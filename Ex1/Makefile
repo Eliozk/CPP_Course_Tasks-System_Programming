@@ -1,30 +1,34 @@
-#!make -f
+# Specify the C++ compiler to be used
+CXX = clang++
 
-CXX=clang
-CXXFLAGS=-std=c++11 -Werror -Wsign-conversion
-VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
+# Set compiler flags, including C++ version and warnings
+CXXFLAGS = -std=c++11 -Werror -Wsign-conversion
 
-SOURCES=Graph.cpp Algorithm.cpp TestCounter.cpp Test.cpp
-OBJECTS=$(subst .cpp,.o,$(SOURCES))
+# Define the target executable names
+DEMO_TARGET = demo
+TEST_TARGET = test
 
-run: demo
-	./$^
+# Define the source files
+SOURCES = Algorithms.cpp Demo.cpp Graph.cpp Test.cpp TestCounter.cpp
 
-demo: Demo.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o demo
+# Generate object file names from source files
+OBJECTS = $(SOURCES:.cpp=.o)
 
-test: TestCounter.o Test.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o test
+# Default target: build both demo and test executables
+all: $(DEMO_TARGET) $(TEST_TARGET)
 
-tidy:
-	clang-tidy $(SOURCES) -checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=-* --
+# Rule to build the demo executable
+$(DEMO_TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
-valgrind: demo test
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
+# Rule to build the test executable
+$(TEST_TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
+# Rule to compile each source file into an object file
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) --compile $< -o $@
+	$(CXX) $(CXXFLAGS) -c $^
 
+# Clean up generated files
 clean:
-	rm -f *.o demo test
+	rm -f *.o  $(DEMO_TARGET) $(TEST_TARGET)

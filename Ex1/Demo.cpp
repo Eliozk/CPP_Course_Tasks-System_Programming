@@ -5,7 +5,8 @@
 
 #include "Graph.hpp"
 #include "Algorithms.hpp"
-using ariel::Algorithms;
+//need to check if to get it back after implement Algorithms
+// using ariel::Algorithms;
 
 #include <iostream>
 #include <stdexcept>
