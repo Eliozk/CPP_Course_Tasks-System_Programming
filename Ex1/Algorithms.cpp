@@ -1,34 +1,95 @@
 #include "Algorithms.hpp"
 #include "Graph.hpp"
+#include <queue>
+#include <sstream>
+#include <iostream>
 
-using ariel::Algorithms;
-using ariel::Graph;
-namespace ariel {
-    bool isConnected(const Graph& g) {
-        // Implement the isConnected algorithm here.
-        // You can use g.getAdjacencyMatrix() to get the adjacency matrix of the graph.
-        // Return true if the graph is connected, false otherwise.
+namespace ariel
+{
+
+    bool Algorithms::isConnected(const Graph &g)
+    {
+        // Implementation of isConnected algorithm
         return false; // Placeholder, replace with actual implementation.
     }
 
-    int shortestPath(const Graph& g, int start, int end) {
-        // Implement the shortestPath algorithm here.
-        // You can use g.getAdjacencyMatrix() to get the adjacency matrix of the graph.
-        // Return the shortest path from start to end if it exists, otherwise return -1.
+    int Algorithms::shortestPath(const Graph &g, int start, int end)
+    {
+        // Implementation of shortestPath algorithm
         return -1; // Placeholder, replace with actual implementation.
     }
 
-    bool isContainsCycle(const Graph& g) {
-        // Implement the isContainsCycle algorithm here.
-        // You can use g.getAdjacencyMatrix() to get the adjacency matrix of the graph.
-        // Return true if the graph contains a cycle, false otherwise.
+    bool Algorithms::isContainsCycle(const Graph &g)
+    {
+        // Implementation of isContainsCycle algorithm
         return false; // Placeholder, replace with actual implementation.
     }
 
-    bool isBipartite(const Graph& g) {
-        // Implement the isBipartite algorithm here.
-        // You can use g.getAdjacencyMatrix() to get the adjacency matrix of the graph.
-        // Return true if the graph is bipartite, false otherwise.
-        return false; // Placeholder, replace with actual implementation.
+
+
+
+
+    std::string Algorithms::isBipartite(const Graph &g)
+    {
+        const std::vector<std::vector<int>> &matrix = g.getAdjacencyMatrix();
+        std::queue<int> q;
+        std::vector<int> colors(matrix.size(), -1);
+        std::vector<int> bipartitionA, bipartitionB;
+
+        std::vector<int> vectorOfMinusOne(1, -1); // Vector with value -1
+        std::vector<int> vectorOfZero(1, 0);      // Vector with value 0
+        std::vector<int> vectorOfOne(1, 1);       // Vector with value 1
+
+        q.push(0);
+        colors[0] = 0;
+        bipartitionA.push_back(0);
+
+        while (!q.empty())
+        {
+            int curr = q.front();
+            q.pop();
+
+            for (int neighbor : g.getNeighbors(curr))
+            {
+                std::vector<int>::size_type neighborIndex = static_cast<std::vector<int>::size_type>(neighbor);
+                if (colors[neighborIndex] == vectorOfMinusOne[0])
+                {
+                    colors[neighborIndex] = vectorOfOne[0] - colors[static_cast<std::vector<int>::size_type>(curr)];
+                    q.push(neighbor);
+
+                    if (colors[neighborIndex] == vectorOfZero[0])
+                    {
+                        bipartitionA.push_back(neighbor);
+                    }
+                    else
+                    {
+                        bipartitionB.push_back(neighbor);
+                    }
+                }
+                else if (colors[neighborIndex] == colors[static_cast<std::vector<int>::size_type>(curr)])
+                {
+                    return "The graph is not bipartite"; // Return the error message directly
+                }
+            }
+        }
+
+        // Construct the bipartite sets string
+        std::stringstream ss;
+        ss << "The graph is bipartite: A={";
+        for (int vertex : bipartitionA)
+        {
+            ss << vertex << ", ";
+        }
+        ss.seekp(-2, std::ios_base::end);
+        ss << "}, B={";
+        for (int vertex : bipartitionB)
+        {
+            ss << vertex << ", ";
+        }
+        ss.seekp(-2, std::ios_base::end);
+        ss << "}";
+        return ss.str(); // Return the constructed string
+       // return "need to implement isBipartite";
     }
-}//name space ariel
+
+} // namespace ariel
