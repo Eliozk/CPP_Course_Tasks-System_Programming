@@ -6,29 +6,40 @@ CXXFLAGS = -std=c++11 -Werror -Wsign-conversion
 
 # Define the target executable names
 DEMO_TARGET = demo
-TEST_TARGET = test
+# to bring back later
+# TEST_TARGET = test
 
 # Define the source files
-SOURCES = Algorithms.cpp Demo.cpp Graph.cpp Test.cpp TestCounter.cpp
+SOURCES = Algorithms.cpp Demo.cpp Graph.cpp 
+#  TestCounter.cpp
 
 # Generate object file names from source files
 OBJECTS = $(SOURCES:.cpp=.o)
 
 # Default target: build both demo and test executables
-all: $(DEMO_TARGET) $(TEST_TARGET)
+all: $(DEMO_TARGET) 
+#  to put back in all later
+# $(TEST_TARGET)
 
 # Rule to build the demo executable
 $(DEMO_TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Rule to build the test executable
-$(TEST_TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+# $(TEST_TARGET): $(OBJECTS)
+# 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Rule to compile each source file into an object file
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $^
 
+# Target to run the demo executable
+run:
+	./$(DEMO_TARGET)
+
 # Clean up generated files
 clean:
-	rm -f *.o  $(DEMO_TARGET) $(TEST_TARGET)
+	rm -f *.o $(DEMO_TARGET)
+
+# Phony targets to avoid conflicts with file names
+.PHONY: all run clean
