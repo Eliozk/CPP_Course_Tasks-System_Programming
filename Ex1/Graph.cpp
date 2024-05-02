@@ -1,11 +1,13 @@
 #include "Graph.hpp"
 #include <iostream>
+#include <list>
+#include <queue>
 
 using ariel::Graph;
 
 namespace ariel
 {
-
+    using namespace std;
     // Constructor definition
     Graph::Graph()
     {
@@ -20,11 +22,11 @@ namespace ariel
 
     // Function to load the graph from an adjacency matrix
 
-    void Graph::loadGraph(const std::vector<std::vector<int>> &matrix,int numOfGraph)
+    void Graph::loadGraph(const vector<vector<int>> &matrix)
     {
         if (matrix.size() != matrix[0].size())
         {
-            throw std::invalid_argument("Invalid graph: Graph "+std::to_string(numOfGraph) +" is not a square matrix.");
+            throw invalid_argument("Invalid graph: Graph is not a square matrix.");
         }
         adjacencyMatrix = matrix;
     }
@@ -33,25 +35,29 @@ namespace ariel
     void Graph::printGraph() const
     {
         int edges = countEdges(adjacencyMatrix);
-        std::cout << "Graph with " << adjacencyMatrix.size() << " vertices and "
-                  << edges << " edges." << std::endl;
+        cout << "Graph with " << adjacencyMatrix.size() << " vertices and "
+             << edges << " edges." << endl;
         for (const auto &row : adjacencyMatrix)
         {
-            std::cout << "(";
+            cout << "(";
             for (int val : row)
             {
-                std::cout << val << " ";
+                cout << val << " ";
             }
-            std::cout << ")" << std::endl;
+            cout << ")" << endl;
         }
     }
 
     // Function to count the number of edges in a graph's adjacency matrix
-       int Graph::countEdges(const std::vector<std::vector<int>>& matrix) const {
+    int Graph::countEdges(const vector<vector<int>> &matrix) const
+    {
         int edges = 0;
-        for (const auto& row : matrix) {
-            for (int value : row) {
-                if (value != 0) {  // Consider non-zero values as directed edges
+        for (const auto &row : matrix)
+        {
+            for (int value : row)
+            {
+                if (value != 0)
+                { // Consider non-zero values as directed edges
                     edges++;
                 }
             }
@@ -59,29 +65,105 @@ namespace ariel
         return edges;
     }
 
-    std::vector<int> Graph::getNeighbors(int vertex) const
+//  vector<int> Graph::getNeighbors(int vertex) const
+// {
+//     vector<int> neighbors;
+//     const vector<vector<int>>& matrix = getAdjacencyMatrix(); // Access adjacencyMatrix
+//     if (vertex >= 0 && static_cast<size_t>(vertex) < matrix.size())
+//     {
+//         const vector<int>& row = matrix[static_cast<size_t>(vertex)];
+//         for (size_t i = 0; i < row.size(); ++i)
+//         {
+//             if (row[i] > 0) // Check if the value is greater than 0 to represent an edge
+//             {
+//                 neighbors.push_back(static_cast<int>(i));
+//             }
+//         }
+//     }
+//     return neighbors;
+// }
+vector<int> Graph::getNeighbors(int vertex) const
+{
+    vector<int> neighbors;
+    const vector<vector<int>> newMatrix = this->getAdjacencyMatrix(); // Access adjacencyMatrix
+    if (vertex >= 0 && vertex < newMatrix.size())
     {
-        std::vector<int> neighbors;
-        std::vector<int> one(1, 1);
-        const std::vector<std::vector<int>> &matrix = getAdjacencyMatrix(); // Access adjacencyMatrix
-        if (vertex >= 0 && static_cast<std::vector<int>::size_type>(vertex) < matrix.size())
+        const vector<int>& row = newMatrix[static_cast<size_t>(vertex)];
+        for (size_t i = 0; i < row.size(); ++i)
         {
-            const std::vector<int> &row = matrix[static_cast<std::vector<int>::size_type>(vertex)];
-            for (int i = 0; i < static_cast<int>(row.size()); ++i)
+            if (row[i] > 0) // Check if the value is greater than 0 to represent an edge
             {
-                if (row[static_cast<std::vector<int>::size_type>(i)] == one[0])
-                { // Assuming 1 represents an edge, adjust as needed
-                    neighbors.push_back(i);
-                }
+                neighbors.push_back(i);
             }
         }
-        return neighbors;
+    }
+    return neighbors;
+}
+
+
+    /*
+     * Function that returns reverse (or transpose) of this graph
+     */
+    Graph Graph::getTranspose(const Graph &g)
+    {
+        const vector<vector<int>> &matrix = g.getAdjacencyMatrix();
+        vector<int>::size_type size = matrix.size();
+        vector<vector<int>> transposeMatrix(size, vector<int>(size, static_cast<vector<int>::size_type>(0)));
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                transposeMatrix[static_cast<vector<int>::size_type>(j)][static_cast<vector<int>::size_type>(i)] = matrix[static_cast<vector<int>::size_type>(i)][static_cast<vector<int>::size_type>(j)];
+            }
+        }
+
+        Graph newTransposeGraph;
+        newTransposeGraph.loadGraph(transposeMatrix);
+        return newTransposeGraph;
     }
 
     // Getter for the adjacency matrix
-    const std::vector<std::vector<int>> &Graph::getAdjacencyMatrix() const
+    const vector<vector<int>> &Graph::getAdjacencyMatrix() const
     {
         return adjacencyMatrix;
     }
+    int getSizeOfGraph(Graph g)
+    {
+        const vector<vector<int>> &matrix = g.getAdjacencyMatrix();
+        int size = matrix.size();
+        return size;
+    }
+
+     bool Graph::isConnected(size_t start, size_t end) const {
+        if (start < 0 || end < 0 || start >= this->adjacencyMatrix.size() || end >= adjacencyMatrix.size()) {
+            return false; // Invalid vertices
+        }
+
+        vector<bool> visited(adjacencyMatrix.size(), false);
+        queue<int> q;
+
+        q.push(start);
+        visited[start] = true;
+
+        while (!q.empty()) {
+            size_t current = (size_t)q.front();
+            q.pop();
+
+            if (current == end) {
+                return true; // Found a path between start and end
+            }
+
+            for (size_t i = 0; i < adjacencyMatrix[current].size(); ++i) {
+                if (adjacencyMatrix[current][i] != 0 && !visited[i]) {
+                    q.push(i);
+                    visited[i] = true;
+                }
+            }
+        }
+
+        return false; // No path found between start and end
+    }
+    
 
 } // namespace ariel

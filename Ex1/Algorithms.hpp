@@ -5,15 +5,15 @@
 #include <string>
 namespace ariel
 {
+    using namespace std;
     class Algorithms
     {
     public:
         // Algorithms for graph operations
         static bool isConnected(const Graph &g);                     // Check if graph is connected
-        static int shortestPath(const Graph &g, int start, int end); // Find shortest path between vertices
+        static string shortestPath(const Graph &g, int start, int end); // Find shortest path between vertices
         static bool isContainsCycle(const Graph &g);                 // Check if graph contains a cycle
-        static bool isContainsCycleUtil(const Graph &g, int v, std::vector<bool> &visited, std::vector<int> &parent);
-        static std::string isBipartite(const Graph &g);                     // Check if graph is bipartite
+        static string isBipartite(const Graph &g);                     // Check if graph is bipartite
     };
 }
 

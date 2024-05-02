@@ -5,22 +5,26 @@
 
 namespace ariel
 {
+    using namespace std;
     class Graph
     {
     private:
-        std::vector<std::vector<int>> adjacencyMatrix; // Declaration of adjacencyMatrix
+        vector<vector<int>> adjacencyMatrix; // Declaration of adjacencyMatrix
 
     public:
         // Constructor, destructor, and other member function declarations
         Graph();
         ~Graph();
-        void loadGraph(const std::vector<std::vector<int>> &matrix,int numOfGraph);
+        void loadGraph(const vector<vector<int>> &matrix);
         void printGraph() const;
         // Function to count the number of edges in a graph's adjacency matrix
-        int countEdges(const std::vector<std::vector<int>> &matrix) const;
-        const std::vector<std::vector<int>> &getAdjacencyMatrix() const;
+        int countEdges(const vector<vector<int>> &matrix) const;
+        const vector<vector<int>> &getAdjacencyMatrix() const;
           // Declare the getNeighbors function
-        std::vector<int> getNeighbors(int vertex) const;
+        vector<int> getNeighbors(int vertex) const;
+        Graph getTranspose(const Graph& g);
+        static int getSizeOfGraph(Graph g);
+        bool isConnected(size_t start, size_t end) const;
     };
 } // namespace ariel
 

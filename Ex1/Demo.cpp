@@ -24,8 +24,8 @@ int main()
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g.loadGraph(graph1, 1); // Load the graph to the object.
-
+    g.loadGraph(graph1); // Load the graph to the object.
+    cout << "Graph 1:" << endl;
     g.printGraph();                                    // Should print: "Graph with 3 vertices and 4 edges."
     cout << Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
     cout << Algorithms::shortestPath(g, 0, 2) << endl; // Should print: 0->1->2.
@@ -40,9 +40,11 @@ int main()
         {0, 0, 1, 0, 0},
         {0, 0, 0, 0, 0}};
 
-    g.loadGraph(graph2, 2); // Load the graph to the object.
-
+    g.loadGraph(graph2); // Load the graph to the object.
+    
+    cout << "Graph 2:" << endl;
     g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
+    
     cout << Algorithms::isConnected(g) << endl;        // Should print: "0" (false).
     cout << Algorithms::shortestPath(g, 0, 4) << endl; // Should print: "-1" (there is no path between 0 and 4).
     cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "The cycle is: 0->1->2->0".
@@ -50,16 +52,17 @@ int main()
     cout << endl;
     // 5x5 matrix that reprsents a connected weighted graph.
     vector<vector<int>> graph3 = {
-        {0, 1, 2, 0, 0},
+        {0, 1, 0, 0, 0},
         {1, 0, 3, 0, 0},
-        {2, 3, 0, 4, 0},
+        {0, 3, 0, 4, 0},
         {0, 0, 4, 0, 5},
         {0, 0, 0, 5, 0}};
-    g.loadGraph(graph3, 3); // Load the graph to the object.
-
-    g.printGraph();                                    // Should print: "Graph with 5 vertices and 10 edges."
+    g.loadGraph(graph3); // Load the graph to the object.
+   
+    cout << "Graph 3:" << endl;
+    g.printGraph();                                    // Should print: "Graph with 5 vertices and 8 edges."
     cout << Algorithms::isConnected(g) << endl;        // Should print: "1" (true).
-    cout << Algorithms::shortestPath(g, 0, 4) << endl; // Should print: 0->2->3->4.
+    cout << Algorithms::shortestPath(g, 0, 4) << endl; // Should print: 0->1->2->3->4.
     cout << Algorithms::isContainsCycle(g) << endl;    // Should print: "0" (false).
     cout << Algorithms::isBipartite(g) << endl;        // Should print: "The graph is bipartite: A={0, 2, 4}, B={1, 3}."
     cout << endl;
@@ -72,7 +75,8 @@ int main()
         {0, 0, 0, 5}};
     try
     {
-        g.loadGraph(graph4, 4); // Load the graph to the object.
+        cout << "Graph 4:" << endl;
+        g.loadGraph(graph4); // Load the graph to the object.
     }
     catch (const std::invalid_argument &e)
     {
