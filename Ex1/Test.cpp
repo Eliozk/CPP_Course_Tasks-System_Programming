@@ -279,3 +279,62 @@ TEST_CASE("Test graph with self-loops")
     // There is no way from vertex 2 to vertex 0
     CHECK(ariel::Algorithms::isConnected(g) == false);
 }
+// Tests i added:
+TEST_CASE("Test graph with multiple components")
+{
+    ariel::Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0, 0},
+        {1, 0, 0, 0},
+        {0, 0, 0, 1},
+        {0, 0, 1, 0}};
+    g.loadGraph(graph);
+    CHECK(ariel::Algorithms::isConnected(g) == false);
+    CHECK(ariel::Algorithms::isContainsCycle(g) == false);
+    CHECK(ariel::Algorithms::isBipartite(g) == "The graph is bipartite: A={0,2}, B={1,3}");
+    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle");
+
+    vector<vector<int>> graph2 = {
+        {0, 1, 0, 0, 0},
+        {1, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1},
+        {0, 0, 1, 0, 1},
+        {0, 0, 1, 1, 0}};
+    g.loadGraph(graph2);
+    CHECK(ariel::Algorithms::isConnected(g) == false);
+    CHECK(ariel::Algorithms::isContainsCycle(g) == false);
+    CHECK(ariel::Algorithms::isBipartite(g) == "0");
+    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle");
+}
+
+TEST_CASE("Test graph with disconnected nodes")
+{
+    ariel::Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 0, 0, 0},
+        {1, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 1},
+        {0, 0, 0, 1, 0}};
+    g.loadGraph(graph);
+    CHECK(ariel::Algorithms::isConnected(g) == false);
+    CHECK(ariel::Algorithms::isContainsCycle(g) == false);
+    CHECK(ariel::Algorithms::isBipartite(g) == "The graph is bipartite: A={0,2,3}, B={1,4}");
+    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle");
+}
+
+TEST_CASE("Test fully connected graph")
+{
+    ariel::Graph g;
+    vector<vector<int>> graph = {
+        {0, 1, 1, 1, 1},
+        {1, 0, 1, 1, 1},
+        {1, 1, 0, 1, 1},
+        {1, 1, 1, 0, 1},
+        {1, 1, 1, 1, 0}};
+    g.loadGraph(graph);
+    CHECK(ariel::Algorithms::isConnected(g) == true);
+    CHECK(ariel::Algorithms::isContainsCycle(g) == true);
+    CHECK(ariel::Algorithms::isBipartite(g) == "0");
+    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle");
+}
