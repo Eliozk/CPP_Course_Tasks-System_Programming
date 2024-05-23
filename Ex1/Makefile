@@ -1,49 +1,37 @@
-# Specify the C++ compiler to be used
-CXX = clang++
+# ID - 208762765
+# GMAIL - kolanielioz@gmail.com
 
-# Set compiler flags, including C++ version and warnings
-CXXFLAGS = -std=c++11 -Werror -Wsign-conversion
+CXX=clang++
+CXXFLAGS=-std=c++11
+VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all --error-exitcode=99
 
-# Define the target executable names
-DEMO_TARGET = bin/demo
-# to bring back later
-# TEST_TARGET = bin/test
+SOURCES=Graph.cpp Algorithms.cpp TestCounter.cpp Test.cpp main.cpp
+OBJECTS=$(patsubst %.cpp, bin/%.o, $(SOURCES))
+TEST_OBJECTS=$(filter bin/TestCounter.o bin/Test.o,$(OBJECTS))
+MAIN_OBJECTS=$(filter-out bin/TestCounter.o bin/Test.o bin/main.o,$(OBJECTS))
 
-# Define the source files
-SOURCES = Algorithms.cpp Demo.cpp Graph.cpp 
-#  TestCounter.cpp
+run: main
+	./$^
 
-# Generate object file names from source files
-OBJECTS = $(addprefix bin/, $(SOURCES:.cpp=.o))
+main: bin/main.o $(MAIN_OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o main
 
-# Default target: build both demo and test executables
-all: $(DEMO_TARGET) 
-#  to put back in all later
-# $(TEST_TARGET)
+test: $(TEST_OBJECTS) $(filter-out bin/main.o,$(OBJECTS))
+	$(CXX) $(CXXFLAGS) $^ -o test
 
-# Rule to build the demo executable
-$(DEMO_TARGET): $(OBJECTS) | bin
-	$(CXX) $(CXXFLAGS) $^ -o $@
+runtest: test
+	./test
 
-# Rule to build the test executable
-# $(TEST_TARGET): $(OBJECTS)
-# 	$(CXX) $(CXXFLAGS) $^ -o $@
+tidy:
+	clang-tidy $(SOURCES) -checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=-* --
 
-# Rule to compile each source file into an object file
-bin/%.o: %.cpp | bin
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+valgrind: main test
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./main 2>&1 | { egrep "lost| at " || true; }
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
-# Target to run the demo executable
-run:
-	./$(DEMO_TARGET)
+bin/%.o: %.cpp
+	@mkdir -p bin
+	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
-# Create the bin directory if it doesn't exist
-bin:
-	mkdir -p bin
-
-# Clean up generated files
 clean:
-	rm -f bin/*.o $(DEMO_TARGET)
-
-# Phony targets to avoid conflicts with file names
-.PHONY: all run clean
+	rm -f bin/*.o main test

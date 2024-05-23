@@ -3,6 +3,8 @@
 
 #include <vector>
 
+// ID - 208762765
+// GMAIL - kolanielioz@gmail.com
 namespace ariel
 {
     using namespace std;
@@ -10,21 +12,26 @@ namespace ariel
     {
     private:
         vector<vector<int>> adjacencyMatrix; // Declaration of adjacencyMatrix
+        int numVertices;
+        int numEdges;
 
     public:
         // Constructor, destructor, and other member function declarations
         Graph();
         ~Graph();
+        int getNumVertices() const;
+        int getNumEdges() const;
         void loadGraph(const vector<vector<int>> &matrix);
         void printGraph() const;
         // Function to count the number of edges in a graph's adjacency matrix
         int countEdges(const vector<vector<int>> &matrix) const;
         const vector<vector<int>> &getAdjacencyMatrix() const;
-          // Declare the getNeighbors function
+        // Declare the getNeighbors function
         vector<int> getNeighbors(int vertex) const;
-        Graph getTranspose(const Graph& g);
+        Graph getTranspose(const Graph &g);
         static int getSizeOfGraph(Graph g);
         bool isConnected(size_t start, size_t end) const;
+        int getEdgeWeight(int src, int dest) const;
     };
 } // namespace ariel
 

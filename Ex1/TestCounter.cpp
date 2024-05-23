@@ -1,36 +1,39 @@
-// #define DOCTEST_CONFIG_IMPLEMENT
-// #include "doctest.h"
-// using namespace doctest;
+// ID - 208762765
+// GMAIL - kolanielioz@gmail.com
 
-// const int MIN_TESTS = 20;
+#define DOCTEST_CONFIG_IMPLEMENT
+#include "doctest.h"
+using namespace doctest;
 
-// int return_code = -1;
+const int MIN_TESTS = 20;
 
-// struct ReporterCounter : public ConsoleReporter
-// {
-//     ReporterCounter(const ContextOptions &input_options)
-//         : ConsoleReporter(input_options) {}
+int return_code = -1;
 
-//     void test_run_end(const TestRunStats &run_stats) override
-//     {
-//         if (run_stats.numAsserts >= MIN_TESTS)
-//         {
-//             return_code = 0;
-//         }
-//         else
-//         {
-//             std::cout << "Please write at least " << MIN_TESTS << " tests! " << std::endl;
-//             return_code = 1;
-//         }
-//     }
-// };
+struct ReporterCounter : public ConsoleReporter
+{
+    ReporterCounter(const ContextOptions &input_options)
+        : ConsoleReporter(input_options) {}
 
-// REGISTER_REPORTER("counter", 1, ReporterCounter);
+    void test_run_end(const TestRunStats &run_stats) override
+    {
+        if (run_stats.numAsserts >= MIN_TESTS)
+        {
+            return_code = 0;
+        }
+        else
+        {
+            std::cout << "Please write at least " << MIN_TESTS << " tests! " << std::endl;
+            return_code = 1;
+        }
+    }
+};
 
-// int main(int argc, char **argv)
-// {
-//     Context context;
-//     context.addFilter("reporters", "counter");
-//     context.run();
-//     return return_code;
-// }
+REGISTER_REPORTER("counter", 1, ReporterCounter);
+
+int main(int argc, char **argv)
+{
+    Context context;
+    context.addFilter("reporters", "counter");
+    context.run();
+    return return_code;
+}
