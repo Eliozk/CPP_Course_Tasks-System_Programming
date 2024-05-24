@@ -20,7 +20,7 @@ namespace ariel
      */
     void Algorithms::DFS(vector<vector<int>> &tempMatrix, size_t vertex, bool connectedVer[])
     {
-        int size = tempMatrix.size();
+        auto size = tempMatrix.size();
         for (size_t i = 0; i < size; i++)
         {
             if (tempMatrix[vertex][i] != 0 && !connectedVer[i]) // 0 means there is no path, makes sure it also has not been visited
@@ -58,7 +58,7 @@ namespace ariel
      */
     void Algorithms::transpose(vector<vector<int>> &tempMatrix)
     {
-        int size = tempMatrix.size();
+        auto size = tempMatrix.size();
 
         // Perform transpose
         for (size_t i = 0; i < size; i++)
@@ -75,10 +75,10 @@ namespace ariel
      * @param g The graph to check.
      * @return True if the graph is connected, false otherwise.
      */
-    bool Algorithms::isConnected(const Graph &g)
+    bool Algorithms::isConnected(const Graph &graph)
     {
-        vector<vector<int>> tempMatrix = g.getAdjacencyMatrix(); // For editing copyd graph
-        int size = tempMatrix.size();
+        vector<vector<int>> tempMatrix = graph.getAdjacencyMatrix(); // For editing copyd graph
+        auto size = tempMatrix.size();
         bool connected[size];
 
         ResetAndCheckAllTrue(connected, size); // For initializing all elements to false
