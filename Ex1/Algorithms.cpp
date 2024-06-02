@@ -360,7 +360,7 @@ namespace ariel
     }
     /**
      * Detect negative cycles in the graph using the Bellman-Ford algorithm.
-     *
+     * Some help from geekforgeeks and chat GPT
      * @param graph The graph to check for negative cycles.
      * @return A string indicating the negative cycle if found, otherwise "No negative cycle".
      */

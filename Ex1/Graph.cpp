@@ -5,9 +5,9 @@
 #include <vector>
 #include <stdexcept>
 
-using ariel::Graph;
 // ID - 208762765
 // GMAIL - kolanielioz@gmail.com
+using ariel::Graph;
 namespace ariel
 {
     using namespace std;
