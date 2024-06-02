@@ -184,7 +184,7 @@ namespace ariel
      * @param cyclePath A vector to store the cycle path if found.
      * @return True if a cycle is found, false otherwise.
      */
-    bool Algorithms::findCycleDFS(const Graph &graph, int vertex, int parent, vector<bool> &visited, std::vector<int> &cyclepath)
+    bool Algorithms::findCycleDFS(const Graph &graph, int vertex, int parent, vector<bool> &visited, vector<int> &cyclepath)
     {
         visited[vertex] = true;                                     // set the current vertex as visited
         vector<vector<int>> adjMatrix = graph.getAdjacencyMatrix(); // access the adjacency matrix
@@ -227,8 +227,31 @@ namespace ariel
         }
         vector<bool> visited(graph.getNumVertices(), false);
         vector<int> cyclePath;
-        return findCycleDFS(graph, 0, -1, visited, cyclePath); // use dfscyclehelper from vertex 0 that dont have parent
+        bool ans =  findCycleDFS(graph, 0, -1, visited, cyclePath); // use dfscyclehelper from vertex 0 that dont have parent
+        if(ans){
+        Algorithms::printCycle(cyclePath);
+        }
+        return ans;
     }
+    //The find function is used to locate the start of the cycle in the cyclePath.\
+    //with help of chat GPT
+    void Algorithms::printCycle(const vector<int> &cyclePath) {
+    auto it = find(cyclePath.begin(), cyclePath.end(), cyclePath.back());
+    if (it != cyclePath.end()) {
+        cout << "Cycle found: ";
+        bool firstNode = true;
+        for (; it != cyclePath.end(); ++it) {
+            if (!firstNode && *it == cyclePath.back()) {
+                break;  // Stop printing when encountering the last node again
+            }
+            cout << *it << "->";
+            firstNode = false;
+        }
+        cout << cyclePath.back() << endl;  // Print the starting node again to complete the cycle.
+    }
+}
+
+
     /**
      * Helper function to perform Depth-First Search (DFS) for checking bipartiteness in a graph.
      *

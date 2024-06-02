@@ -17,6 +17,7 @@ namespace ariel
     public:
         // Algorithms for graph operations
         // static vector<int> BellmanFordAlgo(const Graph &graph, int source, int dest); // bellmanford algo
+        static void printCycle(const vector<int> &cyclePath);
         static bool isBipartiteDFS(vector<vector<int>> &graph, int current, vector<int> &visited, vector<int> &group_A, vector<int> &group_B, int group_num);
         static void DFS(vector<vector<int>> &tempMatrix, size_t vertex, bool connected[]);
         static void transpose(vector<vector<int>> &tempMatrix);
