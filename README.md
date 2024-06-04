@@ -9,7 +9,7 @@ My email is kolanielioz@gmail.com
 This repository contains implementations of various graph algorithms in C++. The code provides functionalities such as depth-first search (DFS), transposing matrices, checking graph connectivity, finding cycles in graphs, checking bipartiteness, and detecting negative cycles using the Bellman-Ford algorithm.
 
 ## File Structure
-
+### Ex1 
 + **Graph.hpp**: Header file for the Graph class.
 + **Graph.cpp**: Implementation of the Graph class, including loading graphs from adjacency matrices, finding neighbors, transposing graphs, and checking connectivity.
 + **Algorithms.hpp**: Header file for graph-related algorithms.
@@ -18,7 +18,8 @@ This repository contains implementations of various graph algorithms in C++. The
 + **Test.cpp**: Contains test cases for graph algorithms using Doctest.
 + **Demo.cpp**: Main file to demonstrate and test graph operations.
 + **Makefile**: Makefile to build the project and run tests.
-
+### Ex2
+    contains the same files as in Ex1 except Test.cpp which contains various tests for Graph operators.
 ## Graph Algorithms
 
 The repository includes the following graph algorithms:
