@@ -19,7 +19,7 @@ This repository contains implementations of various graph algorithms in C++. The
 + **Demo.cpp**: Main file to demonstrate and test graph operations.
 + **Makefile**: Makefile to build the project and run tests.
 ### Ex2
-    contains the same files as in Ex1 except Test.cpp which contains various tests for Graph operators.
+   + **contains the same files as in Ex1 except Test.cpp which contains various tests for Graph operators.**
 ## Graph Algorithms
 
 The repository includes the following graph algorithms:
