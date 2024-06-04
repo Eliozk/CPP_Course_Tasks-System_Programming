@@ -31,7 +31,7 @@ The repository includes the following graph algorithms:
 + **Negative Cycle Detection**: Implemented using the Bellman-Ford algorithm in `Algorithms.cpp`.
 
 ## Running 
-TO run execute:
+To run execute:
 +  `make run`
 To run the tests, simply execute:
 + `make runtest`
