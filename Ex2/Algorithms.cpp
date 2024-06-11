@@ -370,6 +370,10 @@ namespace ariel
         {
             return "No negative cycle";
         }
+        //check if there is any cycle if not terminate and return.
+        if(!(isContainsCycle(graph))){
+            return "No negative cycle";
+        }
         const vector<vector<int>> &adjMatrix = graph.getAdjacencyMatrix(); // Access the adjacency matrix of the graph
         int numVertices = graph.getNumVertices();                          // Get the number of vertices in the graph
         vector<int> distances(numVertices, numeric_limits<int>::max());    // Set distances to all vertices as infinity

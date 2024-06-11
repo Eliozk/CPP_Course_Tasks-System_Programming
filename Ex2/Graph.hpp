@@ -82,8 +82,7 @@ namespace ariel
 
         // Friend function to overload the << operator for outputting the graph and grant access to members(vertices etc..)
         friend ostream &operator<<(ostream &os, const Graph &graph);
-        // Helper method to check if one graph is a subgraph of another
-        bool isSubgraph(const vector<vector<int>> &g2, const vector<vector<int>> &g1, size_t startX, size_t startY) const;
+       
     };
 
 } // namespace ariel
