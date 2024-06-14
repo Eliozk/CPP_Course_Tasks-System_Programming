@@ -37,13 +37,27 @@ TEST_CASE("Graph Operations")
              vector<vector<int>> graph6 =
              {{0, 2},
              {2,  0},};
-        Graph g1, g2, g3, g4,g5,g6;
+                  vector<vector<int>> graph1FromDemo = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+         vector<vector<int>> sameGraph1FromDemo = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+        Graph g1, g2, g3, g4,g5,g6,g7,g8;
         g1.loadGraph(graph1);
         g2.loadGraph(graph2);
         g3.loadGraph(graph3);
         g4.loadGraph(graph4);
         g5.loadGraph(graph5);
         g6.loadGraph(graph6);
+        g7.loadGraph(graph1FromDemo);
+        g8.loadGraph(sameGraph1FromDemo);
+        g7--;
+        g7++;
+        CHECK( g7 != g8); // check ++ and -- and != operator at once for graph from demo.
+
         CHECK(g5 != g6);
         Graph sum = g1 + g2;
         Graph diff = g2 - g1;

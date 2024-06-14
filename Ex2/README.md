@@ -52,11 +52,17 @@ The Graph class provides various operations on graphs:
 
 + operator-():  This function multiply each element of the graph by (-1).
 
-## Running Tests
+## Running
+
+to run demo file
+
++ make run
+
+
 
 To run the tests, simply execute:
-+ make runtest
 
++ make runtest
 
 The Test.cpp file includes comprehensive tests for the Graph class operations using the doctest framework.
 
