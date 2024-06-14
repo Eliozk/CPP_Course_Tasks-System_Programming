@@ -9,11 +9,11 @@ int main() {
     Board board;
 
     // Example setup
-    board.setTile(0, 0, "Forest", 5);
-    board.setTile(0, 1, "Hills", 6);
-    board.setTile(1, 0, "Fields", 8);
-    board.setTile(1, 1, "Pasture", 9);
-    board.setTile(2, 2, "Mountains", 3);
+    board.setTile(0, 0, "Forest");
+    board.setTile(0, 1, "Hills");
+    board.setTile(1, 0, "Fields");
+    board.setTile(1, 1, "Pasture");
+    board.setTile(2, 2, "Mountains");
 
 
     vector<string> places = {"Forest", "Hills"};

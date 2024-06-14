@@ -10,28 +10,40 @@ Board::Board() {
     int hexagonsPerRow[5] = {3, 4, 5, 4, 3};
 
     tiles.resize(5);        // Initialize tiles with 5 rows
-    cities.resize(5);       // Initialize cities with 5 rows
     settlements.resize(5);  // Initialize settlements with 5 rows
     roads.resize(5);        // Initialize roads with 5 rows
     
     for (int i = 0; i < 5; ++i) {
         tiles[i].resize(hexagonsPerRow[i], Tile());          // Resize each row to the correct number of hexagons
-        cities[i].resize(hexagonsPerRow[i], ' ');            // Initialize cities vector for each row
         settlements[i].resize(hexagonsPerRow[i], ' ');       // Initialize settlements vector for each row
         roads[i].resize(hexagonsPerRow[i], ' ');             // Initialize roads vector for each row
         
     }
 }
+//random number beteen 1-->12 including them.
+int randomNum() {
+    vector<int> numbers = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_int_distribution<int> dist(0, numbers.size() - 1);
+    int index = dist(gen);
+    int num = numbers[index];
+    numbers.erase(numbers.begin() + index); // Remove the selected number from the vector
+    return num;
+}
 
-void Board::setTile(int row, int col, const string& type, int number) {
+void Board::setTile(int row, int col, const string& type ) {
     if (row >= 0 && row < ROWS && col >= 0 && col < tiles[row].size()) {
         
         tiles[row][col].type = type;
+        vector<int> numbers = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        int number = randomNum();
         tiles[row][col].number = number;
     } else {
         throw out_of_range("Tile position out of range");
     }
 }
+
 
 void Board::placeSettlement(const vector<string>& places, const vector<int>& placesNum, char structureType, Board& board) {
     for (size_t i = 0; i < places.size(); ++i) {
@@ -39,7 +51,7 @@ void Board::placeSettlement(const vector<string>& places, const vector<int>& pla
         int col = placesNum[i] % COLS;
         if (row >= 0 && row < ROWS && col >= 0 && col < board.settlements[row].size()) {
             if (structureType == 'c') {
-                board.cities[row][col] = 'C'; // Use 'C' for city
+                board.settlements[row][col] = 'C'; // Use 'C' for city
             } else if (structureType == 's') {
                 board.settlements[row][col] = 'S'; // Use 'S' for settlement
             }
@@ -83,20 +95,20 @@ void Board::printBoard() const {
 
     for (int i = 0; i < 5; ++i) {
         // Print empty line above hexagons
-        cout << endl;
+        
         int spaces =  8 - hexagonsPerRow[i]; // Ensure spaces is non-negative and Calculate leading spaces
 
         // Print cities or settlements ("city") above hexagons labeled as "C"
         cout << string(spaces * 4, ' '); // Adjust the spacing as needed
         for (int j = 0; j < hexagonsPerRow[i]; ++j) {
-            cout << "   C    "; // Adjust the spacing as needed
+            cout << "    "<< settlements[i][j] << "    "; // Adjust the spacing as needed
         }
         cout << endl;
 
         // Print top line of hexagons with additional spaces
         cout << string(spaces * 4, ' '); // Adjust the spacing as needed
         for (int j = 0; j < hexagonsPerRow[i]; ++j) {
-            cout << " /" << (!tiles[i][j].type.empty() ? tiles[i][j].type[0] : ' ') << "  \\  ";
+            cout << " /" << (!tiles[i][j].type.empty() ? tiles[i][j].type[0] : ' ') << "  \\    ";
         }
         cout << endl;
 
@@ -105,14 +117,14 @@ void Board::printBoard() const {
         for (int j = 0; j < hexagonsPerRow[i]; ++j) {
             
            // char road = (i < roads.size() && j < roads[i].size()) ? 'R' : ' ';
-            cout << "| " <<  tiles[i][j].number << "  | ";
+            cout << "| " <<  tiles[i][j].number << "   |  ";
         }
         cout << endl;
 
         // Print bottom sides of hexagons with additional spaces
         cout << string(spaces * 4, ' '); // Adjust the spacing as needed
         for (int j = 0; j < hexagonsPerRow[i]; ++j) {
-            cout << " \\___/  ";
+            cout << " \\___/    ";
         }
         cout << endl;
     }

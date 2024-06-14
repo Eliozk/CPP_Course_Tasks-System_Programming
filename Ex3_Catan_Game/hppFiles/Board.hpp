@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "Tiles.hpp"
+#include "Tile.hpp"
 
 using namespace std;
 
@@ -20,8 +20,7 @@ namespace ariel {
     private:
         int hexagonsPerRow[5];
         vector<vector<Tile>> tiles; /**< 2D vector to store tiles on the board. */
-        vector<vector<char>> cities; /**< 2D vector to store cities on the board. */
-        vector<vector<char>> settlements; /**< 2D vector to store settlements on the board. */
+        vector<vector<char>> settlements; /**< 2D vector to store settlements and cities on the board. */
         vector<vector<char>> roads; /**< 2D vector to store roads on the board. */
 
     public:
@@ -39,7 +38,7 @@ namespace ariel {
          * @param type The type of the tile.
          * @param number The number associated with the tile.
          */
-        void setTile(int row, int col, const string& type, int number);
+        void setTile(int row, int col, const string& type);
 
         /**
          * @brief Places settlements or cities at specified positions on the board.
