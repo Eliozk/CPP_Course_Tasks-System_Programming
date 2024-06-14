@@ -34,13 +34,8 @@ To perform static analysis:
 To check for memory leaks:
 + make valgrind
 
-To clean the build artifacts:
-+ make clean
-
-Running the main executable:
-+ make run
-
-This will compile the necessary files and run the Demo executable.
-
 Running the tests:
 + make runtest
+
+To clean the build artifacts:
++ make clean
