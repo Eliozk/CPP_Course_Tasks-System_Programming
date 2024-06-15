@@ -37,16 +37,16 @@ string Forest::getResource() const {
 /**
  * @brief Constructor to create a Hills tile.
  * Initializes the Hills object with the given number, inheriting from Tile.
- * @param number The number associated with the hills tile.
+ * @param number - The number associated with the hills tile.
  */
-Hills::Hills(int number) : Tile(number) {}
+Hill::Hill(int number) : Tile(number) {}
 
 /**
  * @brief Gets the resource type of the hills tile.
  * Returns the resource type of the hills tile as "Brick".
  * @return The resource type as a string ("Brick").
  */
-string Hills::getResource() const {
+string Hill::getResource() const {
     return "Brick";
 }
 

@@ -58,13 +58,13 @@ namespace ariel {
      * @class Hills
      * @brief Represents a hills tile in the game.
      */
-    class Hills : public Tile {
+    class Hill : public Tile {
     public:
         /**
          * @brief Constructor to create a Hills tile.
          * @param number The number associated with the hills tile.
          */
-        Hills(int number);
+        Hill(int number);
 
         /**
          * @brief Gets the resource type of the hills tile.

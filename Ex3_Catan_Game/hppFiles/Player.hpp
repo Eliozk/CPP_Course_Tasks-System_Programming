@@ -6,8 +6,9 @@
 #include <string>
 #include <vector>
 #include <map>
-// #include "Board.hpp"
-// #include "Settlement.hpp"
+#include "Settlement.hpp"
+#include "Board.hpp"
+#include "Settlement.hpp"
 // #include "Road.hpp"
 // #include "DevelopmentCard.hpp"
 
@@ -20,18 +21,18 @@ namespace ariel
   private:
     string name;
     int points;
-    // vector<Settlement> settlements;
-    // vector<Road> roads;
-    // vector<City> cities;
-    // vector<DevelopmentCard> devCards;
-    map<string, int> resources;
+    vector<Settlement> settlements;
+    //vector<Road> roads;
+    vector<City> cities;
+    //vector<DevelopmentCard> devCards;
+    map<Tile, int> resources;
 
   public:
     Player(const string &playerName);
 
-    // Methods to place settlements and roads
-    // void placeSettlement(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
-    // void placeRoad(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
+    //Methods to place settlements and roads
+    void placeSettlement(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
+    void placeRoad(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
 
     // Method to roll dice
     // void rollDice();
