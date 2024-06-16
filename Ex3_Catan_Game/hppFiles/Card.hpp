@@ -5,10 +5,11 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
+
 
 namespace ariel {
 
+using namespace std;
     // Base Card class
     class Card {
 

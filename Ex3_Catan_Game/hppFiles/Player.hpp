@@ -3,33 +3,41 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <string>
-#include <vector>
-#include <map>
 #include "Settlement.hpp"
 #include "Board.hpp"
 #include "Settlement.hpp"
 #include "Tile.hpp"
 #include "Card.hpp"
+#include <string>
+#include <vector>
+#include <map>
+
 // #include "Resource.hpp"
 // #include "DevelopmentCard.hpp"
 
-using namespace std;
+
 
 namespace ariel
 {
+
+  using namespace std; 
+  
+  class Settlement; // Forward declaration
+  class City;       // Forward declaration
+  class Road;       // Forward declaration
+
   class Player
   {
   private:
-    string name;                    ///< The name of the player.
-    int points;                     ///< The player's points.
-    vector<Settlement> settlements; ///< The player's settlements.
-    int numberOfRoads;              ///< The number of roads the player has built.
-    vector<City> cities;            ///< The player's cities.
-    vector<Road> roads;             ///< The player's roads.
+    string name;                      ///< The name of the player.
+    int points;                       ///< The player's points.
+    vector<Settlement> settlements;   ///< The player's settlements.
+    int numberOfRoads;                ///< The number of roads the player has built.
+    vector<City> cities;              ///< The player's cities.
+    vector<Road> roads;               ///< The player's roads.
+    vector<Tile> tiles;               ///< The player's tiles.
     vector<DevelopmentCard> devCards; ///< The player's cards.
-    map<string, int> resources;     ///< The player's resources.
-    
+    map<string, int> resources;       ///< The player's resources.
 
   public:
     Player(const string &playerName);

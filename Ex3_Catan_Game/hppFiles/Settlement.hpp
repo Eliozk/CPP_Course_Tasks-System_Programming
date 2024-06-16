@@ -1,12 +1,16 @@
 #ifndef SETTLEMENT_HPP
 #define SETTLEMENT_HPP
 
+#include "Tile.hpp"
 #include "Player.hpp"
+
 /**
  * This is Header file for Settlement-ישוב
  */
 namespace ariel
 {
+    class Player; // Forward declaration
+    class Tile;   // Forward declaration
     /**
      * @class Settlement
      * @brief Represents a settlement owned by a player in the game.
@@ -24,22 +28,22 @@ namespace ariel
          * @brief Constructs the settlement.
          */
         virtual void construct();
-      
-        /**
-         * @brief Gets the owner of the settlement.
-         * @return Pointer to the player who owns the settlement.
-         */
-        Player* getOwner() const;
+        bool operator==(const Settlement &other) const
+        {
+            return this->owner == other.owner; // Adjust the logic as needed
+        } /**
+           * @brief Gets the owner of the settlement.
+           * @return Pointer to the player who owns the settlement.
+           */
+        Player *getOwner() const;
 
         /**
          * @brief Upgrades the settlement, potentially to a city.
          */
         void upgrade();
 
-        
-        virtual bool isAdjacentTo(const Tile& tile) const;
+        virtual bool isAdjacentTo(const Tile &tile) const;
 
-    protected:
         Player *owner; ///< Pointer to the player who owns the settlement.
     };
 

@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <Board.hpp>
 #include <algorithm>
-#include <doctest.h>
 #include <ctime>
 
 using namespace std;
