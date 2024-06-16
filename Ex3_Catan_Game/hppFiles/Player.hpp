@@ -9,7 +9,9 @@
 #include "Settlement.hpp"
 #include "Board.hpp"
 #include "Settlement.hpp"
-// #include "Road.hpp"
+#include "Tile.hpp"
+#include "Card.hpp"
+// #include "Resource.hpp"
 // #include "DevelopmentCard.hpp"
 
 using namespace std;
@@ -19,24 +21,42 @@ namespace ariel
   class Player
   {
   private:
-    string name;
-    int points;
-    vector<Settlement> settlements;
-    //vector<Road> roads;
-    vector<City> cities;
-    //vector<DevelopmentCard> devCards;
-    map<Tile, int> resources;
+    string name;                    ///< The name of the player.
+    int points;                     ///< The player's points.
+    vector<Settlement> settlements; ///< The player's settlements.
+    int numberOfRoads;              ///< The number of roads the player has built.
+    vector<City> cities;            ///< The player's cities.
+    vector<Road> roads;             ///< The player's roads.
+    vector<DevelopmentCard> devCards; ///< The player's cards.
+    map<string, int> resources;     ///< The player's resources.
+    
 
   public:
     Player(const string &playerName);
-
-    //Methods to place settlements and roads
-    void placeSettlement(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
-    void placeRoad(const std::vector<std::string>& places, const std::vector<int>& placesNum, Board& board);
-
+    int getPoints() const;
+    // Methods to place settlements and roads
+    void placeSettlement(const vector<string> &places, const vector<int> &placesNum, Board &board);
+    /**
+     * @brief Places a road on the board.
+     * @param places The list of places for the road.
+     * @param placesNum The list of place numbers.
+     * @param board The game board.
+     */
+    void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
+    /**
+     * @brief Upgrades a settlement to a city.
+     * @param settlement The settlement to upgrade.
+     */
+    void upgradeSettlementToCity(const Settlement &settlement);
     // Method to roll dice
-    // void rollDice();
+    int rollDice() const;
 
+    /**
+     * @brief Distributes resources based on the dice roll result.
+     * @param rollResult The result of the dice roll.
+     * @param tiles The list of game tiles.
+     */
+    void resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles);
     // Method to trade resources
     // void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
 
@@ -44,7 +64,20 @@ namespace ariel
     // void buyDevelopmentCard();
 
     // Method to print points
-    // void printPoints() const;
+    void printPoints() const;
+
+    /**
+     * @brief Adds resources to the player's inventory.
+     * @param resource The type of resource to add.
+     * @param quantity The quantity of the resource to add.
+     */
+    void addResource(string &resource, int quantity);
+    /**
+     * @brief Removes resources from the player's inventory.
+     * @param resource The type of resource to remove.
+     * @param quantity The quantity of the resource to remove.
+     */
+    void removeResource(string resource, int quantity);
 
     // Method to end turn
     // void endTurn();
