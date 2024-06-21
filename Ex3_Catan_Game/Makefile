@@ -1,16 +1,34 @@
 CC = g++
-Flags = -Wall -g -Wextra -DDEBUG
+Flags = -Wall -g -Wextra 
+#-DDEBUG
+INCLUDES = -I./hppFiles
+SRCS = src/demoMain.cpp src/InitGame.cpp src/Tile.cpp src/Settlement.cpp src/Player.cpp src/Board.cpp src/Card.cpp src/Vertex.cpp src/Edge.cpp
+# src/Catan.cpp 
+#src/Game.cpp
+# what folder to put object files.
+BUILD_DIR = build
+OBJS = $(patsubst src/%.cpp,$(BUILD_DIR)/%.o,$(SRCS))
+EXEC = demoMain
 
-all: demoMain
+all: $(EXEC)
 
-demoMain: $(OBJS)
-	$(CC) $(Flags) -o demoMain src/demoMain.cpp src/Tile.cpp src/Settlement.cpp src/Player.cpp src/Board.cpp -I./hppFiles
+$(EXEC): $(OBJS)
+	$(CC) $(Flags) $(INCLUDES) -o $@ $^
 
-run: demoMain
-	./demoMain
+$(BUILD_DIR)/%.o: src/%.cpp | $(BUILD_DIR)
+	$(CC) $(Flags) $(INCLUDES) -c $< -o $@
 
-debug: demoMain
-	ulimit -c unlimited && ddd ./demoMain &
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
+run: $(EXEC)
+	./$(EXEC)
+
+debug: $(EXEC)
+	gdb ./$(EXEC)
+#gdb ./your_program /mnt/wslg/dumps/core.demoMain.188698
+#to find dumped core  "ls -l /mnt/wslg/dumps/"
 clean:
-	rm -f demoMain
+	rm -rf $(EXEC) $(BUILD_DIR)
+
+.PHONY: all run debug clean

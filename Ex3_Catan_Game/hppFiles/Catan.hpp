@@ -17,19 +17,13 @@ namespace ariel
         Board board;
 
     public:
-        Catan(Player &p1, Player &p2, Player &p3) : p1(p1), p2(p2), p3(p3) {}
+        Catan(Player &p1, Player &p2, Player &p3);
 
         void ChooseStartingPlayer() const;
 
-        Board &getBoard()
-        {
-            return board;
-        }
+        Board &getBoard();
 
-        void printWinner() const
-        {
-            cout << "None" << endl; // Placeholder for determining the winner
-        }
+        void printWinner() const;
     };
 }
 #endif // CATAN_HPP

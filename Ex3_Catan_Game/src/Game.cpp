@@ -89,3 +89,63 @@ void Game::printPoints() const {
 void Game::printWinner() const {
     std::cout << "None" << std::endl; // Placeholder for determining the winner
 }
+/////
+/**
+ * for usage only: #include "Board.hpp"
+#include "Player.hpp"
+#include "Deck.hpp"
+#include "InitGame.hpp"
+#include <vector>
+#include <iostream>
+
+namespace ariel {
+    class Game {
+    private:
+        Board board;
+        vector<Player> players;
+        int currentTurn;
+        Deck deck;
+
+    public:
+        Game() : currentTurn(0) {}
+
+        void initializeGame() {
+            InitGame initGame;
+            initGame.buildBoard(board);
+            initGame.initializePlayers(players, 3); // Assuming a 3-player game
+            initGame.setupInitialSettlementsAndRoads(board, players);
+        }
+
+        void startGame() {
+            bool gameOver = false;
+            while (!gameOver) {
+                takeTurn(players[currentTurn]);
+                gameOver = checkVictory();
+                currentTurn = (currentTurn + 1) % players.size();
+            }
+            endGame();
+        }
+
+        void takeTurn(Player &player) {
+            // Implement the actions a player can take on their turn
+            std::cout << "Player " << player.getName() << "'s turn.\n";
+            // Example actions: roll dice, build, trade, etc.
+        }
+
+        bool checkVictory() {
+            for (const auto &player : players) {
+                if (player.getVictoryPoints() >= 10) {
+                    std::cout << "Player " << player.getName() << " wins!\n";
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void endGame() {
+            std::cout << "Game over. Thanks for playing!\n";
+        }
+    };
+}
+
+ */

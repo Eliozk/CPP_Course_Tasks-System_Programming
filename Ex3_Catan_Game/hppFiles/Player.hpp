@@ -11,17 +11,15 @@
 #include <string>
 #include <vector>
 #include <map>
-
+using namespace std;
 // #include "Resource.hpp"
 // #include "DevelopmentCard.hpp"
-
-
 
 namespace ariel
 {
 
-  using namespace std; 
-  
+  // Forward declaration
+  class Board;
   class Settlement; // Forward declaration
   class City;       // Forward declaration
   class Road;       // Forward declaration
@@ -29,27 +27,36 @@ namespace ariel
   class Player
   {
   private:
-    string name;                      ///< The name of the player.
-    int points;                       ///< The player's points.
-    vector<Settlement> settlements;   ///< The player's settlements.
-    int numberOfRoads;                ///< The number of roads the player has built.
-    vector<City> cities;              ///< The player's cities.
-    vector<Road> roads;               ///< The player's roads.
-    vector<Tile> tiles;               ///< The player's tiles.
-    vector<DevelopmentCard> devCards; ///< The player's cards.
-    map<string, int> resources;       ///< The player's resources.
+    int playerNumber;
+    string playerName;                    ///< The name of the player.
+    int points;                     ///< The player's points.
+    vector<Settlement> settlements; ///< The player's settlements.
+    int numberOfRoads;              ///< The number of roads the player has built.
+    vector<City> cities;            ///< The player's cities.
+    vector<Road> roads;             ///< The player's roads.
+    vector<Tile> tiles;             ///< The player's tiles.
+   std::vector<Card*> playerCards;       ///< The player's cards.
+    map<string, int> resources;     ///< The player's resources.
 
   public:
-    Player(const string &playerName);
+    // Default constructor
+    Player();
+    Player(int num, const string &name);
+    Player(const Player &other);            // Copy constructor
+    Player &operator=(const Player &other); // Assignment operator
+    // Destructor
+    ~Player();
     int getPoints() const;
     // Methods to place settlements and roads
-    void placeSettlement(const vector<string> &places, const vector<int> &placesNum, Board &board);
+    void add1point();
+    void add2point();
     /**
      * @brief Places a road on the board.
      * @param places The list of places for the road.
      * @param placesNum The list of place numbers.
      * @param board The game board.
      */
+    int getNumberOfPlayer() const;
     void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
     /**
      * @brief Upgrades a settlement to a city.
@@ -79,7 +86,7 @@ namespace ariel
      * @param resource The type of resource to add.
      * @param quantity The quantity of the resource to add.
      */
-    void addResource(string &resource, int quantity);
+    void addResource(const string &resource, int quantity);
     /**
      * @brief Removes resources from the player's inventory.
      * @param resource The type of resource to remove.
@@ -92,6 +99,17 @@ namespace ariel
 
     // Get player's name
     string getName() const;
+    // void promptAndSetSettlement(Board &board, const Player &player);
+    // void promptAndSetRoad(Board &board, const Player &player);
+    // bool canbuySettlement();
+    // bool canbuyCity();
+    // bool canbuyRoad();
+    // Add card to player's hand
+        void addCard(Card* card);
+
+        // Display player's hand
+        void displayHand() const;
   };
+
 }
 #endif

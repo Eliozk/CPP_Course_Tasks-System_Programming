@@ -17,7 +17,7 @@ namespace ariel
         bool gameOver;
 
     public:
-Game::Game(const string& playerName1, const string& playerName2, const string& playerName3);
+        Game(const string& playerName1, const string& playerName2, const string& playerName3);
         void start(); // Start the game
         void ChooseStartingPlayer();
         void simulateTurns();

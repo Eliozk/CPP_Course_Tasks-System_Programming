@@ -1,60 +1,81 @@
 #include "Tile.hpp"
+#include "Vertex.hpp" // Include Vertex.hpp for using Vertex in the implementation
+#include "Edge.hpp"
+#include <string>
 
-using namespace ariel;
+using namespace std;
+namespace ariel {
+
 
 // Implementation for Tile
-Tile::Tile(int number, const string& name) : number(number), name(name) {}
+Tile::Tile() {} // for creation of null Tile
+Tile::Tile(const string &resource, int number, size_t index)
+    : resource(resource), number(number), index(index), vertices{}, edges{} {}
 
+int Tile::getIndex() const
+{
+    return index;
+}
 
-int ariel::Tile::getNumber() const {
+int Tile::getNumber() const
+{
     return number;
 }
 
-string Tile::getName() const {
-    return name;
+ vector<Vertex *>& Tile::getVertices() {
+    return vertices;
+     }
+
+string Tile::getResource() const
+{
+    string res;
+    if (resource == "Field")
+    {
+        res = "Grain";
+    }
+    else if (resource == "Forest")
+    {
+        res = "Lumber";
+    }
+    else if (resource == "Pasture")
+    {
+        res = "Wool";
+    }
+    else if (resource == "Hill")
+    {
+        res = "Brick";
+    }
+    else if (resource == "Mountain")
+    {
+        res = "Ore";
+    }
+     else if (resource == "Desert") {
+        res = "Dessert doesn't provide a resource."; // Desert doesn't provide a resource
+    }
+    return res;
 }
 
-
-
-// Implementation for Forest
-Forest::Forest(int number) : Tile(number, "Forest") {}
-
-string ariel::Forest::getResource() const {
-    return "Wood";
+void Tile::setVertex(Vertex &vertex)
+{
+        vertices.push_back(&vertex);
 }
 
-// Implementation for Hill
-Hill::Hill(int number) : Tile(number, "Hill") {}
+// vector<Vertex *>& Tile::getVertices()
+// {
+//     return vertices;
+// }
 
-string ariel::Hill::getResource() const {
-    return "Brick";
+void Tile::setEdge(int position, const Edge &edge)
+{
+    if (position >= 0 && position < 6)
+    {
+        edges[position] = edge;
+    }
 }
 
-// Implementation for Pasture
-Pasture::Pasture(int number) : Tile(number, "Pasture") {}
-
-string Pasture::getResource() const {
-    return "Sheep";
+const vector<Edge> &Tile::getEdges() const
+{
+    return edges;
+}
 }
 
-// Implementation for Field
-Field::Field(int number) : Tile(number, "Field") {}
-
-string Field::getResource() const {
-    return "Wheat";
-}
-
-// Implementation for Mountain
-Mountain::Mountain(int number) : Tile(number, "Mountain") {}
-
-string Mountain::getResource() const {
-    return "Ore";
-}
-
-// Implementation for Desert
-Desert::Desert(int number) : Tile(number, "Desert") {}
-
-string Desert::getResource() const
-        {
-            return ""; // Desert tiles don't yield resources, so return an empty string
-        }

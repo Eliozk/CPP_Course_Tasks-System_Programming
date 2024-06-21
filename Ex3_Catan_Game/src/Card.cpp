@@ -4,51 +4,175 @@
 using namespace std;
 using namespace ariel;
 
-    // Implementation for DevelopmentCard
-    DevelopmentCard::DevelopmentCard(const string& type) : type(type) {}
+// Card copy constructor
+Card::Card(const Card &other) : name(other.name) {}
 
-    string DevelopmentCard::getType() const {
-        return type;
+// Card assignment operator
+Card &Card::operator=(const Card &other)
+{
+    if (this != &other)
+    {
+        name = other.name;
     }
+    return *this;
+}
 
-    // Implementation for ResourceCard
-    ResourceCard::ResourceCard(const string& resource) : resource(resource) {}
+// Implementation for DevelopmentCard
+DevelopmentCard::DevelopmentCard(const string &type) : type(type) {}
 
-    string ResourceCard::getType() const {
-        return resource;
+string DevelopmentCard::getType() const
+{
+    return type;
+}
+Card *DevelopmentCard::clone() const
+{
+    return new DevelopmentCard(*this);
+}
+
+DevelopmentCard::DevelopmentCard(const DevelopmentCard &other) : Card(other), type(other.type) {}
+
+DevelopmentCard &DevelopmentCard::operator=(const DevelopmentCard &other)
+{
+    if (this != &other)
+    {
+        Card::operator=(other);
+        type = other.type;
     }
+    return *this;
+}
+// Implementation for ResourceCard
+ResourceCard::ResourceCard(const string &resource) : resource(resource) {}
+
+string ResourceCard::getType() const
+{
+    return resource;
+}
+
+Card* ResourceCard::clone() const {
+    return new ResourceCard(*this);
+}
+
+ResourceCard::ResourceCard(const ResourceCard& other) : Card(other), resource(other.resource) {}
+
+ResourceCard& ResourceCard::operator=(const ResourceCard& other) {
+    if (this != &other) {
+        Card::operator=(other);
+        resource = other.resource;
+    }
+    return *this;
+}
 
 // Implementation for VictoryPointCard
-VictoryPointCard::VictoryPointCard(const std::string& name, int points) : points(points), name(name) {}
+VictoryPointCard::VictoryPointCard(const string &name, int points) : name(name), points(points) {}
 
-std::string VictoryPointCard::getType() const {
+std::string VictoryPointCard::getType() const
+{
     return name;
 }
 
-int VictoryPointCard::getPoints() const {
+int VictoryPointCard::getPoints() const
+{
     return points;
+}
+Card* VictoryPointCard::clone() const {
+    return new VictoryPointCard(*this);
+}
+
+VictoryPointCard::VictoryPointCard(const VictoryPointCard& other) : Card(other), points(other.points), name(other.name) {}
+
+VictoryPointCard& VictoryPointCard::operator=(const VictoryPointCard& other) {
+    if (this != &other) {
+        Card::operator=(other);
+        points = other.points;
+        name = other.name;
+    }
+    return *this;
 }
 
 // Implementation for ProgressCard
-ProgressCard::ProgressCard(const string& action) : action(action) {}
+ProgressCard::ProgressCard(const string &action) : action(action) {}
 
-string ProgressCard::getType() const {
+string ProgressCard::getType() const
+{
     return action;
 }
 
-string ProgressCard::getAction() const {
+string ProgressCard::getAction() const
+{
     return action;
 }
+Card* ProgressCard::clone() const {
+    return new ProgressCard(*this);
+}
 
-    // Implementation for KnightCard
-    KnightCard::KnightCard() : ProgressCard("Knight") {}
+ProgressCard::ProgressCard(const ProgressCard& other) : Card(other), action(other.action) {}
 
-    // Implementation for RoadBuildingCard
-    RoadBuildingCard::RoadBuildingCard() : ProgressCard("RoadBuilding") {}
+ProgressCard& ProgressCard::operator=(const ProgressCard& other) {
+    if (this != &other) {
+        Card::operator=(other);
+        action = other.action;
+    }
+    return *this;
+}
 
-    // Implementation for YearOfPlentyCard
-    YearOfPlentyCard::YearOfPlentyCard() : ProgressCard("YearOfPlenty") {}
+// Implementation for KnightCard
+KnightCard::KnightCard() : ProgressCard("Knight") {}
 
-    // Implementation for MonopolyCard
-    MonopolyCard::MonopolyCard() : ProgressCard("Monopoly") {}
+Card* KnightCard::clone() const {
+    return new KnightCard(*this);
+}
 
+KnightCard::KnightCard(const KnightCard& other) : ProgressCard(other) {}
+
+KnightCard& KnightCard::operator=(const KnightCard& other) {
+    if (this != &other) {
+        ProgressCard::operator=(other);
+    }
+    return *this;
+}
+
+// Implementation for RoadBuildingCard
+RoadBuildingCard::RoadBuildingCard() : ProgressCard("Road Building") {}
+
+Card* RoadBuildingCard::clone() const {
+    return new RoadBuildingCard(*this);
+}
+
+RoadBuildingCard::RoadBuildingCard(const RoadBuildingCard& other) : ProgressCard(other) {}
+
+RoadBuildingCard& RoadBuildingCard::operator=(const RoadBuildingCard& other) {
+    if (this != &other) {
+        ProgressCard::operator=(other);
+    }
+    return *this;
+}
+// Implementation for YearOfPlentyCard
+YearOfPlentyCard::YearOfPlentyCard() : ProgressCard("Year Of Plenty") {}
+
+Card* YearOfPlentyCard::clone() const {
+    return new YearOfPlentyCard(*this);
+}
+
+YearOfPlentyCard::YearOfPlentyCard(const YearOfPlentyCard& other) : ProgressCard(other) {}
+
+YearOfPlentyCard& YearOfPlentyCard::operator=(const YearOfPlentyCard& other) {
+    if (this != &other) {
+        ProgressCard::operator=(other);
+    }
+    return *this;
+}
+// Implementation for MonopolyCard
+MonopolyCard::MonopolyCard() : ProgressCard("Monopoly") {}
+
+Card* MonopolyCard::clone() const {
+    return new MonopolyCard(*this);
+}
+
+MonopolyCard::MonopolyCard(const MonopolyCard& other) : ProgressCard(other) {}
+
+MonopolyCard& MonopolyCard::operator=(const MonopolyCard& other) {
+    if (this != &other) {
+        ProgressCard::operator=(other);
+    }
+    return *this;
+}

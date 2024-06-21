@@ -7,7 +7,6 @@
 #include <vector>     // Include vector for managing cards
 #include <string>
 #include <iostream> // For std::cin and std::cout
-#include "Hexagon.hpp"
 
 namespace ariel
 {
@@ -17,23 +16,24 @@ namespace ariel
     private:
         vector<string> tileTypes;
         vector<int> tileNumbers;
+        vector<Player> players;
 
     public:
-        vector<ariel::Tile> createAndShuffleTiles(); // Updated function declaration
+        vector<Tile> createTiles(); // Updated function declaration
         // Function to initialize players
         void initializePlayers(vector<Player> &players);
     
 
         // Function to place initial settlements and roads
-        void placeInitialSettlementsAndRoads(vector<Player> &players, Board &board);
+        void placeInitialSettlementsAndRoads(vector<Player>& players, Board& board);
 
         // Function to create and shuffle development cards
         vector<Card *> createAndShuffleCards();
 
         // Function to distribute initial resources to players
         void distributeInitialResources(vector<Player> &players, const Board &board);
-        void buildBoard();
-        void setupBoard(vector<Hexagon> &board);
+        void buildBoard(Board& board);
+       // void setupBoard(vector<Hexagon> &board);
     };
 
 } // namespace ariel

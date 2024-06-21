@@ -9,14 +9,15 @@
  */
 namespace ariel
 {
-    class Player; // Forward declaration
-    class Tile;   // Forward declaration
+    class Player; // Forward declaration of Player class
     /**
      * @class Settlement
      * @brief Represents a settlement owned by a player in the game.
      */
     class Settlement
     {
+        //  private:
+        // Player* owner; ///< Pointer to the player who owns the settlement.
     public:
         /**
          * @brief Constructor to create a Settlement.

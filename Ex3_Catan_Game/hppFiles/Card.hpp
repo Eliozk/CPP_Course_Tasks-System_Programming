@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
+using namespace std;
 
 
 namespace ariel {
 
-using namespace std;
+
     // Base Card class
     class Card {
 
@@ -18,6 +18,17 @@ using namespace std;
     public:
         virtual ~Card() = default;
         virtual string getType() const = 0; // Pure virtual function to get the card type
+         // Virtual copy constructor
+        virtual Card* clone() const = 0;
+
+        // Copy constructor
+        Card(const Card& other);
+
+        // Assignment operator
+        Card& operator=(const Card& other);
+        protected:
+        // Default constructor protected to prevent direct instantiation
+        Card() = default;
     };
 
     // Derived DevelopmentCard class
@@ -27,6 +38,14 @@ using namespace std;
     public:
         DevelopmentCard(const string& type);
         string getType() const override;
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        DevelopmentCard(const DevelopmentCard& other);
+
+        // Assignment operator
+        DevelopmentCard& operator=(const DevelopmentCard& other);
     };
 
     // Derived ResourceCard class
@@ -36,6 +55,14 @@ using namespace std;
     public:
         ResourceCard(const string& resource);
         string getType() const override;
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        ResourceCard(const ResourceCard& other);
+
+        // Assignment operator
+        ResourceCard& operator=(const ResourceCard& other);
     };
 
   // Derived VictoryPointCard class
@@ -48,6 +75,14 @@ using namespace std;
         VictoryPointCard(const string& name, int points);
         string getType() const override;
         int getPoints() const;
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        VictoryPointCard(const VictoryPointCard& other);
+
+        // Assignment operator
+        VictoryPointCard& operator=(const VictoryPointCard& other);
     };
 
     // Derived ProgressCard class//קלפי קידום
@@ -59,30 +94,71 @@ using namespace std;
         ProgressCard(const string& action);
         string getType() const override;
         string getAction() const;
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        ProgressCard(const ProgressCard& other);
+
+        // Assignment operator
+        ProgressCard& operator=(const ProgressCard& other);
     };
 
     // Derived KnightCard class
     class KnightCard : public ProgressCard {
     public:
         KnightCard();
+        // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        KnightCard(const KnightCard& other);
+
+        // Assignment operator
+        KnightCard& operator=(const KnightCard& other);
     };
 
     // Derived RoadBuildingCard class
     class RoadBuildingCard : public ProgressCard {
     public:
         RoadBuildingCard();
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        RoadBuildingCard(const RoadBuildingCard& other);
+
+        // Assignment operator
+        RoadBuildingCard& operator=(const RoadBuildingCard& other);
     };
 
     // Derived YearOfPlentyCard class
     class YearOfPlentyCard : public ProgressCard {
     public:
         YearOfPlentyCard();
+
+        // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        YearOfPlentyCard(const YearOfPlentyCard& other);
+
+        // Assignment operator
+        YearOfPlentyCard& operator=(const YearOfPlentyCard& other);
     };
 
     // Derived MonopolyCard class
     class MonopolyCard : public ProgressCard {
     public:
         MonopolyCard();
+         // Virtual copy constructor
+        Card* clone() const override;
+
+        // Copy constructor
+        MonopolyCard(const MonopolyCard& other);
+
+        // Assignment operator
+        MonopolyCard& operator=(const MonopolyCard& other);
     };
 
 } // namespace ariel
