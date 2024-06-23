@@ -28,15 +28,15 @@ namespace ariel
   {
   private:
     int playerNumber;
-    string playerName;                    ///< The name of the player.
-    int points;                     ///< The player's points.
-    vector<Settlement> settlements; ///< The player's settlements.
-    int numberOfRoads;              ///< The number of roads the player has built.
-    vector<City> cities;            ///< The player's cities.
-    vector<Road> roads;             ///< The player's roads.
-    vector<Tile> tiles;             ///< The player's tiles.
-   std::vector<Card*> playerCards;       ///< The player's cards.
-    map<string, int> resources;     ///< The player's resources.
+    string playerName;               ///< The name of the player.
+    int points;                      ///< The player's points.
+    vector<int> settlements;         ///< The player's settlements.
+    int numberOfRoads;               ///< The number of roads the player has built.
+    vector<int> cities;              ///< The player's cities.
+    vector<int> roads;               ///< The player's roads.
+    vector<Tile> tiles;              ///< The player's tiles.
+    std::vector<Card *> playerCards; ///< The player's cards.
+    map<string, int> resources;      ///< The player's resources.
 
   public:
     // Default constructor
@@ -46,8 +46,12 @@ namespace ariel
     Player &operator=(const Player &other); // Assignment operator
     // Destructor
     ~Player();
+    void setName(const string &name);
     int getPoints() const;
     // Methods to place settlements and roads
+
+    void addSettlement(int vertexIndex);
+    void addRoad(int edgeIndex);
     void add1point();
     void add2point();
     /**
@@ -56,7 +60,9 @@ namespace ariel
      * @param placesNum The list of place numbers.
      * @param board The game board.
      */
-    int getNumberOfPlayer() const;
+    int getPlayerNumber() const;
+    vector<int> getPlayerSettlements() const;
+    void placeInitialSettlementAndRoad(Player &player, int vertexIndex, int vertexIndex2, Board &catanBoard);
     void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
     /**
      * @brief Upgrades a settlement to a city.
@@ -72,11 +78,6 @@ namespace ariel
      * @param tiles The list of game tiles.
      */
     void resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles);
-    // Method to trade resources
-    // void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
-
-    // Method to buy development cards
-    // void buyDevelopmentCard();
 
     // Method to print points
     void printPoints() const;
@@ -94,22 +95,28 @@ namespace ariel
      */
     void removeResource(string resource, int quantity);
 
-    // Method to end turn
-    // void endTurn();
-
     // Get player's name
     string getName() const;
-    // void promptAndSetSettlement(Board &board, const Player &player);
-    // void promptAndSetRoad(Board &board, const Player &player);
-    // bool canbuySettlement();
-    // bool canbuyCity();
-    // bool canbuyRoad();
-    // Add card to player's hand
-        void addCard(Card* card);
 
-        // Display player's hand
-        void displayHand() const;
+    // Add card to player's hand
+    void addCard(Card *card);
+
+    // Display player's hand
+    void displayHand() const;
   };
+
+  // Method to end turn
+  // void endTurn();
+  // void promptAndSetSettlement(Board &board, const Player &player);
+  // void promptAndSetRoad(Board &board, const Player &player);
+  // bool canbuySettlement();
+  // bool canbuyCity();
+  // bool canbuyRoad();
+  // Method to trade resources
+  // void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
+
+  // Method to buy development cards
+  // void buyDevelopmentCard();
 
 }
 #endif

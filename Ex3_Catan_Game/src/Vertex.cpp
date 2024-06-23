@@ -8,7 +8,7 @@ namespace ariel
 {
     // Constructor to initialize the vertex with an index
     Vertex::Vertex(size_t index)
-        : index(index), owner(-1), city(-1) {}
+        : index(index), owner(-1), settlement(-1) {}
 
     // Get the index of the vertex
     size_t Vertex::getIndex() const
@@ -23,9 +23,9 @@ namespace ariel
     }
 
     // Set the city of the vertex
-    void Vertex::setCity(int cityId)
+    void Vertex::setSettlement(int cityNum)
     {
-        city = cityId;
+        settlement = cityNum;
     }
 
     // Get the owner of the vertex
@@ -35,9 +35,9 @@ namespace ariel
     }
 
     // Get the city of the vertex
-    int Vertex::getCity() const
+    int Vertex::getSettlement() const
     {
-        return city;
+        return settlement;
     }
 
     // Add an adjacent tile to the vertex

@@ -52,12 +52,32 @@ Player::~Player() {
         delete card;  // Free memory for each card
     }
 }
+void Player::setName(const string &name){
+    playerName = name;
+}
+void Player::placeInitialSettlementAndRoad(Player &player, int vertexIndex1, int vertexIndex2,Board& catanBoard)
+{
+    if (catanBoard.canPlaceInitialSettlementAndRoad(player, vertexIndex1, vertexIndex2))
+    {
+        settlements.push_back(vertexIndex1);
+         roads.push_back(catanBoard.getEdge(vertexIndex1, vertexIndex2));
+        cout << player.getName() << " placed an settlement on vertex " << vertexIndex1 << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << "\n"
+             << endl;
+    }
+    else
+    {
+        cout << player.getName() << " cannot place an settlement on vertex " << vertexIndex1 << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << endl;
+    }
+}
+
+ 
+
 // Getters
 string Player::getName() const
 {
     return playerName;
 }
-int Player::getNumberOfPlayer() const
+int Player::getPlayerNumber() const
 {
     return playerNumber;
 }
@@ -100,16 +120,24 @@ void Player::placeRoad(const vector<string> &places, const vector<int> &placesNu
     numberOfRoads++;
 }
 
-void Player::upgradeSettlementToCity(const Settlement &settlement)
-{
-    auto it = find(settlements.begin(), settlements.end(), settlement);
-    if (it != settlements.end())
-    {
-        settlements.erase(it);
-        cities.push_back(City(settlement.getOwner()));
-        points += 1; // Increment points for upgrading to a city
-    }
+void Player::addSettlement(int vertexIndex) {
+    settlements.push_back(vertexIndex);
 }
+
+void Player::addRoad(int edgeIndex) {
+    roads.push_back(edgeIndex);
+}
+
+// void Player::upgradeSettlementToCity(const Settlement &settlement)
+// {
+//     auto it = find(settlements.begin(), settlements.end(), settlement);
+//     if (it != settlements.end())
+//     {
+//         settlements.erase(it);
+//         cities.push_back(City(settlement.getOwner()));
+//         points += 1; // Increment points for upgrading to a city
+//     }
+// }
 // This function return number of rolled 2 dices.
 int Player::rollDice() const
 {
@@ -124,30 +152,30 @@ int Player::rollDice() const
     return rollResult;
 }
 
-void Player::resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles)
-{
-    for (const Tile &tile : tiles)
-    {
-        if (tile.getNumber() == rollResult)
-        {
-            string resource = tile.getResource();
-            for (Settlement &settlement : settlements)
-            {
-                if (settlement.isAdjacentTo(tile))
-                {
-                    addResource(resource, 1);
-                }
-            }
-            for (City &city : cities)
-            {
-                if (city.isAdjacentTo(tile))
-                {
-                    addResource(resource, 1);
-                }
-            }
-        }
-    }
-}
+// void Player::resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles)
+// {
+//     for (const Tile &tile : tiles)
+//     {
+//         if (tile.getNumber() == rollResult)
+//         {
+//             string resource = tile.getResource();
+//             for (Settlement &settlement : settlements)
+//             {
+//                 if (settlement.isAdjacentTo(tile))
+//                 {
+//                     addResource(resource, 1);
+//                 }
+//             }
+//             for (City &city : cities)
+//             {
+//                 if (city.isAdjacentTo(tile))
+//                 {
+//                     addResource(resource, 1);
+//                 }
+//             }
+//         }
+//     }
+// }
 
 // void Player::promptAndSetSettlement(Board& board, const Player& player) {
 //     int row, col;
@@ -214,6 +242,9 @@ void Player::addCard(Card* card) {
     playerCards.push_back(card);
 }
 
+vector<int> Player::getPlayerSettlements() const {
+    return settlements;
+}
 // Display player's hand
 void Player::displayHand() const {
     cout << playerName << "'s Hand:" << endl;

@@ -176,3 +176,53 @@ MonopolyCard& MonopolyCard::operator=(const MonopolyCard& other) {
     }
     return *this;
 }
+
+   // LongestRoadCard implementation
+    LongestRoadCard::LongestRoadCard() : name("Longest Road") {}
+
+    string LongestRoadCard::getType() const
+    {
+        return "Special: Longest Road";
+    }
+
+    Card *LongestRoadCard::clone() const
+    {
+        return new LongestRoadCard(*this);
+    }
+
+    LongestRoadCard::LongestRoadCard(const LongestRoadCard &other) : Card(other) {}
+
+    LongestRoadCard &LongestRoadCard::operator=(const LongestRoadCard &other)
+    {
+        if (this != &other)
+        {
+            Card::operator=(other);
+        }
+        return *this;
+    }
+
+    // LargestArmyCard implementation
+    LargestArmyCard::LargestArmyCard() : name("Largest Army") {}
+
+    string LargestArmyCard::getType() const
+    {
+        return "Special: Largest Army";
+    }
+
+    Card *LargestArmyCard::clone() const
+    {
+        return new LargestArmyCard(*this);
+    }
+
+    LargestArmyCard::LargestArmyCard(const LargestArmyCard &other) : Card(other) {}
+
+    LargestArmyCard &LargestArmyCard::operator=(const LargestArmyCard &other)
+    {
+        if (this != &other)
+        {
+            Card::operator=(other);
+        }
+        return *this;
+    };
+
+

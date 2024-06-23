@@ -13,37 +13,15 @@ using namespace std;
 using namespace ariel;
 
 // Function to create and shuffle development cards
-// Function to create and shuffle development cards
-// vector<Tile> InitGame::createTiles()
+// void Board::drawDevelopmentCard(int playerId)
 // {
-//     vector<string> tileNames = {
-//         "Field", "Field", "Field", "Field",
-//         "Forest", "Forest", "Forest", "Forest",
-//         "Pasture", "Pasture", "Pasture", "Pasture",
-//         "Hill", "Hill", "Hill",
-//         "Mountain", "Mountain", "Mountain",
-//         "Desert"};
-
-//     vector<int> tileNumbers = {
-//         2, 3, 3, 4, 4, 5, 5, 6, 6,
-//         8, 8, 9, 9, 10, 10, 11, 11, 12
-//     };
-//     vector<Tile> tiles;
-
-//     // Create tiles with types and numbers
-//     for (size_t i = 0; i < tileNames.size(); ++i)
-//     {
-//         tiles.emplace_back(tileNumbers[i], tileNames[i]);
-//     }
-
-//     // Shuffle the tiles
-//     random_device rd;
-//     mt19937 g(rd());
-//     std::shuffle(tiles.begin(), tiles.end(), g);
-
-//     // Return the shuffled tiles
-//     return tiles;
+//     // take the first card from the deck and give it to the player
+//     players[playerId - 1]->developmentCards.push_back(developmentCards.back().getType());
+//     developmentCards.erase(developmentCards.begin());
 // }
+
+// bool Board::canPlaceInitialSettlementAndRoad(Player &player, size_t vertexIndex, size_t vertexIndex2)
+// {}
 
 
 

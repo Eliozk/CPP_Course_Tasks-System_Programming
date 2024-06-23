@@ -18,7 +18,7 @@ namespace ariel
     private:
         size_t index;                 // Index of the vertex
         int owner;                    // ID of the player who owns the vertex, -1 if unowned
-        int city;                     // ID of the city, -1 if no city
+        int settlement;                     // ID of the city, -1 if no city
         vector<Tile *> adjacentTiles; // Adjacent tiles
         vector<Vertex *> neighbors;   // Adjacent vertices (neighbors)
         vector<Edge *> edges;         // Adjacent edges
@@ -31,8 +31,8 @@ namespace ariel
         size_t getIndex() const;
         void setOwner(int playerId);
         int getOwner() const;
-        void setCity(int cityId);
-        int getCity() const;
+        void setSettlement(int cityId);
+        int getSettlement() const;
 
         // Add an adjacent tile to the vertex
         void addAdjacentTile(Tile *tile);

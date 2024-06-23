@@ -167,18 +167,18 @@ void Board::initializeBoard()
         boardVertices[edgesOnBoard[i][1]].addEdge(&boardEdges[i]);
     }
 
-    // For demonstration purposes, print out the tiles and their vertices****self debug
+    // // For demonstration purposes, print out the tiles and their vertices****self debug
     cout << "\nFor demonstration purposes, print out the tiles and their vertices:(in Board.cpp line 175)" << endl;
-    for (auto &tile : boardTiles)
-    {
-        cout << "Tile Index: " << tile.getIndex() << ", Tile Number: " << tile.getNumber() << ", Tile resource: " << tile.getResource() << endl;
-        // cout << "Vertices: ";
-        // for (auto &vertex : tile.getVertices())
-        // {
-        //     cout << (*vertex).getIndex() << " "; // Using dereferencing
-        // }
-        // cout << endl;
-    }
+    // for (auto &tile : boardTiles)
+    // {
+    //     cout << "Tile Index: " << tile.getIndex() << ", Tile Number: " << tile.getNumber() << ", Tile resource: " << tile.getResource() << endl;
+    //     // cout << "Vertices: ";
+    //     // for (auto &vertex : tile.getVertices())
+    //     // {
+    //     //     cout << (*vertex).getIndex() << " "; // Using dereferencing
+    //     // }
+    //     // cout << endl;
+    // }
     // Print each edge with its connected vertices
     // cout << "\nEdges and their connected vertices 2 try:" << endl;
     // for (const auto &edge : boardEdges)
@@ -196,244 +196,175 @@ void Board::initializeBoard()
     //     cout << "Edge number: " << boardEdges[i].getIndex() << " (" << vertex1->getIndex() << ", " << vertex2->getIndex() << ")" << endl;
     // }
 }
-
+// check board to verify that player can set settlements or roads on board on specific vertices.
 bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t vertexIndex2)
 {
+
     // Check if vertexIndex is valid
     if (vertexIndex1 >= boardVertices.size() || vertexIndex1 < 0 || vertexIndex2 >= boardVertices.size() || vertexIndex2 < 0)
     {
         cerr << "Invalid vertex index." << endl;
         return false;
     }
+    int playerNum = player.getPlayerNumber();
+     checkRoadPlacementAndSet(playerNum, vertexIndex1, vertexIndex2);
+    //checkSettlementPlacementAndSet(int playerNumber, size_t vertexIndex)
+     checkSettlementPlacementAndSet(playerNum, vertexIndex1);
+    // Set owner of the vertex to player number
+   // vertexForSettlement.setOwner(player.getPlayerNumber());
+
     
-    // Get the vertex at the specified index
-    Vertex &vertexForSettlement = boardVertices[vertexIndex1];
-     const Vertex vertexForRoad = boardVertices[vertexIndex2];
-    int playerNumber = player.getPlayerNumber();
-    // Check if the vertex is already occupied by a settlement or city
-    if (vertexForSettlement.getOwner() != -1)
+    return true;
+}
+
+// Check if the player can place a road adjacent to their settlement
+bool Board::canPlaceRoad(Player &player, size_t vertexIndex)
+{
+    // Check if vertexIndex is valid
+    if (vertexIndex >= boardVertices.size() || vertexIndex < 0)
     {
-        cerr << "Vertex is already occupied." << endl;
+        cerr << "Invalid vertex index." << endl;
         return false;
     }
-    // Check if the vertex is adjacent to a vertex that is already occupied by one of the players
-    const vector<Vertex *> &adjacentPlots = vertexForSettlement.getNeighbors();
+
+    // Get the vertex at the specified index
+    const Vertex &vertex = boardVertices[vertexIndex];
+
+    // Check if the vertex is owned by the player
+    if (vertex.getOwner() != player.getPlayerNumber())
+    {
+        cerr << "Vertex " << vertexIndex << " does not belong to the player." << endl;
+        return false;
+    }
+
+    // Check if the vertex has adjacent settlements owned by the player
+    const vector<Vertex *> &adjacentTiles = vertex.getNeighbors();
+    for (const Vertex *adjacentVertex : adjacentTiles)
+    {
+        if (adjacentVertex->getOwner() == player.getPlayerNumber())
+        {
+            // Player can place road adjacent to their settlement
+            return true;
+        }
+    }
+
+    cerr << "No adjacent settlement owned by the player found." << endl;
+    return false;
+}
+
+bool Board::checkAdjacentSettlement(const Vertex &vertex, int playerNumber)
+{
+    const vector<Vertex *> &adjacentTiles = vertex.getNeighbors();
+    for (const Vertex *adjacentVertex : adjacentTiles)
+    {
+        if (adjacentVertex->getOwner() == playerNumber)
+        {
+            return true;
+        }
+    }
+    cerr << "No adjacent settlement owned by the player found." << endl;
+    return false;
+}
+
+void Board::checkSettlementPlacementAndSet(int playerNumber, size_t vertexIndex)
+{
+    // Check if vertexIndex is valid
+    if (vertexIndex >= boardVertices.size() || vertexIndex < 0)
+    {
+        cerr << "Invalid vertex index." << endl;
+       
+    }
+
+    // Get the vertex at the specified index
+    Vertex &vertex = boardVertices[vertexIndex];
+
+    // Check if the vertex is already occupied by a settlement or city
+    if (vertex.getOwner() != -1)
+    {
+        cerr << "Vertex is already occupied." << endl;
+        
+    }
+
+    // Check adjacency of vertecies to the vertex for existing settlements or cities
+    const vector<Vertex *> &adjacentPlots = vertex.getNeighbors();
     for (const Vertex *adjacentVertex : adjacentPlots)
     {
         if (adjacentVertex->getOwner() != -1)
         {
             cerr << "Adjacent vertex " << adjacentVertex->getIndex() << " already occupied." << endl;
-            return false;
         }
     }
+    // Set owner of the vertex to player number
+    vertex.setOwner(playerNumber);
 
+}
 
-     // Set the owner of the vertex to the player number
-    vertexForSettlement.setOwner(player.getPlayerNumber());
-    // Check if the edge we are trying to place a road on is occupied
-    //just first round there is no need to check 
-    //if(round !=1){
-    // check if the bertex2 has adjacent
-    Vertex* other = hasAdjacentSettlementOrRoad(vertexForRoad, playerNumber);
-    if (other == nullptr)
+void Board::checkRoadPlacementAndSet(int playerNum, size_t vertexIndex1, size_t vertexIndex2)
+{
+    // Check if vertex indices are valid
+    if (vertexIndex1 >= boardVertices.size() || vertexIndex2 >= boardVertices.size() || vertexIndex1 == vertexIndex2 || vertexIndex1 < 0 || vertexIndex2 < 0)
     {
-        cerr << "vertex2 " << vertexIndex2 << " doesnt have adjacent Settlement and cannot be placed." << endl;
-        return false;
+        cerr << "Invalid vertex indices." << endl;
     }
-   
-    //get edge checks we have this edge constructed of this 2 vertexs
+
+    // Get the vertices at the specified indices
+     Vertex &v1 = boardVertices[vertexIndex1];
+     Vertex &v2 = boardVertices[vertexIndex2];
+
+    bool hasAdjacentSettlemnt =  checkAdjacentSettlement(v2, playerNum);
+
+
+    if(!hasAdjacentSettlemnt){
+        cerr << "Edge index has no adjacent settlement." << endl;
+    }
+  //  Check if the edge to place a road on is occupied or not
     int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
     if (edgeIndex != -1)
     {
         if (boardEdges[edgeIndex].getOwner() != -1)
         {
             cerr << "Edge is already occupied." << endl;
-            return false;
+       
         }
     }
-    //round++;
-   
+  
 
-    // Set the owner of the edge to the player number
-    boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
-
-    // distribute resource by vertex of the settlement of the player.
-    for (int i = 0; i < 19; i++)
+    // Set owner of the edge to player number
+   // boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
+    // Check if the road is already occupied
+    int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
+    if (edgeIndex != -1 && boardEdges[edgeIndex].getOwner() != -1)
     {
-        const vector<Vertex *> &vertices = boardTiles[i].getVertices();
-        for (Vertex *v : vertices)
+        cerr << "Road is already occupied." << endl;
+    }
+
+    
+
+    // Check if the player has a road connected to one of the vertices
+    const vector<Edge *> &adjacentEdges1 = v1.getEdges();
+    const vector<Edge *> &adjacentEdges2 = v2.getEdges();
+    for (const Edge *edge1 : adjacentEdges1)
+    {
+        if (edge1->getOwner() == playerNum)
         {
-            if (v->getIndex() == vertexIndex1)
+            for (const Edge *edge2 : adjacentEdges2)
             {
-                if (boardTiles[i].getResource() == "Mountains")
+                if (edge2->getOwner() == playerNum)
                 {
-                    player.addResource("Ore", 1);
-                }
-                else if (boardTiles[i].getResource() == "Pasture")
-                {
-                    player.addResource("Wool", 1);
-                }
-                else if (boardTiles[i].getResource() == "Forest")
-                {
-                    player.addResource("Wood", 1);
-                }
-                else if (boardTiles[i].getResource() == "Agricultural")
-                {
-                    player.addResource("Wheat", 1);
-                }
-                else if (boardTiles[i].getResource() == "Hills")
-                {
-                    player.addResource("Brick", 1);
+                    if (edgeIndex != -1)
+                    {
+                          // Set owner of the vertex to player number
+                     // Set the owner of the edge to the playerID
+                    boardEdges[edgeIndex].setOwner(playerNum);
+                        cout << " Road set on index " << edgeIndex << " of edges.\n";
+                    }
                 }
             }
         }
     }
 
-    return true;
+    cerr << "Player does not have the required adjacent structures." << endl;
 }
-// check if Edge has adjacent settlement or road 
-Vertex* Board::hasAdjacentSettlementOrRoad(const Vertex &toPlaceRoad, int playerNumber)
-{
-    // Get the two vertices of the edge
-    vector<Vertex*> neighborVertexs =  toPlaceRoad.getNeighbors();
-    for(Vertex *vertex1 : neighborVertexs){
-    // Check the first vertex and its neighbors
-    if (checkVertexAndNeighbors(*vertex1, playerNumber))
-    {
-        cout << "\n1.self debug "<<endl;
-        return vertex1;
-    }
-}
-cout << "\n2.self debug returned false "<<endl;
-    // If no adjacent settlement or city owned by the player is found
-    std::cout << "No adjacent settlement or city owned by the player found." << endl;
-    return nullptr;
-}
-bool Board::checkVertexAndNeighbors(const Vertex &vertex, int playerNumber) const
-{
-    if (vertex.getOwner() == playerNumber)
-    {
-        return true;
-    }
-    const vector<Vertex *> &neighbors = vertex.getNeighbors();
-    for (const Vertex *neighbor : neighbors)
-    {
-        if (neighbor->getOwner() == playerNumber)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-// bool Board::checkSettlementPlacement(int playerNumber, size_t vertexIndex)
-// {
-//     // Check if vertexIndex is valid
-//     if (vertexIndex >= boardVertices.size() || vertexIndex < 0)
-//     {
-//         cerr << "Invalid vertex index." << endl;
-//         return false;
-//     }
-
-//     // Get the vertex at the specified index
-//     Vertex &vertex = boardVertices[vertexIndex];
-
-//     // Check if the vertex is already occupied by a settlement or city
-//     if (vertex.getOwner() != -1)
-//     {
-//         cerr << "Vertex is already occupied." << endl;
-//         return false;
-//     }
-
-//     // Check adjacency of vertecies to the vertex for existing settlements or cities
-//     const vector<Vertex *> &adjacentPlots = vertex.getNeighbors();
-//     for (const Vertex *adjacentVertex : adjacentPlots)
-//     {
-//         if (adjacentVertex->getOwner() != -1)
-//         {
-//             cerr << "Adjacent vertex " << adjacentVertex->getIndex() << " already occupied." << endl;
-//             return false;
-//         }
-//     }
-
-//     // check if we have at least one edge that belong to the playerID that connected to the vertex we are trying to place a settlement on
-//     const vector<Edge *> &adjacentEdges = vertex.getEdges();
-
-//     for (const Edge *edge : adjacentEdges)
-//     {
-//         if (edge->getOwner() == playerNumber)
-//         {
-//             vertex.setOwner(playerId);
-//             return true;
-//         }
-//     }
-//     cerr << "No adjacent edges belong to the player." << endl;
-//     return false;
-// }
-
-// bool Board::checkRoadPlacement(int playerId, size_t vertexIndex1, size_t vertexIndex2)
-// {
-//     // Check if vertex indices are valid
-//     if (vertexIndex1 >= boardVertices.size() || vertexIndex2 >= boardVertices.size() || vertexIndex1 == vertexIndex2 || vertexIndex1 < 0 || vertexIndex2 < 0)
-//     {
-//         cerr << "Invalid vertex indices." << endl;
-//         return false;
-//     }
-
-//     // Get the vertices at the specified indices
-//     const Vertex &v1 = boardVertices[vertexIndex1];
-//     const Vertex &v2 = boardVertices[vertexIndex2];
-
-//     // Check if the vertices are neighbors
-//     if (!v1.isNeighbor(v2))
-//     {
-//         cerr << "Vertices are not neighbors." << endl;
-//         return false;
-//     }
-
-//     // Check if the road is already occupied
-//     // Check if the road is already occupied
-//     int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
-//     if (edgeIndex != -1 && boardEdges[edgeIndex].getOwner() != -1)
-//     {
-//         cerr << "Road is already occupied." << endl;
-//         return false;
-//     }
-
-//     // Check if the player has a settlement or city on one of the vertices
-//     if (v1.getOwner() == playerId || v2.getOwner() == playerId)
-//     {
-//         int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
-//         if (edgeIndex != -1)
-//         {
-//             boardEdges[edgeIndex].setOwner(playerId);
-//         }
-//         return true;
-//     }
-
-//     // Check if the player has a road connected to one of the vertices
-//     const vector<Edge *> &adjacentEdges1 = v1.getEdges();
-//     const vector<Edge *> &adjacentEdges2 = v2.getEdges();
-//     for (const Edge *edge1 : adjacentEdges1)
-//     {
-//         if (edge1->getOwner() == playerId)
-//         {
-//             for (const Edge *edge2 : adjacentEdges2)
-//             {
-//                 if (edge2->getOwner() == playerId)
-//                 {
-//                     if (edgeIndex != -1)
-//                     {
-//                         boardEdges[edgeIndex].setOwner(playerId);
-//                         return true;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-//     cerr << "Player does not have the required adjacent structures." << endl;
-//     return false;
-// }
 
 bool Board::checkCityPlacement(int playerId, size_t vertexIndex)
 {
@@ -445,22 +376,24 @@ bool Board::checkCityPlacement(int playerId, size_t vertexIndex)
     }
 
     // Get the vertex at the specified index
-    Vertex &vertex = boardVertices[vertexIndex];
-
-    // Check if the vertex is already occupied by a city
-    if (vertex.getOwner() != playerId)
+    Vertex &vertexForSettlement = boardVertices[vertexIndex];
+    // Check if the vertex is already occupied by a settlement or city
+    if (vertexForSettlement.getOwner() != -1)
     {
-        cerr << "Vertex is not occupied by the player." << endl;
+        cerr << "Vertex " << vertexIndex << "is already has owner." << endl;
         return false;
     }
 
-    // Check if the vertex is already occupied by a city
-    if (vertex.getSettlement() == 1)
+    // Check if the vertex is adjacent to a vertex that is already occupied by one of the players
+    const vector<Vertex *> &adjacentTiles = vertexForSettlement.getNeighbors();
+    for (const Vertex *adjacentVertex : adjacentTiles)
     {
-        cerr << "Vertex is already occupied by a city." << endl;
-        return false;
+        if (adjacentVertex->getOwner() != -1)
+        {
+            cerr << "Adjacent vertex " << adjacentVertex->getIndex() << " has  owner, its not possible to place on " << vertexIndex << endl;
+            return false;
+        }
     }
-    vertex.setSettlement(1);
     return true;
 }
 // New function to get a reference to the board tiles
@@ -469,7 +402,6 @@ vector<Tile> &Board::getBoardTiles()
     return boardTiles;
 }
 
-//return the int of edge location that built of the 2 vertices if the edge not exist return -1.
 int Board::getEdge(size_t vertexIndex1, size_t vertexIndex2)
 {
     if (vertexIndex1 > vertexIndex2)
@@ -604,4 +536,39 @@ bool Board::canPlaceInitialSettlementAndRoad(Player &player, size_t vertexIndex,
     }
 
     return true;
+}
+
+void distributeResources()
+{
+    // distribute resource by indexs
+    for (int i = 0; i < 19; i++)
+    {
+        const vector<Vertex *> &vertices = boardTiles[i].getVertices();
+        for (Vertex *v : vertices)
+        {
+            if (v->getIndex() == vertexIndex1)
+            {
+                if (boardTiles[i].getResource() == "Mountains")
+                {
+                    player.addResource("Ore", 1);
+                }
+                else if (boardTiles[i].getResource() == "Pasture")
+                {
+                    player.addResource("Wool", 1);
+                }
+                else if (boardTiles[i].getResource() == "Forest")
+                {
+                    player.addResource("Wood", 1);
+                }
+                else if (boardTiles[i].getResource() == "Agricultural")
+                {
+                    player.addResource("Wheat", 1);
+                }
+                else if (boardTiles[i].getResource() == "Hills")
+                {
+                    player.addResource("Brick", 1);
+                }
+            }
+        }
+    }
 }
