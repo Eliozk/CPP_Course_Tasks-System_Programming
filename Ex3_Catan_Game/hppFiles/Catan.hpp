@@ -18,8 +18,7 @@ namespace ariel
         vector<Player *> players;
         vector<Card *> cards;
         vector<Card *> specialCards;
-        void distributeResources(const string &resource, vector<Player *> &players, int playerId, int quantity);
-
+       // void distributeResources(vector<Player *> &players, const Vertex& vertex, const Tile& tile, int settlementLevel);
     public:
         Catan(Player &p1, Player &p2, Player &p3,Board &board);
         // Catan();
@@ -27,9 +26,8 @@ namespace ariel
         vector<Card *> createAndShuffleCards(); // responsible for all kind of cards including the specials.
         //
         void placeInitialSettlementsAndRoads(Board &catanbBoard);
-        void distributeInitialResources();
-        void distribution(vector<Player *> &players, int diceRoll);
-
+        //void distributeInitialResources();
+        //void distribution(vector<Player *> &players, int diceRoll);
 
         void ChooseStartingPlayer() const;
 

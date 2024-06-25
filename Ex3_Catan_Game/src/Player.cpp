@@ -159,8 +159,8 @@ void Player::displayCities() const {
 
 // Display all player information
 void Player::displayAll() const {
-    cout << "Player " << playerNumber+1 << ": " << playerName << endl;
-    cout << playerName <<" Points: " << points << endl;
+    cout << "\nPlayer " << playerNumber+1 <<", "<<  playerName <<": " << endl;
+    cout << "Points: " << points << endl;
     displayResources();
     displayHand();
     displayRoads();

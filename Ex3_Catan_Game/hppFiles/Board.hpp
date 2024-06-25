@@ -24,6 +24,8 @@ namespace ariel
         vector<Edge> boardEdges;
         vector<Vertex> boardVertices;
         int round = 1;
+        void distributeResources(vector<Player *> &players, const Vertex& vertex, const Tile& tile, int settlementLevel);
+
     public:
         // Constructor
          Board(); // Default constructor
@@ -43,11 +45,12 @@ namespace ariel
         int randomNum();
         //after init game and distribiution of 2 r and 2 s to players for the continuity of the game
         bool checkSettlementPlacement(int playerNumber, size_t vertexIndex);
-        
+        void updateTileAtVertex(size_t vertexIndex, Player &player);
+
       
         void buildSettlement(size_t vertexIndex, Player &player);
         void buildRoad(size_t vertex1, size_t vertex2, Player &player);
-        void buildCity(size_t vertexIndex, Player &player);
+        void distribution(vector<Player *> &players, int diceRoll);
 
         
         void rollDice();
@@ -57,11 +60,7 @@ namespace ariel
         //Function to get a reference to the board tiles
          vector<Tile>& getBoardTiles();
         void printBoard() const;
-          void setSettlement(int row, int col, const string &player);//***************************************
-        void setTile(int row, int col, const std::string &type);//***************************************
-        void setRoad(int row, int col, const string &player);//***************************************
-        bool isSettlementEmpty(int row, int col) const;//***************************************
-        bool isRoadEmpty(int row, int col) const;//***************************************
+        
     };
 }
 

@@ -49,6 +49,10 @@ void Board::initializeBoard()
     // Set vertices of each tile
     // vector<Vertex> vertices(54);
     boardVertices.reserve(54);
+    for (size_t i = 0; i < 72; ++i)
+    {
+        boardEdges.emplace_back(i);
+    }
     for (size_t i = 0; i < 19; i++)
     {
         for (size_t j = 0; j < 6; j++)
@@ -151,10 +155,7 @@ void Board::initializeBoard()
     boardVertices[52].addNeighbor(&boardVertices[51], &boardVertices[53]);
     boardVertices[53].addNeighbor(&boardVertices[52], &boardVertices[45]);
 
-    for (size_t i = 0; i < 72; ++i)
-    {
-        boardEdges.emplace_back(i);
-    }
+    
 
     vector<vector<size_t>> edgesOnBoard = {
         {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {0, 8}, {2, 10}, {4, 12}, {6, 14}, {7, 8}, {8, 9}, {9, 10}, {10, 11}, {11, 12}, {12, 13}, {13, 14}, {14, 15}, {7, 17}, {9, 19}, {11, 21}, {13, 23}, {15, 25}, {16, 17}, {17, 18}, {18, 19}, {19, 20}, {20, 21}, {21, 22}, {22, 23}, {23, 24}, {24, 25}, {25, 26}, {16, 27}, {18, 29}, {20, 31}, {22, 33}, {24, 35}, {26, 37}, {27, 28}, {28, 29}, {29, 30}, {30, 31}, {31, 32}, {32, 33}, {33, 34}, {34, 35}, {35, 36}, {36, 37}, {28, 38}, {30, 40}, {32, 42}, {34, 44}, {36, 46}, {38, 39}, {39, 40}, {40, 41}, {41, 42}, {42, 43}, {43, 44}, {44, 45}, {45, 46}, {39, 47}, {41, 49}, {43, 51}, {45, 53}, {47, 48}, {48, 49}, {49, 50}, {50, 51}, {51, 52}, {52, 53}};
@@ -167,7 +168,7 @@ void Board::initializeBoard()
         boardVertices[edgesOnBoard[i][1]].addEdge(&boardEdges[i]);
     }
 
-    // For demonstration purposes, print out the tiles and their vertices****self debug
+    // // For demonstration purposes, print out the tiles and their vertices****self debug
     //  cout << "\nFor demonstration purposes, print out the tiles and their vertices:(in Board.cpp line 175)" << endl;
     //  for (auto &tile : boardTiles)
     //  {
@@ -179,7 +180,7 @@ void Board::initializeBoard()
     // }
     // cout << endl;
     //  }
-    // Print each edge with its connected vertices
+    // //Print each edge with its connected vertices
     // cout << "\nEdges and their connected vertices 2 try:" << endl;
     // for (const auto &edge : boardEdges)
     // {
@@ -231,15 +232,17 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
             return false;
         }
     }
-
+ 
     // Set the owner of the vertex to the player number
-    vertexForSettlement.setOwner(player.getPlayerNumber());
-    vertexForSettlement.setSettlement(1);
+    boardVertices[vertexIndex1].setOwner(player.getPlayerNumber());
+    boardVertices[vertexIndex1].setSettlement(1);
+
     // add 1 point for each settlement
     player.add1point();
     // add settlement to player settlements.
     player.addSettlement(vertexIndex1);
-
+    //update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex1,player);
     // Check if the edge we are trying to place a road on is occupied
     int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
     if (edgeIndex != -1) // if this edge not existed it is -1
@@ -253,6 +256,7 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
 
     // Set the owner of the edge to the player number
     boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
+    
     player.addRoad(edgeIndex);
     // distribute resource by vertex of the settlement of the player.
     for (int i = 0; i < 19; i++)
@@ -562,14 +566,14 @@ int Board::getEdge(size_t vertexIndex1, size_t vertexIndex2) const
 
 void Board::upgradeSettlementToCity(size_t vertexIndex, Player &player)
 {
-    // Get the vertex from the board
-    Vertex &vertex = boardVertices[vertexIndex];
 
-    // Upgrade the settlement to a city equal to 2
-    vertex.setSettlement(2);
+    // Upgrade the settlement Vertex to a city equal to 2
+    boardVertices[vertexIndex].setSettlement(2);
     // Update player's points for upgrading to a city
     player.add1point();
     player.addCity(vertexIndex);
+    //update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex,player);
 }
 
 void Board::rollDice()
@@ -683,16 +687,17 @@ void Board::buildSettlement(size_t vertexIndex, Player &player)
     player.removeResource("Grain", 1);
     player.removeResource("Wool", 1);
 
-    Vertex &vertexForSettlement = boardVertices[vertexIndex];
+    
     // Set the owner of the vertex to the player number
-    vertexForSettlement.setOwner(player.getPlayerNumber());
+    boardVertices[vertexIndex].setOwner(player.getPlayerNumber());
     // set vertex-> settlement value to 1
-    vertexForSettlement.setSettlement(1);
+    boardVertices[vertexIndex].setSettlement(1);
     // add 1 point for each settlement
     player.add1point();
     // add settlement to player settlements.
     player.addSettlement(vertexIndex);
-
+    //update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex,player);
     // Assuming there's a method to set the owner on a vertex
     // vertexForSettlement.setOwner(player.getPlayerNumber())
 
@@ -721,3 +726,71 @@ void Board::buildRoad(size_t vertex1, size_t vertex2, Player &player)
     std::cout << player.getName() << " built a Road between vertices " << vertex1 << " and " << vertex2 << std::endl;
 }
 
+void Board::distribution(vector<Player *> &players, int diceRoll) {
+    if (diceRoll != 7) {
+        for (int i = 0; i < 19; i++) {
+            if (boardTiles[i].getNumber() == diceRoll) {
+                const vector<Vertex *> &vertices = boardTiles[i].getVertices();
+                for (Vertex *vertex : vertices) {
+                    // Find the corresponding vertex in boardVertices
+                    for (Vertex &boardVertex : boardVertices) {
+                        if (boardVertex.getIndex() == vertex->getIndex()) {
+                            // Perform resource distribution based on boardVertex and boardTiles[i]
+                            if (vertex->getOwner() != -1 && vertex->getSettlement() > 0) {
+                                distributeResources(players, boardVertex, boardTiles[i], vertex->getSettlement());
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void Board::distributeResources(vector<Player *> &players, const Vertex &vertex, const Tile &tile, int settlementLevel) {
+    int playerId = vertex.getOwner();
+    
+    // Check the resource type and add to player's resources based on settlement level
+    if (tile.getResource() == "Brick") {
+        players[playerId]->addResource("Brick", settlementLevel);
+    } else if (tile.getResource() == "Grain") {
+        players[playerId]->addResource("Grain", settlementLevel);
+    } else if (tile.getResource() == "Lumber") {
+        players[playerId]->addResource("Lumber", settlementLevel);
+    } else if (tile.getResource() == "Ore") {
+        players[playerId]->addResource("Ore", settlementLevel);
+    } else if (tile.getResource() == "Wool") {
+        players[playerId]->addResource("Wool", settlementLevel);
+    }
+}
+
+
+// Function to update the tile at a specific vertex based on the player's action on board vertices
+void Board::updateTileAtVertex(size_t vertexIndex, Player &player) {
+    // Check if the vertex index is valid
+    if (vertexIndex >= 0 && vertexIndex < boardVertices.size()) {
+        // Check if the vertex has a settlement or city of the player
+        if (boardVertices[vertexIndex].getOwner() == player.getPlayerNumber() &&
+            (boardVertices[vertexIndex].getSettlement() == 1 || boardVertices[vertexIndex].getSettlement() == 2)) {
+            // Iterate through all tiles to find the tile containing the vertex
+            for (Tile &tile : boardTiles) {
+                // Check if the tile has the specific vertex
+                for (Vertex *vertex : tile.getVertices()) {
+                    if (vertex->getIndex() == vertexIndex) {
+                        // Update the tile's owner and settlement using the tile reference
+                        vertex->setOwner(player.getPlayerNumber());
+                        vertex->setSettlement(boardVertices[vertexIndex].getSettlement());
+                        // Exit the loop once the tile is updated
+                        break;
+                    }
+                }
+            }
+        } else {
+            std::cout << "Error: Player does not have a settlement or city at vertex " << vertexIndex << std::endl;
+        }
+    } else {
+        std::cout << "Error: Invalid vertex index " << vertexIndex << std::endl;
+    }
+}

@@ -39,7 +39,7 @@ void GamePlay::rollDiceAndDistributeResources()
     int diceRoll = rollDice();
    
     cout << "Rolled a " << diceRoll << "!" << std::endl;
-    catan.distribution(players, diceRoll);
+    board.distribution(players, diceRoll);
 }
 
 void GamePlay::playerTurn(Player &player)
@@ -47,8 +47,9 @@ void GamePlay::playerTurn(Player &player)
     bool continueTurn = true;
     while (continueTurn)
     {
-        cout << player.getName() << ", choose an action:\n1. Show your info? \n2. Buy Settlement\n3. Buy Road\n4. Buy City\n5. End Turn\n";
+        cout << "\n"<<player.getName() << ", choose an action:\n1. Show your info? \n2. Buy Settlement\n3. Buy Road\n4. Buy City\n5. End Turn\n6. Exit from game\n";
         int choice;
+        cout << "choice: ";
         std::cin >> choice;
 
         switch (choice)
@@ -72,6 +73,8 @@ void GamePlay::playerTurn(Player &player)
         case 5:
             continueTurn = false;
             break;
+        case 6:
+            exit(0);
 
         default:
             std::cout << "Invalid choice. Please try again." << std::endl;
@@ -216,11 +219,12 @@ void GamePlay::playerBuyCity(Player &player)
 int GamePlay::rollDice() const
 {
 
-    srand(time(0)); // Initialize the random number generator with the current time as a seed
-
-    int die1 = rand() % 6 + 1; // Generate a random number between 1 and 6 for the first die
-    int die2 = rand() % 6 + 1; // Generate a random number between 1 and 6 for the second die
-
+   // Generate a random number between 1 and 6 for the first die
+    int die1 = rand() % 6 + 1; 
+    
+    // Generate a random number between 1 and 6 for the second die
+    int die2 = rand() % 6 + 1; 
+    
     int rollResult = die1 + die2;
 
     return rollResult;
