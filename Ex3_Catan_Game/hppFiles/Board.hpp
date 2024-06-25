@@ -38,7 +38,7 @@ namespace ariel
         // New method to check if the player has a road between two vertices
         bool hasRoad(size_t vertex1, size_t vertex2, int playerNumber,Player &player) const;
         bool checkHasAdjacentCityOrSettlement(const Vertex &vertex1, int playerNumber) const;
-        
+        void upgradeSettlementToCity(size_t vertexIndex,Player &player);
 
         int randomNum();
         //after init game and distribiution of 2 r and 2 s to players for the continuity of the game

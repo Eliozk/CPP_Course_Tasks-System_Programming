@@ -121,29 +121,9 @@ void Player::addRoad(int edgeIndex) {
     roads.push_back(edgeIndex);
     cout << this->getName() << " added Road on Edge " << edgeIndex <<endl;
 }
-
-// void Player::upgradeSettlementToCity(const Settlement &settlement)
-// {
-//     auto it = find(settlements.begin(), settlements.end(), settlement);
-//     if (it != settlements.end())
-//     {
-//         settlements.erase(it);
-//         cities.push_back(City(settlement.getOwner()));
-//         points += 1; // Increment points for upgrading to a city
-//     }
-// }
-// This function return number of rolled 2 dices.
-int Player::rollDice() const
-{
-
-    srand(time(0)); // Initialize the random number generator with the current time as a seed
-
-    int die1 = rand() % 6 + 1; // Generate a random number between 1 and 6 for the first die
-    int die2 = rand() % 6 + 1; // Generate a random number between 1 and 6 for the second die
-
-    int rollResult = die1 + die2;
-    cout << playerName << " rolled a " << rollResult << endl;
-    return rollResult;
+void Player::addCity(int cityIndex){
+    cities.push_back(cityIndex);
+    
 }
 
 // Display player's resources
@@ -169,6 +149,13 @@ void Player::displaySettlements() const {
         cout << "Settlement at vertex index: " << settlement << endl;
     }
 }
+// Display player's cities
+void Player::displayCities() const {
+    cout << playerName << "'s Settlements:" << endl;
+    for (int city : cities) {
+        cout << "City at vertex index: " << city << endl;
+    }
+}
 
 // Display all player information
 void Player::displayAll() const {
@@ -178,6 +165,7 @@ void Player::displayAll() const {
     displayHand();
     displayRoads();
     displaySettlements();
+    displayCities();
 }
 
 // void Player::resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles)

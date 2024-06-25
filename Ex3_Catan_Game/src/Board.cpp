@@ -234,6 +234,7 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
 
     // Set the owner of the vertex to the player number
     vertexForSettlement.setOwner(player.getPlayerNumber());
+    vertexForSettlement.setSettlement(1);
     // add 1 point for each settlement
     player.add1point();
     // add settlement to player settlements.
@@ -302,12 +303,12 @@ bool Board::hasAdjacentSettlementOrRoad(Vertex &first, Vertex &second, int playe
     vector<Vertex *> neighborVertexSecond = second.getNeighbors();
     int firstIndex = first.getIndex();
     int secondIndex = second.getIndex();
+
     for (Vertex *vertex1 : neighborVertexFirst)
     {
         // Check the first vertex and its neighbors
         if (checkHasAdjacentCityOrSettlement(*vertex1, playerNumber))
         {
-            cout << "\n1.self debug-(hasAdjacentSettlementOrRoad on board.cpp) " << endl;
             return true;
         }
         // check also if first vertex has adjcant road.
@@ -316,12 +317,12 @@ bool Board::hasAdjacentSettlementOrRoad(Vertex &first, Vertex &second, int playe
             return true;
         }
     }
+    // Check for adjacent settlement or city for the second vertex
     for (Vertex *vertex2 : neighborVertexSecond)
     {
         // Check the first vertex and its neighbors
         if (checkHasAdjacentCityOrSettlement(*vertex2, playerNumber))
         {
-            cout << "\n1.self debug-(hasAdjacentSettlementOrRoad on board.cpp) " << endl;
             return true;
         }
         // check also if first vertex has adjcant road.
@@ -330,9 +331,7 @@ bool Board::hasAdjacentSettlementOrRoad(Vertex &first, Vertex &second, int playe
             return true;
         }
     }
-    cout << "\n2.self debug returned false " << endl;
     // If no adjacent settlement or city owned by the player is found
-    std::cout << "No adjacent settlement or city owned by the player found." << endl;
     return false;
 }
 // check in in road vertex index the player has road.
@@ -340,17 +339,14 @@ bool Board::hasRoad(size_t vertex1, size_t vertex2, int playerNumber, Player &pl
 {
     bool playerHasAdjacentRoad = false;
     int edgeIndex = getEdge(vertex1, vertex2);
-    while (!playerHasAdjacentRoad)
+
+    for (int road : player.getRoads())
     {
-        for (int road : player.getRoads())
+        if (road == edgeIndex)
         {
-            if (road == edgeIndex)
-            {
-                playerHasAdjacentRoad = true;
-            }
+            playerHasAdjacentRoad = true;
         }
     }
-
     return playerHasAdjacentRoad;
 }
 bool Board::checkHasAdjacentCityOrSettlement(const Vertex &vertex1, int playerNumber) const
@@ -564,24 +560,17 @@ int Board::getEdge(size_t vertexIndex1, size_t vertexIndex2) const
     return -1;
 }
 
-// void Board::setSettlement(int row, int col, const string& player) {
-//     if (!isValidPosition(row, col)) {
-//         cout << "Invalid position" << endl;
-//         return;
-//     }
+void Board::upgradeSettlementToCity(size_t vertexIndex, Player &player)
+{
+    // Get the vertex from the board
+    Vertex &vertex = boardVertices[vertexIndex];
 
-// void Board::setRoad(int row, int col, const string& player) {
-//     if (!isValidPosition(row, col)) {
-//         cout << "Invalid position" << endl;
-//         return;
-//     }
-//     // Check if the location is unoccupied
-//     if (roads[row][col] == " " || (roads[row][col].length() == 1 && isalpha(roads[row][col][0]))) {
-//         roads[row][col] = "R-" + player; // For example, "R-p1"
-//     } else {
-//         cout << "Position already occupied" << endl;
-//     }
-// }
+    // Upgrade the settlement to a city equal to 2
+    vertex.setSettlement(2);
+    // Update player's points for upgrading to a city
+    player.add1point();
+    player.addCity(vertexIndex);
+}
 
 void Board::rollDice()
 {
@@ -697,6 +686,8 @@ void Board::buildSettlement(size_t vertexIndex, Player &player)
     Vertex &vertexForSettlement = boardVertices[vertexIndex];
     // Set the owner of the vertex to the player number
     vertexForSettlement.setOwner(player.getPlayerNumber());
+    // set vertex-> settlement value to 1
+    vertexForSettlement.setSettlement(1);
     // add 1 point for each settlement
     player.add1point();
     // add settlement to player settlements.
@@ -730,28 +721,3 @@ void Board::buildRoad(size_t vertex1, size_t vertex2, Player &player)
     std::cout << player.getName() << " built a Road between vertices " << vertex1 << " and " << vertex2 << std::endl;
 }
 
-// void Board::buildCity(size_t vertexIndex, Player &player) {
-//     if (!player.canBuyCity()) {
-//         throw std::runtime_error("Player does not have enough resources to build a city.");
-//     }
-
-//     // Deduct the resources needed for a city
-//     player.removeResource("Ore", 3);
-//     player.removeResource("Grain", 2);
-
-//     // Check if the vertex has a settlement owned by the player
-//     auto settlements = player.getPlayerSettlements();
-//     auto it = std::find(settlements.begin(), settlements.end(), vertexIndex);
-//     if (it == settlements.end()) {
-//         throw std::runtime_error("Player does not have a settlement at the specified vertex.");
-//     }
-
-//     // Remove settlement and add a city
-//     settlements.erase(it);
-//     player.addCity(vertexIndex); // Assuming there's a method to add a city to the player
-
-//     // Add 1 point for upgrading to a city
-//     player.add1point();
-
-//     std::cout << player.getName() << " upgraded a Settlement to a City at vertex " << vertexIndex << std::endl;
-// }

@@ -52,6 +52,7 @@ namespace ariel
 
     void addSettlement(int vertexIndex);
     void addRoad(int edgeIndex);
+    void addCity(int cityindex);
     void add1point();
     void add2point();
     
@@ -60,7 +61,7 @@ namespace ariel
     vector<int> getPlayerSettlements() const;
     void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
    
-    void upgradeSettlementToCity(const Settlement &settlement);
+   
     // Method to roll dice
     int rollDice() const;
 
@@ -109,6 +110,7 @@ namespace ariel
     void displayResources() const;
     void displayRoads() const;
     void displaySettlements() const;
+    void displayCities() const;
     void displayAll() const;
   };
 

@@ -23,9 +23,10 @@ namespace ariel
     }
 
     // Set the city of the vertex
-    void Vertex::setSettlement(int cityNum)
+    void Vertex::setSettlement(int value)
     {
-        settlement = cityNum;
+        //city = 2, settlement = 1.
+        settlement = value;
     }
 
     // Get the owner of the vertex

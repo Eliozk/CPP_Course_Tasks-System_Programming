@@ -133,98 +133,62 @@ void Catan::distributeInitialResources()
 }
 void Catan::distribution(vector<Player *> &players, int diceRoll)
 {
-    if(diceRoll != 7){
-    vector<Tile> &allTiles = board.getBoardTiles();
-
-    if (allTiles.size() != 19) {
-        cout << "size of all tiles? "<<allTiles.size() <<endl;
-            cout << "Error: allTiles vector does not have 19 elements!" << endl;
-            return;
-        }
-    for (int i = 0; i < 19; i++)
+    // Only distribute resources if the dice roll is not 7
+    if(diceRoll != 7)
     {
-        if (allTiles[i].getNumber() == diceRoll)
+        vector<Tile> &allTiles = board.getBoardTiles();
+
+        for (int i = 0; i < allTiles.size(); i++)
         {
-            cout << "Plot " << i << " has number: " << allTiles[i].getNumber() << endl;
-            const vector<Vertex *> &vertices = allTiles[i].getVertices();
-            for (Vertex *vertex : vertices)
+            // Check if the tile number matches the dice roll
+            if (allTiles[i].getNumber() == diceRoll)
             {
-                //player has 
-                if (vertex->getOwner() != -1 && vertex->getSettlement() == -1)
+                const vector<Vertex *> &vertices = allTiles[i].getVertices();
+                for (Vertex *vertex : vertices)
                 {
-                    if (allTiles[i].getResource() == "Brick")
+                    // Check if the vertex has a settlement
+                    if (vertex->getOwner() != -1 && vertex->getSettlement() == 1)
                     {
-                        // give the player who owns the vertex a mountain resource
-                        int playerId = vertex->getOwner();
-                        cout << " in catan.cpp test for distribution player id of player-1 is correct?" << playerId <<endl;
-                        players[playerId - 1]->addResource("Brick", 1);
+                        // Distribute resources for a settlement
+                        distributeResources(allTiles[i].getResource(), players, vertex->getOwner(), 1);
                     }
-                    else if (allTiles[i].getResource() == "Grain")
+                    // Check if the vertex has a city
+                    else if (vertex->getOwner() != -1 && vertex->getSettlement() == 2)
                     {
-                        // give the player who owns the vertex a pasture resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Grain", 1);
-                    }
-                    else if (allTiles[i].getResource() == "Lumber")
-                    {
-                        // give the player who owns the vertex a forest resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Lumber", 1);
-                    }
-                    else if (allTiles[i].getResource() == "Ore")
-                    {
-                        // give the player who owns the vertex an agricultural resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Ore", 1);
-                    }
-                    else if (allTiles[i].getResource() == "Wool")
-                    {
-                        // give the player who owns the vertex a hills resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wool", 1);
-                    }
-                }
-                //check for city placement on tile
-                else if (vertex->getOwner() != -1 && vertex->getSettlement() == 1)
-                {
-                    if (allTiles[i].getResource() == "Brick")
-                    {
-                        // give the player who owns the vertex a mountain resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Brick", 2);
-                    }
-                    else if (allTiles[i].getResource() == "Grain")
-                    {
-                        // give the player who owns the vertex a pasture resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Grain", 2);
-                    }
-                    else if (allTiles[i].getResource() == "Lumber")
-                    {
-                        // give the player who owns the vertex a forest resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Lumber", 2);
-                    }
-                    else if (allTiles[i].getResource() == "Ore")
-                    {
-                        // give the player who owns the vertex an agricultural resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Ore", 2);
-                    }
-                    else if (allTiles[i].getResource() == "Wool")
-                    {
-                        // give the player who owns the vertex a hills resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wool", 2);
+                        // Distribute resources for a city
+                        distributeResources(allTiles[i].getResource(), players, vertex->getOwner(), 2);
                     }
                 }
             }
         }
     }
-    cout << "\n"
-         << endl;
+}
+
+void Catan::distributeResources(const string &resource, vector<Player *> &players, int playerId, int quantity)
+{
+    // Distribute the given resource to the player
+    if (resource == "Brick")
+    {
+        players[playerId - 1]->addResource("Brick", quantity);
+    }
+    else if (resource == "Grain")
+    {
+        players[playerId - 1]->addResource("Grain", quantity);
+    }
+    else if (resource == "Lumber")
+    {
+        players[playerId - 1]->addResource("Lumber", quantity);
+    }
+    else if (resource == "Ore")
+    {
+        players[playerId - 1]->addResource("Ore", quantity);
+    }
+    else if (resource == "Wool")
+    {
+        players[playerId - 1]->addResource("Wool", quantity);
     }
 }
+
 
 
 void Catan::printWinner() const

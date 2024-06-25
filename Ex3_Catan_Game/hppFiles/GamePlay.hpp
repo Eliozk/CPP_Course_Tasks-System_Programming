@@ -21,7 +21,10 @@ namespace ariel {
         void rollDiceAndDistributeResources();
         void playerTurn(Player &player);
          bool playerBuySettlement(Player &player);
-         bool playerBuyRoad(Player &player);
+         void playerBuyRoad(Player &player);
+         void playerBuyCity(Player &player);
+         int rollDice() const;
+
         // void displayGameState();
     };
 }
