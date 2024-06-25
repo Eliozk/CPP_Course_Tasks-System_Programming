@@ -17,11 +17,11 @@ Player::Player() {}
 Player::Player(int num, const string &name) : playerNumber(num), playerName(name), points(0)
 {
     // init resources
-    resources["Ore"] = 0;
-    resources["Wool"] = 0;
-    resources["Wood"] = 0;
-    resources["Wheat"] = 0;
-    resources["Brick"] = 0;
+    resources["Ore"] = 0;//ברזל
+    resources["Wool"] = 0;//צמר
+    resources["Lumber"] = 0;//עץ לבנייה
+    resources["Grain"] = 0;//תבואה
+    resources["Brick"] = 0;//לבנים
 }
 Player &Player::operator=(const Player &other)
 {
@@ -55,20 +55,7 @@ Player::~Player() {
 void Player::setName(const string &name){
     playerName = name;
 }
-void Player::placeInitialSettlementAndRoad(Player &player, int vertexIndex1, int vertexIndex2,Board& catanBoard)
-{
-    if (catanBoard.canPlaceInitialSettlementAndRoad(player, vertexIndex1, vertexIndex2))
-    {
-        settlements.push_back(vertexIndex1);
-         roads.push_back(catanBoard.getEdge(vertexIndex1, vertexIndex2));
-        cout << player.getName() << " placed an settlement on vertex " << vertexIndex1 << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << "\n"
-             << endl;
-    }
-    else
-    {
-        cout << player.getName() << " cannot place an settlement on vertex " << vertexIndex1 << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << endl;
-    }
-}
+
 
  
 
@@ -86,6 +73,9 @@ int Player::getPoints() const
 {
     return points;
 }
+vector<int> Player::getRoads() const {
+    return roads;
+} 
 
 void Player::add1point()
 {
@@ -95,24 +85,26 @@ void Player::add2point()
 {
     points += 2;
 }
-// bool Player::canbuySettlement()
-// {
-//     // Check if the player has enough resources for a settlement
-//     return (resources["Wood"] >= 1 && resources["Brick"] >= 1 &&
-//             resources["Wheat"] >= 1 && resources["Sheep"] >= 1);
-// }
+bool Player::canBuySettlement()
+{
+    // Check if the player has enough resources for a settlement
+    return (resources["Lumber"] >= 1 && resources["Brick"] >= 1 &&
+            resources["Grain"] >= 1 && resources["Wool"] >= 1);
+}
 
-// bool Player::canbuyCity()
-// {
-//     // Check if the player has enough resources for a city
-//     return (resources["Ore"] >= 3 && resources["Wheat"] >= 2);
-// }
+bool Player::canBuyCity()
+{
+    // Check if the player has enough resources for a city
+    return (resources["Ore"] >= 3 && resources["Grain"] >= 2);
+}
 
-// bool Player::canbuyRoad()
-// {
-//     // Check if the player has enough resources for a road
-//     return (resources["Brick"] >= 1 && resources["Wood"] >= 1);
-// }
+bool Player::canBuyRoad()
+{
+    // Check if the player has enough resources for a road
+    return (resources["Brick"] >= 1 && resources["Lumber"] >= 1);
+}
+
+
 
 void Player::placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board)
 {
@@ -122,10 +114,12 @@ void Player::placeRoad(const vector<string> &places, const vector<int> &placesNu
 
 void Player::addSettlement(int vertexIndex) {
     settlements.push_back(vertexIndex);
+    cout << this->getName() << " added Settlement at Vertex " << vertexIndex <<endl;
 }
 
 void Player::addRoad(int edgeIndex) {
     roads.push_back(edgeIndex);
+    cout << this->getName() << " added Road on Edge " << edgeIndex <<endl;
 }
 
 // void Player::upgradeSettlementToCity(const Settlement &settlement)
@@ -150,6 +144,40 @@ int Player::rollDice() const
     int rollResult = die1 + die2;
     cout << playerName << " rolled a " << rollResult << endl;
     return rollResult;
+}
+
+// Display player's resources
+void Player::displayResources() const {
+    cout << playerName << "'s Resources:" << endl;
+    for (const auto &resource : resources) {
+        cout << resource.first << ": " << resource.second << endl;
+    }
+}
+
+// Display player's roads
+void Player::displayRoads() const {
+    cout << playerName << "'s Roads:" << endl;
+    for (int road : roads) {
+        cout << "Has Road at edge index: " << road << endl;
+    }
+}
+
+// Display player's settlements
+void Player::displaySettlements() const {
+    cout << playerName << "'s Settlements:" << endl;
+    for (int settlement : settlements) {
+        cout << "Settlement at vertex index: " << settlement << endl;
+    }
+}
+
+// Display all player information
+void Player::displayAll() const {
+    cout << "Player " << playerNumber+1 << ": " << playerName << endl;
+    cout << playerName <<" Points: " << points << endl;
+    displayResources();
+    displayHand();
+    displayRoads();
+    displaySettlements();
 }
 
 // void Player::resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles)

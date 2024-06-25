@@ -2,7 +2,7 @@ CC = g++
 Flags = -Wall -g -Wextra 
 #-DDEBUG
 INCLUDES = -I./hppFiles
-SRCS = src/demoMain.cpp src/Tile.cpp src/Settlement.cpp src/Player.cpp src/Board.cpp src/Card.cpp src/Vertex.cpp src/Edge.cpp src/Catan.cpp 
+SRCS = src/demoMain.cpp src/Tile.cpp src/Settlement.cpp src/Player.cpp src/Board.cpp src/Card.cpp src/Vertex.cpp src/Edge.cpp src/Catan.cpp src/GamePlay.cpp
 #src/Game.cpp
 # src/InitGame.cpp
 # what folder to put object files.

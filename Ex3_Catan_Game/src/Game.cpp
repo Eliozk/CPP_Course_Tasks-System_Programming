@@ -1,26 +1,26 @@
-#include "Game.hpp"
-#include "Player.hpp"
-#include <iostream>
-#include <stdexcept>
-#include <Catan.hpp>
-using namespace ariel;
+// #include "Game.hpp"
+// #include "Player.hpp"
+// #include <iostream>
+// #include <stdexcept>
+// #include <Catan.hpp>
+// using namespace ariel;
 
-Game::Game(const string& playerName1, const string& playerName2, const string& playerName3) :
-    p1(playerName1),
-    p2(playerName2),
-    p3(playerName3){}
+// Game::Game(const string& playerName1, const string& playerName2, const string& playerName3) :
+//     p1(playerName1),
+//     p2(playerName2),
+//     p3(playerName3){}
     
 
 
-void Game::start() {
-    ChooseStartingPlayer();
-    board = Board(); // Assuming Board has a default constructor
-    // Other initialization or setup logic can go here
-}
+// void Game::start() {
+//     ChooseStartingPlayer();
+//     board = Board(); // Assuming Board has a default constructor
+//     // Other initialization or setup logic can go here
+// }
 
-void Game::ChooseStartingPlayer() {
-    std::cout << "Starting player: " << p1.getName() << std::endl;
-}
+// void Game::ChooseStartingPlayer() {
+//     std::cout << "Starting player: " << p1.getName() << std::endl;
+// }
 
 
     // Place settlements and roads
@@ -80,15 +80,15 @@ void Game::ChooseStartingPlayer() {
 //     p2.endTurn();
 // }
 
-void Game::printPoints() const {
-    p1.printPoints();
-    p2.printPoints();
-    p3.printPoints();
-}
+// void Game::printPoints() const {
+//     p1.printPoints();
+//     p2.printPoints();
+//     p3.printPoints();
+// }
 
-void Game::printWinner() const {
-    std::cout << "None" << std::endl; // Placeholder for determining the winner
-}
+// void Game::printWinner() const {
+//     std::cout << "None" << std::endl; // Placeholder for determining the winner
+// }
 /////
 /**
  * for usage only: #include "Board.hpp"

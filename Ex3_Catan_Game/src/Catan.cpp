@@ -3,10 +3,13 @@
 #include "Card.hpp"
 #include <random>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace ariel;
 
-Catan::Catan(Player &p1, Player &p2, Player &p3) : player1(p1), player2(p2), player3(p3)
+//defualt constructor to initialize an object of Catan.
+
+Catan::Catan(Player &p1, Player &p2, Player &p3, Board &board) : player1(p1), player2(p2), player3(p3), board(board)
 {
     players.emplace_back(&p1);
     players.emplace_back(&p2);
@@ -95,19 +98,17 @@ void Catan::placeInitialSettlementsAndRoads(Board &catanBoard)
         int num;
         std::cout << "Enter index of a vertex to place Settlement on : ";
         std::cin >> vertexIndex1;
-        std::cout << "Enter index of close vertex to an settlement to place road in the middle: ";
+        std::cout << "Enter index of a vertex to place road on an edge in the middle of a settlement vertex and this vertex : ";
         std::cin >> vertexIndex2;
         std::cout << "Checking initial placement..." << std::endl;
         bool toDistribute = catanBoard.checkInitialPlacement(player1, vertexIndex1, vertexIndex2);
-        cout << "boolean value toDistribute is: " << toDistribute << std::endl;
+       // cout << "boolean value toDistribute is: " << toDistribute << std::endl;
 
         if (toDistribute)
         {
-
+            distributeInitialResources();//not doing nothing for now.
             
-            player1.addRoad(catanBoard.getEdge(vertexIndex1, vertexIndex2));
-            std::cout << player1.getName() << " succeed place an initial settlement on vertex " << vertexIndex1
-                      << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << std::endl;
+            
         }
         else
         {
@@ -115,6 +116,8 @@ void Catan::placeInitialSettlementsAndRoads(Board &catanBoard)
                       << " and a road between vertices " << vertexIndex1 << " and " << vertexIndex2 << std::endl;
         }
     }
+    // cout << "\tfor check (catan.cpp 105)\n";
+    //         player1.displayAll();
     // player.placeSettelemnt(places, placesNum, board);
     // player.placeRoad(places, placesNum, board);
     // }
@@ -130,7 +133,14 @@ void Catan::distributeInitialResources()
 }
 void Catan::distribution(vector<Player *> &players, int diceRoll)
 {
+    if(diceRoll != 7){
     vector<Tile> &allTiles = board.getBoardTiles();
+
+    if (allTiles.size() != 19) {
+        cout << "size of all tiles? "<<allTiles.size() <<endl;
+            cout << "Error: allTiles vector does not have 19 elements!" << endl;
+            return;
+        }
     for (int i = 0; i < 19; i++)
     {
         if (allTiles[i].getNumber() == diceRoll)
@@ -139,70 +149,73 @@ void Catan::distribution(vector<Player *> &players, int diceRoll)
             const vector<Vertex *> &vertices = allTiles[i].getVertices();
             for (Vertex *vertex : vertices)
             {
+                //player has 
                 if (vertex->getOwner() != -1 && vertex->getSettlement() == -1)
                 {
-                    if (allTiles[i].getResource() == "Mountains")
+                    if (allTiles[i].getResource() == "Brick")
                     {
                         // give the player who owns the vertex a mountain resource
+                        int playerId = vertex->getOwner();
+                        cout << " in catan.cpp test for distribution player id of player-1 is correct?" << playerId <<endl;
+                        players[playerId - 1]->addResource("Brick", 1);
+                    }
+                    else if (allTiles[i].getResource() == "Grain")
+                    {
+                        // give the player who owns the vertex a pasture resource
+                        int playerId = vertex->getOwner();
+                        players[playerId - 1]->addResource("Grain", 1);
+                    }
+                    else if (allTiles[i].getResource() == "Lumber")
+                    {
+                        // give the player who owns the vertex a forest resource
+                        int playerId = vertex->getOwner();
+                        players[playerId - 1]->addResource("Lumber", 1);
+                    }
+                    else if (allTiles[i].getResource() == "Ore")
+                    {
+                        // give the player who owns the vertex an agricultural resource
                         int playerId = vertex->getOwner();
                         players[playerId - 1]->addResource("Ore", 1);
                     }
-                    else if (allTiles[i].getResource() == "Pasture")
+                    else if (allTiles[i].getResource() == "Wool")
                     {
-                        // give the player who owns the vertex a pasture resource
+                        // give the player who owns the vertex a hills resource
                         int playerId = vertex->getOwner();
                         players[playerId - 1]->addResource("Wool", 1);
                     }
-                    else if (allTiles[i].getResource() == "Forest")
-                    {
-                        // give the player who owns the vertex a forest resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wood", 1);
-                    }
-                    else if (allTiles[i].getResource() == "Agricultural")
-                    {
-                        // give the player who owns the vertex an agricultural resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wheat", 1);
-                    }
-                    else if (allTiles[i].getResource() == "Hills")
-                    {
-                        // give the player who owns the vertex a hills resource
-                        int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Brick", 1);
-                    }
                 }
+                //check for city placement on tile
                 else if (vertex->getOwner() != -1 && vertex->getSettlement() == 1)
                 {
-                    if (allTiles[i].getResource() == "Mountains")
+                    if (allTiles[i].getResource() == "Brick")
                     {
                         // give the player who owns the vertex a mountain resource
                         int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Ore", 2);
+                        players[playerId - 1]->addResource("Brick", 2);
                     }
-                    else if (allTiles[i].getResource() == "Pasture")
+                    else if (allTiles[i].getResource() == "Grain")
                     {
                         // give the player who owns the vertex a pasture resource
                         int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wool", 2);
+                        players[playerId - 1]->addResource("Grain", 2);
                     }
-                    else if (allTiles[i].getResource() == "Forest")
+                    else if (allTiles[i].getResource() == "Lumber")
                     {
                         // give the player who owns the vertex a forest resource
                         int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wood", 2);
+                        players[playerId - 1]->addResource("Lumber", 2);
                     }
-                    else if (allTiles[i].getResource() == "Agricultural")
+                    else if (allTiles[i].getResource() == "Ore")
                     {
                         // give the player who owns the vertex an agricultural resource
                         int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Wheat", 2);
+                        players[playerId - 1]->addResource("Ore", 2);
                     }
-                    else if (allTiles[i].getResource() == "Hills")
+                    else if (allTiles[i].getResource() == "Wool")
                     {
                         // give the player who owns the vertex a hills resource
                         int playerId = vertex->getOwner();
-                        players[playerId - 1]->addResource("Brick", 2);
+                        players[playerId - 1]->addResource("Wool", 2);
                     }
                 }
             }
@@ -210,7 +223,9 @@ void Catan::distribution(vector<Player *> &players, int diceRoll)
     }
     cout << "\n"
          << endl;
+    }
 }
+
 
 void Catan::printWinner() const
 {

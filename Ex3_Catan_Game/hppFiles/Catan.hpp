@@ -20,7 +20,7 @@ namespace ariel
         vector<Card *> specialCards;
 
     public:
-        Catan(Player &p1, Player &p2, Player &p3);
+        Catan(Player &p1, Player &p2, Player &p3,Board &board);
         // Catan();
         void initializePlayers();
         vector<Card *> createAndShuffleCards(); // responsible for all kind of cards including the specials.

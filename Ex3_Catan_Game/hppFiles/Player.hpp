@@ -54,20 +54,12 @@ namespace ariel
     void addRoad(int edgeIndex);
     void add1point();
     void add2point();
-    /**
-     * @brief Places a road on the board.
-     * @param places The list of places for the road.
-     * @param placesNum The list of place numbers.
-     * @param board The game board.
-     */
+    
     int getPlayerNumber() const;
+    vector<int> getRoads() const;
     vector<int> getPlayerSettlements() const;
-    void placeInitialSettlementAndRoad(Player &player, int vertexIndex, int vertexIndex2, Board &catanBoard);
     void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
-    /**
-     * @brief Upgrades a settlement to a city.
-     * @param settlement The settlement to upgrade.
-     */
+   
     void upgradeSettlementToCity(const Settlement &settlement);
     // Method to roll dice
     int rollDice() const;
@@ -101,19 +93,25 @@ namespace ariel
     // Add card to player's hand
     void addCard(Card *card);
 
-    // Display player's hand
-    void displayHand() const;
-  };
-
   // Method to end turn
   // void endTurn();
-  // void promptAndSetSettlement(Board &board, const Player &player);
-  // void promptAndSetRoad(Board &board, const Player &player);
-  // bool canbuySettlement();
-  // bool canbuyCity();
-  // bool canbuyRoad();
+ 
+   bool canBuySettlement();
+   bool canBuyCity();
+   bool canBuyRoad();
   // Method to trade resources
-  // void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
+   void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
+
+
+
+    // Display player's hand
+    void displayHand() const;
+    void displayResources() const;
+    void displayRoads() const;
+    void displaySettlements() const;
+    void displayAll() const;
+  };
+
 
   // Method to buy development cards
   // void buyDevelopmentCard();
