@@ -244,11 +244,11 @@ void Player::addKnight(vector<Player *> &players)
 {
     bool HaveLargestArmy = 0;
     ++playerKnights;
-    add1point();
+
     if (playerKnights >= 3 && playerKnights > maxKnights)
     {
         maxKnights = playerKnights;
-
+        //check if has the special largest card.
         for (Card *card : getSpecialCards())
         {
             if (card->getType() == "Special: Largest Army")
@@ -260,7 +260,6 @@ void Player::addKnight(vector<Player *> &players)
         //if player doesnt have the Largestarmy card but other player has it and need to replace owner.
         if (!HaveLargestArmy && occupiedLargestArmy)
         {
-            cout <<"for debug: " << "!HaveLargestArmy occured should transfer from other player" <<endl; 
             this->add2point(); // Award 2 victory points for Largest Army
             cout << playerName << " has earned the Largest Army card!" << std::endl;
             for(Player *playerToremoveSpecial : players){
@@ -386,10 +385,10 @@ bool Player::buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players
         playerCards.push_back(card);
         if (card->getType() == "Knight")
         {
-           // this->add1point();
+           
             this->addKnight(players);
 
-            cout << this->getName() << " have new " << card->getType() << " card, 1 point added to " << this->getName() << "'s score." << endl;
+            cout << this->getName() << " have new " << card->getType() << " card." << endl;
         }
         else
         {
