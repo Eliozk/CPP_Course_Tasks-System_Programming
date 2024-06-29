@@ -35,7 +35,7 @@ namespace ariel
         bool checkInitialPlacement(Player &player, size_t vertexIndex, size_t vertexIndex2);
         void checkRoadPlacementAndSet(int playerId, size_t vertexIndex1, size_t vertexIndex2);
         bool checkCityPlacement(int playerId, size_t vertexIndex);
-        bool canPlaceRoad(Player &player, size_t vertexIndex);
+       bool canPlaceRoad(int playerNumber, size_t vertexIndex1, size_t vertexIndex2);
         bool hasAdjacentSettlementOrRoad( Vertex &first,Vertex &second, int playerNumber,Player &player);
         // New method to check if the player has a road between two vertices
         bool hasRoad(size_t vertex1, size_t vertex2, int playerNumber,Player &player) const;
@@ -50,6 +50,7 @@ namespace ariel
       
         void buildSettlement(size_t vertexIndex, Player &player);
         void buildRoad(size_t vertex1, size_t vertex2, Player &player);
+        void buildRoadFree(Player &player);
         void distribution(vector<Player *> &players, int diceRoll);
 
         

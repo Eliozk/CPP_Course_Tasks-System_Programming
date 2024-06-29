@@ -2,19 +2,22 @@
 #define CATAN_HPP
 
 #include "Player.hpp"
-#include "Board.hpp"
+
 #include "Tile.hpp"
 #include "Settlement.hpp"
+#include "Card.hpp"
 using namespace std;
 namespace ariel
 {
+    class Card;
+    class Board;
     class Catan
     {
     private:
         Player &player1;
         Player &player2;
         Player &player3;
-        Board board;
+        Board &board;
         vector<Player *> players;
         vector<Card *> cards;
         static vector<Card *> specialCards;

@@ -6,6 +6,9 @@
 #include <iostream>
 #include "Player.hpp"
 #include "Game.hpp"
+#include "Tile.hpp"
+#include "Settlement.hpp"
+#include "Card.hpp"
 
 using namespace ariel;
 using namespace std;
@@ -724,6 +727,69 @@ void Board::buildRoad(size_t vertex1, size_t vertex2, Player &player)
     player.addRoad(edgeIndex);
 
     std::cout << player.getName() << " built a Road between vertices " << vertex1 << " and " << vertex2 << std::endl;
+}
+
+void Board::buildRoadFree(Player &player){
+int vertexIndex1, vertexIndex2;
+    cout << "Enter two vertex indices to place the road between: ";
+    cin >> vertexIndex1 >> vertexIndex2;
+    vector<Vertex> boardVertices1 = this->getBoardVertices();
+
+    // Check if the vertex indices are valid
+    if (!(vertexIndex1 >= 0 && vertexIndex1 < boardVertices1.size() &&
+          vertexIndex2 >= 0 && vertexIndex2 < boardVertices1.size()))
+    {
+        cout << "Invalid vertex indices." << endl;
+    }
+    Vertex &vertex1 = boardVertices1[vertexIndex1];
+    Vertex &vertex2 = boardVertices1[vertexIndex2];
+
+    // Ensure vertices are neighbors
+    if (!vertex1.isNeighbor(vertex2))
+    {
+        cout << "Vertices are not neighbors." << endl;
+        return;
+    }
+
+    // Ensure there is an edge between these vertices
+    int edgeIndex = this->getEdge(vertexIndex1, vertexIndex2);
+    if (edgeIndex == -1)
+    {
+        cout << "No edge between these vertices." << endl;
+        return;
+    }
+    Edge edge = Edge(edgeIndex);
+    if (!edgeIndex)
+    {
+        cout << "No edge between these vertices." << endl;
+        return;
+    }
+    // Check if the road is already owned
+    if (edge.getOwner() != -1)
+    {
+        cout << "Road is already owned by a player." << endl;
+        return;
+    }
+    // Check if the vertices are adjacent and if the player can build a road there
+    if (this->hasAdjacentSettlementOrRoad(vertex1, vertex2, player.getPlayerNumber(), player))
+    {
+        int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
+    if (edgeIndex == -1)
+    {
+        throw runtime_error("Invalid vertices for building a road.");
+    }
+    //  Set the owner of the edge to the player number
+    boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
+    // Add road to player roads
+    player.addRoad(edgeIndex);
+    }
+    else
+    {
+        cout << "Invalid placement. Please choose adjacent vertices with a settlement or road belonging to you." << endl;
+        return;
+    }
+
+    cout << "Road successfully built between vertices " << vertexIndex1 << " and " << vertexIndex2 << "." << endl;
 }
 
 void Board::distribution(vector<Player *> &players, int diceRoll) {

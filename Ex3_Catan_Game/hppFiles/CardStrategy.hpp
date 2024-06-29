@@ -8,6 +8,7 @@ class Card; // Forward declaration
 
 class CardStrategy {
 public:
+
     virtual ~CardStrategy() {};;
     virtual void execute(Player& player, const Card& card) = 0;
     virtual CardStrategy* clone() const = 0; // Clone function for polymorphic copying

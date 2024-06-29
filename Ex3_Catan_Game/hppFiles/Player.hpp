@@ -98,7 +98,7 @@ namespace ariel
 
     // Add card to player's hand
     void addCard(Card *card);
-    void playCard(Card& card);
+    void playCard(Board &board, Card &card);
   // Method to end turn
   // void endTurn();
  

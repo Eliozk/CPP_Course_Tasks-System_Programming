@@ -79,6 +79,7 @@ void GamePlay::playerTurn(Player &player)
             playerBuyCity(player);
             break;
         case 5:
+            cout <<endl;
             player.displayHand();
             std::cout << "Choose a card to play (by index): ";
             int cardIndex;
@@ -86,7 +87,7 @@ void GamePlay::playerTurn(Player &player)
             if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
             {
                 const vector<Card *> specificCard = player.getPlayerCards();
-                player.playCard(*specificCard[cardIndex]);
+                player.playCard(board,*specificCard[cardIndex]);
             }
             else
             {

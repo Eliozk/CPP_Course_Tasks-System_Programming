@@ -326,10 +326,44 @@ void Player::addCard(Card *card)
     playerCards.push_back(card);
 }
 
-void Player::playCard(Card &card)
+void Player::playCard(Board &board, Card &card)
 {
-    card.play(*this);
+   // card.play(*this);
+  cout << "Executing DevelopmentCardStrategy for player: " << this->getName() << " with card: " << card.getType() << std::endl;
 
+        string cardType = card.getType();
+
+        if (cardType == "Victory Point")
+        {
+            // Example implementation for Victory Point card
+            this->add1point();
+        }
+        else if (cardType == "Road Building")
+        {
+            // Example implementation for Road Building card
+            // player can build 2 roads for free
+             board.buildRoadFree(*this);
+             board.buildRoadFree(*this);
+        }
+        else if (cardType == "Year Of Plenty")
+        {
+            // Example implementation for Year Of Plenty card
+            // player gets 2 resources of their choice from the bank
+            this->addResource("choice1", 1);
+            this->addResource("choice2", 1);
+        }
+        else if (cardType == "Monopoly")
+        {
+            // Example implementation for Monopoly card
+            // player chooses a resource, all other players must give all their resources of that type to this player
+            // std::string chosenResource = player.chooseResource();
+            // std::unordered_map<std::string, int> totalResources = player.collectResourceFromOthers(chosenResource);
+            // player.addResources(totalResources);
+        }
+        else
+        {
+            std::cerr << "Unknown card type: " << cardType << std::endl;
+        }
     // Find the card pointer in playerCards and remove it
     auto it = std::find_if(playerCards.begin(), playerCards.end(), [&](Card *c)
                            {
@@ -438,3 +472,88 @@ void Player::displayHand() const
         cout << endl;
     }
 }
+
+
+
+// void Player::useYearOfPlenty(string resource1, string resource2)
+// {
+//     // check if the player has a year of plenty card
+//     for (int i = 0; i < developmentCardCount; i++)
+//     {
+//         if (developmentCards[i] == "Year of Plenty")
+//         {
+//             // check if the player can get the resources
+//             addResource(resource1, 1);
+//             addResource(resource2, 1);
+//             // delete the year of plenty card from the player's deck
+//             developmentCards.erase(developmentCards.begin() + i);
+//             developmentCardCount--;
+//             return;
+//         }
+//     }
+//     cout << "Player " << this->getName() << " does not have a year of plenty card" << endl;
+// }
+
+// void Player::useMonopoly(Board &board, string resource)
+// {
+//     // check if the player has a monopoly card
+//     for (int i = 0; i < developmentCardCount; i++)
+//     {
+//         if (developmentCards[i] == "Monopoly")
+//         {
+//             // check if the player can get the resources
+//             for (int j = 0; j < 3; j++)
+//             {
+//                 if (board.players[j]->getId() != this->getId())
+//                 {
+//                     for (int k = 0; (long unsigned int)k < board.players[j]->resources.size(); k++)
+//                     {
+//                         if (board.players[j]->resources[k].first == resource)
+//                         {
+//                             addResource(resource, board.players[j]->resources[k].second);
+//                             board.players[j]->resources[k].second = 0;
+//                         }
+//                     }
+//                 }
+//             }
+//             // delete the monopoly card from the player's deck
+//             developmentCards.erase(developmentCards.begin() + i);
+//             developmentCardCount--;
+//             return;
+//         }
+//     }
+//     cout << "Player " << this->getName() << " does not have a monopoly card" << endl;
+// }
+
+// // A function that allows the player to trade resources with other players
+// // resorce1 is the resource that the player wants to get from the other player
+// void Player::tradeResources(Board &board, int player, string resource1, int amount, string resource2, int amount2)
+// {
+//     // check if the player has the resources
+//     for (int i = 0; i < 5; i++)
+//     {
+//         if (resources[i].first == resource2 && resources[i].second >= amount2)
+//         {
+//             // check if the other player has the resources
+//             for (int j = 0; j < 5; j++)
+//             {
+//                 if (board.players[player - 1]->resources[j].first == resource1 && board.players[player - 1]->resources[j].second >= amount)
+//                 {
+//                     // trade the resources
+//                     resources[j].second += amount2;
+//                     resources[i].second -= amount2;
+//                     board.players[player - 1]->resources[i].second += amount;
+//                     board.players[player - 1]->resources[j].second -= amount;
+//                     cout << "Player " << this->getName() << " traded " << amount << " " << resource1 << " with player " << board.players[player - 1]->getName() << " for " << amount2 << " " << resource2 << endl;
+//                     // print the resources that the player has after trading
+//                     cout << "Player " << this->getName() << " now has resources: Wood: " << resources[0].second << ", Brick: " << resources[1].second << ", Wool: " << resources[2].second << ", Wheat: " << resources[3].second << ", Ore: " << resources[4].second << endl;
+//                     // print the resources that the other player has after trading
+//                     cout << "Player " << board.players[player - 1]->getName() << " now has resources: Wood: " << board.players[player - 1]->resources[0].second << ", Brick: " << board.players[player - 1]->resources[1].second << ", Wool: " << board.players[player - 1]->resources[2].second << ", Wheat: " << board.players[player - 1]->resources[3].second << ", Ore: " << board.players[player - 1]->resources[4].second << endl;
+//                     return;
+//                 }
+//             }
+//         }
+//     }
+//     // print that the trade was not successful
+//     cout << "Player " << this->getName() << " cannot trade " << amount << " " << resource1 << " with player " << board.players[player - 1]->getName() << " for " << amount2 << " " << resource2 << endl;
+// }

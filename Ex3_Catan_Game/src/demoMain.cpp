@@ -4,7 +4,9 @@
 #include "Player.hpp"
 #include "Board.hpp"
 #include "GamePlay.hpp"
-#include <Catan.hpp>
+#include "Catan.hpp"
+#include "CardStrategy.hpp"
+
 using namespace std;
 using namespace ariel;
 
@@ -23,8 +25,11 @@ int main()
   // catan.createAndShuffleCards();
 
   GamePlay game(p, catan, board);
-  game.startGame();
-  // initGame.placeInitialSettlementsAndRoads(p,board); to bring back
+// Create instances of card strategies with local references to board and catan
+    //DevelopmentCardStrategy devCardStrategy(board, catan);
+    //start game
+      game.startGame();
+  
   //i can use destructor of player.
   for (Player *player : p)
   {
