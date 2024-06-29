@@ -1,215 +1,76 @@
 #ifndef CARD_HPP
 #define CARD_HPP
 
+#include <memory>
 #include <string>
-#include <vector>
-#include <iostream>
-using namespace std;
+#include "CardStrategy.hpp"
 
-namespace ariel
-{
+namespace ariel {
 
-    // Base Card class
-    class Card
-    {
+class Player; // Forward declaration of Player
 
-    private:
-        string name;
+class Card {
+public:
+    Card(std::unique_ptr<CardStrategy> strategy);
+    Card(const Card& other);
+    Card& operator=(const Card& other);
+    virtual ~Card() = default;
 
-    public:
-        virtual ~Card() = default;
-        virtual string getType() const = 0; // Pure virtual function to get the card type
-                                            // Virtual copy constructor
-        virtual Card *clone() const = 0;
+    virtual void play(Player& player) const;
+    virtual Card* clone() const = 0;
 
-        // Copy constructor
-        Card(const Card &other);
+    // Add this line:
+    virtual std::string getType() const = 0;
 
-        // Assignment operator
-        Card &operator=(const Card &other);
+protected:
+    std::unique_ptr<CardStrategy> strategy;
+};
 
-    protected:
-        // Default constructor protected to prevent direct instantiation
-        Card() = default;
-    };
+class DevelopmentCard : public Card {
+public:
+    DevelopmentCard(const std::string& type);
+    std::string getType() const override;
+    Card* clone() const override;
 
-    // Derived DevelopmentCard class
-    class DevelopmentCard : public Card
-    {
-    private:
-        string type;
+private:
+    std::string type;
+};
 
-    public:
-        DevelopmentCard(const string &type);
-        string getType() const override;
-        // Virtual copy constructor
-        Card *clone() const override;
+class ResourceCard : public Card {
+public:
+    ResourceCard(const std::string& resource);
+    std::string getType() const override;
+    Card* clone() const override;
 
-        // Copy constructor
-        DevelopmentCard(const DevelopmentCard &other);
+private:
+    std::string resource;
+};
 
-        // Assignment operator
-        DevelopmentCard &operator=(const DevelopmentCard &other);
-    };
+class VictoryPointCard : public Card {
+public:
+    VictoryPointCard(const std::string& name, int points);
+    std::string getType() const override;
+    Card* clone() const override;
 
-    // Derived ResourceCard class
-    class ResourceCard : public Card
-    {
-    private:
-        string resource;
+private:
+    std::string name;
+    int points;
+};
 
-    public:
-        ResourceCard(const string &resource);
-        string getType() const override;
-        // Virtual copy constructor
-        Card *clone() const override;
+class LongestRoadCard : public Card {
+public:
+    LongestRoadCard();
+    std::string getType() const override;
+    Card* clone() const override;
+};
 
-        // Copy constructor
-        ResourceCard(const ResourceCard &other);
+class LargestArmyCard : public Card {
+public:
+    LargestArmyCard();
+    std::string getType() const override;
+    Card* clone() const override;
+};
 
-        // Assignment operator
-        ResourceCard &operator=(const ResourceCard &other);
-    };
-
-    // Derived VictoryPointCard class
-    class VictoryPointCard : public Card
-    {
-    private:
-        int points;
-        string name;
-
-    public:
-        VictoryPointCard(const string &name, int points);
-        string getType() const override;
-        int getPoints() const;
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        VictoryPointCard(const VictoryPointCard &other);
-
-        // Assignment operator
-        VictoryPointCard &operator=(const VictoryPointCard &other);
-    };
-
-    // Derived ProgressCard class//קלפי קידום
-    class ProgressCard : public Card
-    {
-    private:
-        string action;
-
-    public:
-        ProgressCard(const string &action);
-        string getType() const override;
-        string getAction() const;
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        ProgressCard(const ProgressCard &other);
-
-        // Assignment operator
-        ProgressCard &operator=(const ProgressCard &other);
-    };
-
-    // Derived KnightCard class
-    class KnightCard : public ProgressCard
-    {
-    public:
-        KnightCard();
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        KnightCard(const KnightCard &other);
-
-        // Assignment operator
-        KnightCard &operator=(const KnightCard &other);
-    };
-
-    // Derived RoadBuildingCard class
-    class RoadBuildingCard : public ProgressCard
-    {
-    public:
-        RoadBuildingCard();
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        RoadBuildingCard(const RoadBuildingCard &other);
-
-        // Assignment operator
-        RoadBuildingCard &operator=(const RoadBuildingCard &other);
-    };
-
-    // Derived YearOfPlentyCard class
-    class YearOfPlentyCard : public ProgressCard
-    {
-    public:
-        YearOfPlentyCard();
-
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        YearOfPlentyCard(const YearOfPlentyCard &other);
-
-        // Assignment operator
-        YearOfPlentyCard &operator=(const YearOfPlentyCard &other);
-    };
-
-    // Derived MonopolyCard class
-    class MonopolyCard : public ProgressCard
-    {
-    public:
-        MonopolyCard();
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        MonopolyCard(const MonopolyCard &other);
-
-        // Assignment operator
-        MonopolyCard &operator=(const MonopolyCard &other);
-    };
-
-    // Derived LongestRoadCard class
-    class LongestRoadCard : public Card
-    {
-    private:
-        string name;
-
-    public:
-        LongestRoadCard();
-        string getType() const override;
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        LongestRoadCard(const LongestRoadCard &other);
-
-        // Assignment operator
-        LongestRoadCard &operator=(const LongestRoadCard &other);
-    };
-
-    // Derived LargestArmyCard class
-    class LargestArmyCard : public Card
-    {
-    private:
-        string name;
-
-    public:
-        LargestArmyCard();
-        string getType() const override;
-        // Virtual copy constructor
-        Card *clone() const override;
-
-        // Copy constructor
-        LargestArmyCard(const LargestArmyCard &other);
-
-        // Assignment operator
-        LargestArmyCard &operator=(const LargestArmyCard &other);
-    };
 } // namespace ariel
 
 #endif // CARD_HPP

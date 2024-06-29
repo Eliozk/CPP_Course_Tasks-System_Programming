@@ -13,6 +13,7 @@ namespace ariel {
         Board board;
         vector<Player*> players;
         int currentPlayerIndex;
+        vector<Card *> cards;
 
     public:
         GamePlay(vector<Player*> &players, Catan& catan, Board &board);

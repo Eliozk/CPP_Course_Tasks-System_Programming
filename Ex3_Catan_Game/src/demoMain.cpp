@@ -10,14 +10,11 @@ using namespace ariel;
 
 int main()
 {
-  // Board board();
-  // InitGame initGame;
-  //  initGame.buildBoard(board);
+
   vector<Player *> p;
   p.push_back(new Player(0, "Elioz"));
   p.push_back(new Player(1, "Ofek"));
   p.push_back(new Player(2, "Daniel"));
-  // vector<Player> p; // players
 
   Board board(*p[0], *p[1], *p[2]); // Use indices 0, 1, 2 for array access
   board.initializeBoard();          // Call a separate function to initialize the board
@@ -28,6 +25,19 @@ int main()
   GamePlay game(p, catan, board);
   game.startGame();
   // initGame.placeInitialSettlementsAndRoads(p,board); to bring back
+  //i can use destructor of player.
+  for (Player *player : p)
+  {
+    delete player;
+  }
+  p.clear();
 
   return 0;
 }
+/**
+ *  // Clean up dynamically allocated cards
+    for (ariel::Card *card : developmentCards) {
+        delete card;
+    }
+
+ */

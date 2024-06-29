@@ -14,7 +14,7 @@ void GamePlay::startGame()
 {
     catan.initializePlayers();
     catan.ChooseStartingPlayer();
-    catan.createAndShuffleCards();
+    cards = catan.createAndShuffleCards();
     catan.placeInitialSettlementsAndRoads(board);
     // displayGameState();
 
@@ -37,7 +37,7 @@ void GamePlay::rollDiceAndDistributeResources()
 {
     // Generate random dice roll
     int diceRoll = rollDice();
-   
+
     cout << "Rolled a " << diceRoll << "!" << std::endl;
     board.distribution(players, diceRoll);
 }
@@ -47,9 +47,18 @@ void GamePlay::playerTurn(Player &player)
     bool continueTurn = true;
     while (continueTurn)
     {
-        cout << "\n"<<player.getName() << ", choose an action:\n1. Show your info? \n2. Buy Settlement\n3. Buy Road\n4. Buy City\n5. End Turn\n6. Exit from game\n";
+        std::cout << "\n"
+                  << player.getName() << ", choose an action:\n"
+                  << "1. Show your info\n"
+                  << "2. Buy Settlement\n"
+                  << "3. Buy Road\n"
+                  << "4. Buy City\n"
+                  << "5. Play Card\n"
+                  << "6. Buy Development Card\n"
+                  << "7. End Turn\n"
+                  << "8. Exit game\n";
         int choice;
-        cout << "choice: ";
+        std::cout << "choice: ";
         std::cin >> choice;
 
         switch (choice)
@@ -65,42 +74,65 @@ void GamePlay::playerTurn(Player &player)
             break;
         case 3:
             playerBuyRoad(player);
-            // std::cout << "Not enough resources to buy a road." << std::endl;
             break;
         case 4:
             playerBuyCity(player);
             break;
         case 5:
-            continueTurn = false;
+            player.displayHand();
+            std::cout << "Choose a card to play (by index): ";
+            int cardIndex;
+            std::cin >> cardIndex;
+            if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
+            {
+                const vector<Card *> specificCard = player.getPlayerCards();
+                player.playCard(*specificCard[cardIndex]);
+            }
+            else
+            {
+                std::cout << "Invalid card index." << std::endl;
+            }
             break;
         case 6:
-            exit(0);
+            if (player.buyDevelopmentCard(cards, players))
+            {
+              //  cout <<"get here?"<<endl;
+            //    player.playCard(*cards[0]);
+            }
 
+            break;
+        case 7:
+            continueTurn = false;
+            break;
+        case 8:
+            catan.deleteMemory();
+            exit(0);
         default:
             std::cout << "Invalid choice. Please try again." << std::endl;
             break;
         }
     }
 }
+
 // buy settlement
 bool GamePlay::playerBuySettlement(Player &player)
 {
     // Check if the player has enough resources
     if (player.canBuySettlement())
     {
-    int vertexIndex;
-    cout << "Enter vertex index to place the settlement: ";
-    cin >> vertexIndex;
-    // check if can place there there settlement
-    if (board.checkSettlementPlacement(player.getPlayerNumber(), vertexIndex))
-    {
-        board.buildSettlement(vertexIndex, player); // no checks here except of resources and delete here and build.
-        return true;
-    }
-    else
-    {
-        std::cout << "Invalid placement. Please try again." << std::endl;
-    }
+        int vertexIndex;
+        cout << "Enter vertex index to place the settlement: ";
+        cin >> vertexIndex;
+        // check if can place there there settlement
+        if (board.checkSettlementPlacement(player.getPlayerNumber(), vertexIndex))
+        {
+            board.buildSettlement(vertexIndex, player); // no checks here except of resources and delete here and build.
+            return true;
+        }
+        else
+        {
+            std::cout << "Invalid placement. Please try again." << std::endl;
+        }
     }
     return false;
 }
@@ -117,7 +149,7 @@ void GamePlay::playerBuyRoad(Player &player)
     cout << "Enter two vertex indices to place the road between: ";
     cin >> vertexIndex1 >> vertexIndex2;
     vector<Vertex> boardVertices1 = board.getBoardVertices();
-    
+
     // Check if the vertex indices are valid
     if (!(vertexIndex1 >= 0 && vertexIndex1 < boardVertices1.size() &&
           vertexIndex2 >= 0 && vertexIndex2 < boardVertices1.size()))
@@ -193,8 +225,8 @@ void GamePlay::playerBuyCity(Player &player)
 
     Vertex &vertex = boardVertices[vertexIndex];
 
-    // Check if the player owns a settlement at the specified vertex 
-    if (!(vertex.getSettlement() ==1) || vertex.getOwner() != player.getPlayerNumber())
+    // Check if the player owns a settlement at the specified vertex
+    if (!(vertex.getSettlement() == 1) || vertex.getOwner() != player.getPlayerNumber())
     {
         cout << "You do not own a settlement at this vertex." << endl;
         return;
@@ -202,10 +234,9 @@ void GamePlay::playerBuyCity(Player &player)
 
     // Upgrade the settlement to a city
     board.upgradeSettlementToCity(vertexIndex, player);
-    
+
     cout << "Settlement upgraded to a city at vertex " << vertexIndex << "." << endl;
 }
-
 
 // void GamePlay::displayGameState() {
 //     std::cout << "Current Game State:" << std::endl;
@@ -219,12 +250,12 @@ void GamePlay::playerBuyCity(Player &player)
 int GamePlay::rollDice() const
 {
 
-   // Generate a random number between 1 and 6 for the first die
-    int die1 = rand() % 6 + 1; 
-    
+    // Generate a random number between 1 and 6 for the first die
+    int die1 = rand() % 6 + 1;
+
     // Generate a random number between 1 and 6 for the second die
-    int die2 = rand() % 6 + 1; 
-    
+    int die2 = rand() % 6 + 1;
+
     int rollResult = die1 + die2;
 
     return rollResult;

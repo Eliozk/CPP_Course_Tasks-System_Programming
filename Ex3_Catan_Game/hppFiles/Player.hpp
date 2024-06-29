@@ -30,12 +30,18 @@ namespace ariel
     int playerNumber;
     string playerName;               ///< The name of the player.
     int points;                      ///< The player's points.
+    int playerKnights;
+    static int maxKnights;  // Static variable to track max knights across all players
+    static bool occupiedLargestArmy;
+    bool hasMaxKnights;
+    
     vector<int> settlements;         ///< The player's settlements.
     int numberOfRoads;               ///< The number of roads the player has built.
     vector<int> cities;              ///< The player's cities.
     vector<int> roads;               ///< The player's roads.
     vector<Tile> tiles;              ///< The player's tiles.
-    std::vector<Card *> playerCards; ///< The player's cards.
+    vector<Card *> playerCards; ///< The player's cards.
+     vector<Card *> specialCards; ///< The player's special cards.
     map<string, int> resources;      ///< The player's resources.
 
   public:
@@ -55,23 +61,22 @@ namespace ariel
     void addCity(int cityindex);
     void add1point();
     void add2point();
-    
+     
+    void addKnight(vector<Player*>& players);
+    // bool hasMaxKnights() const;  // Declaration of hasMaxKnights function
+    void transferSpecialCard(Player& otherPlayer, const string& type);
+    Player* findLastPlayerWithLargestArmy(vector<Player*>& players);
+    bool hasSpecialCard(const string& type) const;
+    void addSpecialCard(Card* card);
+     vector<Card *> getSpecialCards() const;
     int getPlayerNumber() const;
+    
+    vector<Card *> getPlayerCards() const;
+
     vector<int> getRoads() const;
     vector<int> getPlayerSettlements() const;
-    void placeRoad(const vector<string> &places, const vector<int> &placesNum, Board &board);
    
-   
-    // Method to roll dice
-    int rollDice() const;
-
-    /**
-     * @brief Distributes resources based on the dice roll result.
-     * @param rollResult The result of the dice roll.
-     * @param tiles The list of game tiles.
-     */
-    void resourcesFromRolledDice(int rollResult, const vector<Tile> &tiles);
-
+ 
     // Method to print points
     void printPoints() const;
 
@@ -93,13 +98,16 @@ namespace ariel
 
     // Add card to player's hand
     void addCard(Card *card);
-
+    void playCard(Card& card);
   // Method to end turn
   // void endTurn();
  
    bool canBuySettlement();
    bool canBuyCity();
    bool canBuyRoad();
+
+   bool canBuyDevelopmentCard() const;
+   bool buyDevelopmentCard(vector<Card *> &cards, vector<Player*>& players);
   // Method to trade resources
    void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
 
