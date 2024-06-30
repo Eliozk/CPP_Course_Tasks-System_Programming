@@ -9,6 +9,9 @@
 #include "Tile.hpp"
 #include "Settlement.hpp"
 #include "Card.hpp"
+#include <unordered_set>
+#include <functional>
+#include <stack>
 
 using namespace ariel;
 using namespace std;
@@ -158,8 +161,6 @@ void Board::initializeBoard()
     boardVertices[52].addNeighbor(&boardVertices[51], &boardVertices[53]);
     boardVertices[53].addNeighbor(&boardVertices[52], &boardVertices[45]);
 
-    
-
     vector<vector<size_t>> edgesOnBoard = {
         {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {0, 8}, {2, 10}, {4, 12}, {6, 14}, {7, 8}, {8, 9}, {9, 10}, {10, 11}, {11, 12}, {12, 13}, {13, 14}, {14, 15}, {7, 17}, {9, 19}, {11, 21}, {13, 23}, {15, 25}, {16, 17}, {17, 18}, {18, 19}, {19, 20}, {20, 21}, {21, 22}, {22, 23}, {23, 24}, {24, 25}, {25, 26}, {16, 27}, {18, 29}, {20, 31}, {22, 33}, {24, 35}, {26, 37}, {27, 28}, {28, 29}, {29, 30}, {30, 31}, {31, 32}, {32, 33}, {33, 34}, {34, 35}, {35, 36}, {36, 37}, {28, 38}, {30, 40}, {32, 42}, {34, 44}, {36, 46}, {38, 39}, {39, 40}, {40, 41}, {41, 42}, {42, 43}, {43, 44}, {44, 45}, {45, 46}, {39, 47}, {41, 49}, {43, 51}, {45, 53}, {47, 48}, {48, 49}, {49, 50}, {50, 51}, {51, 52}, {52, 53}};
 
@@ -235,7 +236,7 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
             return false;
         }
     }
- 
+
     // Set the owner of the vertex to the player number
     boardVertices[vertexIndex1].setOwner(player.getPlayerNumber());
     boardVertices[vertexIndex1].setSettlement(1);
@@ -244,8 +245,8 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
     player.add1point();
     // add settlement to player settlements.
     player.addSettlement(vertexIndex1);
-    //update boardTiles at this vertex of this settlement of player.
-    updateTileAtVertex(vertexIndex1,player);
+    // update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex1, player);
     // Check if the edge we are trying to place a road on is occupied
     int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
     if (edgeIndex != -1) // if this edge not existed it is -1
@@ -259,7 +260,7 @@ bool Board::checkInitialPlacement(Player &player, size_t vertexIndex1, size_t ve
 
     // Set the owner of the edge to the player number
     boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
-    
+
     player.addRoad(edgeIndex);
     // distribute resource by vertex of the settlement of the player.
     for (int i = 0; i < 19; i++)
@@ -305,41 +306,107 @@ bool Board::hasAdjacentSettlementOrRoad(Vertex &first, Vertex &second, int playe
     {
         return true;
     }
-    // check for adjacent settlement or city
-    vector<Vertex *> neighborVertexFirst = first.getNeighbors();
-    vector<Vertex *> neighborVertexSecond = second.getNeighbors();
-    int firstIndex = first.getIndex();
-    int secondIndex = second.getIndex();
+   // Check for adjacent settlement or road for the first vertex
+    for (Vertex *neighbor1 : first.getNeighbors()) {
+        if (neighbor1->getOwner() == playerNumber) {
+            return true; // Player owns a settlement or city adjacent to first vertex
+        }
+        // Check if there's a road adjacent to first vertex owned by the player
+        if (hasRoad(first.getIndex(), neighbor1->getIndex(), playerNumber, player)) {
+            return true;
+        }
+    }
 
-    for (Vertex *vertex1 : neighborVertexFirst)
-    {
-        // Check the first vertex and its neighbors
-        if (checkHasAdjacentCityOrSettlement(*vertex1, playerNumber))
-        {
-            return true;
+    // Check for adjacent settlement or road for the second vertex
+    for (Vertex *neighbor2 : second.getNeighbors()) {
+        if (neighbor2->getOwner() == playerNumber) {
+            return true; // Player owns a settlement or city adjacent to second vertex
         }
-        // check also if first vertex has adjcant road.
-        if (hasRoad(vertex1->getIndex(), firstIndex, playerNumber, player))
-        {
+        // Check if there's a road adjacent to second vertex owned by the player
+        if (hasRoad(second.getIndex(), neighbor2->getIndex(), playerNumber, player)) {
             return true;
         }
     }
-    // Check for adjacent settlement or city for the second vertex
-    for (Vertex *vertex2 : neighborVertexSecond)
-    {
-        // Check the first vertex and its neighbors
-        if (checkHasAdjacentCityOrSettlement(*vertex2, playerNumber))
-        {
-            return true;
-        }
-        // check also if first vertex has adjcant road.
-        if (hasRoad(vertex2->getIndex(), secondIndex, playerNumber, player))
-        {
-            return true;
-        }
-    }
-    // If no adjacent settlement or city owned by the player is found
+
+    // No adjacent settlement or road owned by the player found
     return false;
+}
+
+// Function to get the vertices connected by an edge
+pair<size_t, size_t> Board::getVerticesFromEdge(int edgeIndex) const
+{
+    // Implement the logic to retrieve the vertices connected by the given edge index
+    // This is a placeholder implementation and should be replaced with actual logic
+    // Assuming that edges are stored as pairs of vertex indices in boardEdges
+    return {boardEdges[edgeIndex].getVertex1()->getIndex(), boardEdges[edgeIndex].getVertex2()->getIndex()};
+}
+
+// Function to retrieve a vertex by its index
+const Vertex &Board::getVertex(size_t index) const
+{
+    return boardVertices[index];
+}
+
+// Function to check if an edge is owned
+    bool Board::isEdgeOwned(int edgeIndex) const {
+        if (edgeIndex >= 0 && edgeIndex < boardEdges.size()) {
+            return boardEdges[edgeIndex].getOwner() != -1; // Check if edge has an owner
+        }
+        return false; // Edge index out of bounds or uninitialized edge
+    }
+
+int Board::pathOfRoads(int playerNumber, Player &player)
+{
+
+    unordered_set<int> visitedEdges; // Set to track visited edges
+    int longestPath = 0;
+
+    // Function to perform DFS and count the connected roads
+    function<int(int)> dfs = [&](int edgeIndex) -> int
+    {
+        stack<int> stack;
+        stack.push(edgeIndex);
+        visitedEdges.insert(edgeIndex);
+        int pathLength = 0;
+
+        while (!stack.empty())
+        {
+            int currentEdge = stack.top();
+            stack.pop();
+            ++pathLength;
+
+            // Get the vertices connected by this edge
+            auto [vertex1, vertex2] = getVerticesFromEdge(currentEdge);
+
+            // Explore neighbors of both vertices
+            for (size_t neighbor : {vertex1, vertex2})
+            {
+                const vector<Vertex *> &neighbors = getVertex(neighbor).getNeighbors();
+                for (const Vertex *neighborVertex : neighbors)
+                {
+                    int neighborEdge = getEdge(neighbor, neighborVertex->getIndex());
+                    if (visitedEdges.find(neighborEdge) == visitedEdges.end() &&
+                        hasRoad(neighbor, neighborVertex->getIndex(), playerNumber, player))
+                    {
+                        visitedEdges.insert(neighborEdge);
+                        stack.push(neighborEdge);
+                    }
+                }
+            }
+        }
+        return pathLength;
+    };
+
+    // Iterate through all the roads owned by the player
+    for (int road : player.getRoads())
+    {
+        if (visitedEdges.find(road) == visitedEdges.end())
+        {
+            longestPath = std::max(longestPath, dfs(road));
+        }
+    }
+
+    return longestPath;
 }
 // check in in road vertex index the player has road.
 bool Board::hasRoad(size_t vertex1, size_t vertex2, int playerNumber, Player &player) const
@@ -429,6 +496,7 @@ bool Board::checkSettlementPlacement(int playerNumber, size_t vertexIndex)
         int edgeIndex1 = getEdge(vertexIndex, adjacentVertex->getIndex());
         if (edgeIndex1 != -1 && boardEdges[edgeIndex1].getOwner() == playerNumber)
         {
+            playerRoadsCount++;
             for (const Vertex *furtherVertex : adjacentVertex->getNeighbors())
             {
                 if (furtherVertex->getIndex() != vertexIndex)
@@ -575,8 +643,8 @@ void Board::upgradeSettlementToCity(size_t vertexIndex, Player &player)
     // Update player's points for upgrading to a city
     player.add1point();
     player.addCity(vertexIndex);
-    //update boardTiles at this vertex of this settlement of player.
-    updateTileAtVertex(vertexIndex,player);
+    // update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex, player);
 }
 
 void Board::rollDice()
@@ -690,7 +758,6 @@ void Board::buildSettlement(size_t vertexIndex, Player &player)
     player.removeResource("Grain", 1);
     player.removeResource("Wool", 1);
 
-    
     // Set the owner of the vertex to the player number
     boardVertices[vertexIndex].setOwner(player.getPlayerNumber());
     // set vertex-> settlement value to 1
@@ -699,12 +766,10 @@ void Board::buildSettlement(size_t vertexIndex, Player &player)
     player.add1point();
     // add settlement to player settlements.
     player.addSettlement(vertexIndex);
-    //update boardTiles at this vertex of this settlement of player.
-    updateTileAtVertex(vertexIndex,player);
+    // update boardTiles at this vertex of this settlement of player.
+    updateTileAtVertex(vertexIndex, player);
     // Assuming there's a method to set the owner on a vertex
     // vertexForSettlement.setOwner(player.getPlayerNumber())
-
-    cout << player.getName() << " built a Settlement at vertex " << vertexIndex << std::endl;
 }
 
 void Board::buildRoad(size_t vertex1, size_t vertex2, Player &player)
@@ -725,12 +790,11 @@ void Board::buildRoad(size_t vertex1, size_t vertex2, Player &player)
     boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
     // Add road to player roads
     player.addRoad(edgeIndex);
-
-    std::cout << player.getName() << " built a Road between vertices " << vertex1 << " and " << vertex2 << std::endl;
 }
 
-void Board::buildRoadFree(Player &player){
-int vertexIndex1, vertexIndex2;
+void Board::buildRoadFree(Player &player)
+{
+    int vertexIndex1, vertexIndex2;
     cout << "Enter two vertex indices to place the road between: ";
     cin >> vertexIndex1 >> vertexIndex2;
     vector<Vertex> boardVertices1 = this->getBoardVertices();
@@ -774,14 +838,14 @@ int vertexIndex1, vertexIndex2;
     if (this->hasAdjacentSettlementOrRoad(vertex1, vertex2, player.getPlayerNumber(), player))
     {
         int edgeIndex = getEdge(vertexIndex1, vertexIndex2);
-    if (edgeIndex == -1)
-    {
-        throw runtime_error("Invalid vertices for building a road.");
-    }
-    //  Set the owner of the edge to the player number
-    boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
-    // Add road to player roads
-    player.addRoad(edgeIndex);
+        if (edgeIndex == -1)
+        {
+            throw runtime_error("Invalid vertices for building a road.");
+        }
+        //  Set the owner of the edge to the player number
+        boardEdges[edgeIndex].setOwner(player.getPlayerNumber());
+        // Add road to player roads
+        player.addRoad(edgeIndex);
     }
     else
     {
@@ -792,17 +856,25 @@ int vertexIndex1, vertexIndex2;
     cout << "Road successfully built between vertices " << vertexIndex1 << " and " << vertexIndex2 << "." << endl;
 }
 
-void Board::distribution(vector<Player *> &players, int diceRoll) {
-    if (diceRoll != 7) {
-        for (int i = 0; i < 19; i++) {
-            if (boardTiles[i].getNumber() == diceRoll) {
+void Board::distribution(vector<Player *> &players, int diceRoll)
+{
+    if (diceRoll != 7)
+    {
+        for (int i = 0; i < 19; i++)
+        {
+            if (boardTiles[i].getNumber() == diceRoll)
+            {
                 const vector<Vertex *> &vertices = boardTiles[i].getVertices();
-                for (Vertex *vertex : vertices) {
+                for (Vertex *vertex : vertices)
+                {
                     // Find the corresponding vertex in boardVertices
-                    for (Vertex &boardVertex : boardVertices) {
-                        if (boardVertex.getIndex() == vertex->getIndex()) {
+                    for (Vertex &boardVertex : boardVertices)
+                    {
+                        if (boardVertex.getIndex() == vertex->getIndex())
+                        {
                             // Perform resource distribution based on boardVertex and boardTiles[i]
-                            if (vertex->getOwner() != -1 && vertex->getSettlement() > 0) {
+                            if (vertex->getOwner() != -1 && vertex->getSettlement() > 0)
+                            {
                                 distributeResources(players, boardVertex, boardTiles[i], vertex->getSettlement());
                             }
                             break;
@@ -814,37 +886,51 @@ void Board::distribution(vector<Player *> &players, int diceRoll) {
     }
 }
 
-
-void Board::distributeResources(vector<Player *> &players, const Vertex &vertex, const Tile &tile, int settlementLevel) {
+void Board::distributeResources(vector<Player *> &players, const Vertex &vertex, const Tile &tile, int settlementLevel)
+{
     int playerId = vertex.getOwner();
-    
+
     // Check the resource type and add to player's resources based on settlement level
-    if (tile.getResource() == "Brick") {
+    if (tile.getResource() == "Brick")
+    {
         players[playerId]->addResource("Brick", settlementLevel);
-    } else if (tile.getResource() == "Grain") {
+    }
+    else if (tile.getResource() == "Grain")
+    {
         players[playerId]->addResource("Grain", settlementLevel);
-    } else if (tile.getResource() == "Lumber") {
+    }
+    else if (tile.getResource() == "Lumber")
+    {
         players[playerId]->addResource("Lumber", settlementLevel);
-    } else if (tile.getResource() == "Ore") {
+    }
+    else if (tile.getResource() == "Ore")
+    {
         players[playerId]->addResource("Ore", settlementLevel);
-    } else if (tile.getResource() == "Wool") {
+    }
+    else if (tile.getResource() == "Wool")
+    {
         players[playerId]->addResource("Wool", settlementLevel);
     }
 }
 
-
 // Function to update the tile at a specific vertex based on the player's action on board vertices
-void Board::updateTileAtVertex(size_t vertexIndex, Player &player) {
+void Board::updateTileAtVertex(size_t vertexIndex, Player &player)
+{
     // Check if the vertex index is valid
-    if (vertexIndex >= 0 && vertexIndex < boardVertices.size()) {
+    if (vertexIndex >= 0 && vertexIndex < boardVertices.size())
+    {
         // Check if the vertex has a settlement or city of the player
         if (boardVertices[vertexIndex].getOwner() == player.getPlayerNumber() &&
-            (boardVertices[vertexIndex].getSettlement() == 1 || boardVertices[vertexIndex].getSettlement() == 2)) {
+            (boardVertices[vertexIndex].getSettlement() == 1 || boardVertices[vertexIndex].getSettlement() == 2))
+        {
             // Iterate through all tiles to find the tile containing the vertex
-            for (Tile &tile : boardTiles) {
+            for (Tile &tile : boardTiles)
+            {
                 // Check if the tile has the specific vertex
-                for (Vertex *vertex : tile.getVertices()) {
-                    if (vertex->getIndex() == vertexIndex) {
+                for (Vertex *vertex : tile.getVertices())
+                {
+                    if (vertex->getIndex() == vertexIndex)
+                    {
                         // Update the tile's owner and settlement using the tile reference
                         vertex->setOwner(player.getPlayerNumber());
                         vertex->setSettlement(boardVertices[vertexIndex].getSettlement());
@@ -853,10 +939,14 @@ void Board::updateTileAtVertex(size_t vertexIndex, Player &player) {
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             std::cout << "Error: Player does not have a settlement or city at vertex " << vertexIndex << std::endl;
         }
-    } else {
+    }
+    else
+    {
         std::cout << "Error: Invalid vertex index " << vertexIndex << std::endl;
     }
 }

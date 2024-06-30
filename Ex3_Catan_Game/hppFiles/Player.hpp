@@ -32,7 +32,10 @@ namespace ariel
     int points;                      ///< The player's points.
     int playerKnights;
     static int maxKnights;  // Static variable to track max knights across all players
-    static bool occupiedLargestArmy;
+    static bool occupiedBiggesttArmy;
+    static bool occupiedLargestRoad;
+    static int longestRoad;
+
     bool hasMaxKnights;
     
     vector<int> settlements;         ///< The player's settlements.
@@ -54,9 +57,11 @@ namespace ariel
     ~Player();
     void setName(const string &name);
     int getPoints() const;
+    map<string, int>& getResources();
     // Methods to place settlements and roads
 
     void addSettlement(int vertexIndex);
+    void removeSettlement(int vertexIndex);
     void addRoad(int edgeIndex);
     void addCity(int cityindex);
     void add1point();
@@ -65,7 +70,7 @@ namespace ariel
     void addKnight(vector<Player*>& players);
     // bool hasMaxKnights() const;  // Declaration of hasMaxKnights function
     void transferSpecialCard(Player& otherPlayer, const string& type);
-    Player* findLastPlayerWithLargestArmy(vector<Player*>& players);
+    Player* findLastPlayerWithSpecialCard(vector<Player*>& players, const string& type );
     bool hasSpecialCard(const string& type) const;
     void addSpecialCard(Card* card);
      vector<Card *> getSpecialCards() const;
@@ -75,6 +80,7 @@ namespace ariel
 
     vector<int> getRoads() const;
     vector<int> getPlayerSettlements() const;
+     void checkLargestRoad(vector<Player*>& players, Board& board);
    
  
     // Method to print points
@@ -98,7 +104,7 @@ namespace ariel
 
     // Add card to player's hand
     void addCard(Card *card);
-    void playCard(Board &board, Card &card);
+    void playCard(Board &board, Card &card,vector<Player *> &players);
   // Method to end turn
   // void endTurn();
  

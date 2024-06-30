@@ -43,6 +43,10 @@ namespace ariel
         void upgradeSettlementToCity(size_t vertexIndex,Player &player);
 
         int randomNum();
+        bool isEdgeOwned(int edgeIndex) const;
+        const Vertex &getVertex(size_t index) const;
+        pair<size_t, size_t> getVerticesFromEdge(int edgeIndex) const;
+        int pathOfRoads(int playerNumber, Player &player);
         //after init game and distribiution of 2 r and 2 s to players for the continuity of the game
         bool checkSettlementPlacement(int playerNumber, size_t vertexIndex);
         void updateTileAtVertex(size_t vertexIndex, Player &player);

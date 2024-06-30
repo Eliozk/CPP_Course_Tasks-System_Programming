@@ -74,6 +74,8 @@ void GamePlay::playerTurn(Player &player)
             break;
         case 3:
             playerBuyRoad(player);
+            // player.checkLargestRoad(players, board);
+
             break;
         case 4:
             playerBuyCity(player);
@@ -84,10 +86,11 @@ void GamePlay::playerTurn(Player &player)
             std::cout << "Choose a card to play (by index): ";
             int cardIndex;
             std::cin >> cardIndex;
+            cardIndex-=1;
             if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
             {
                 const vector<Card *> specificCard = player.getPlayerCards();
-                player.playCard(board,*specificCard[cardIndex]);
+                player.playCard(board,*specificCard[cardIndex],players);
             }
             else
             {
@@ -149,6 +152,7 @@ void GamePlay::playerBuyRoad(Player &player)
     int vertexIndex1, vertexIndex2;
     cout << "Enter two vertex indices to place the road between: ";
     cin >> vertexIndex1 >> vertexIndex2;
+    
     vector<Vertex> boardVertices1 = board.getBoardVertices();
 
     // Check if the vertex indices are valid
@@ -174,14 +178,9 @@ void GamePlay::playerBuyRoad(Player &player)
         cout << "No edge between these vertices." << endl;
         return;
     }
-    Edge edge = Edge(edgeIndex);
-    if (!edgeIndex)
-    {
-        cout << "No edge between these vertices." << endl;
-        return;
-    }
+
     // Check if the road is already owned
-    if (edge.getOwner() != -1)
+    if (board.isEdgeOwned(edgeIndex))
     {
         cout << "Road is already owned by a player." << endl;
         return;
@@ -190,6 +189,8 @@ void GamePlay::playerBuyRoad(Player &player)
     if (board.hasAdjacentSettlementOrRoad(vertex1, vertex2, player.getPlayerNumber(), player))
     {
         board.buildRoad(vertexIndex1, vertexIndex2, player);
+        player.checkLargestRoad(players, board);
+
         return;
     }
     else
@@ -197,8 +198,6 @@ void GamePlay::playerBuyRoad(Player &player)
         cout << "Invalid placement. Please choose adjacent vertices with a settlement or road belonging to you." << endl;
         return;
     }
-
-    cout << "Road successfully built between vertices " << vertexIndex1 << " and " << vertexIndex2 << "." << endl;
 }
 
 void GamePlay::playerBuyCity(Player &player)
@@ -235,7 +234,7 @@ void GamePlay::playerBuyCity(Player &player)
 
     // Upgrade the settlement to a city
     board.upgradeSettlementToCity(vertexIndex, player);
-
+    player.removeSettlement(vertexIndex);
     cout << "Settlement upgraded to a city at vertex " << vertexIndex << "." << endl;
 }
 

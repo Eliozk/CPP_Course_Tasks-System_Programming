@@ -31,11 +31,11 @@ string Tile::getResource() const
     string res;
     if (resource == "Field")
     {
-        res = "Grain";
+        res = "Grain";//שיבולת
     }
     else if (resource == "Forest")
     {
-        res = "Lumber";
+        res = "Lumber";//עץ
     }
     else if (resource == "Pasture")
     {

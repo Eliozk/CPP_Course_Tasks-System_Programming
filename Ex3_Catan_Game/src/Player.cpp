@@ -9,22 +9,25 @@
 #include <Board.hpp>
 #include <algorithm>
 #include <ctime>
+#include <limits>
 
 using namespace std;
 using namespace ariel;
+int Player::longestRoad = 5;
 
 int Player::maxKnights = 0;
-bool Player::occupiedLargestArmy = 0;
+bool Player::occupiedLargestRoad = 0;
+bool Player::occupiedBiggesttArmy = 0;
 // Constructor
 Player::Player() {}
 Player::Player(int num, const string &name) : playerNumber(num), playerName(name), points(0)
 {
     // init resources
-    resources["Ore"] = 0;    // ברזל
-    resources["Wool"] = 0;   // צמר
-    resources["Lumber"] = 0; // עץ לבנייה
-    resources["Grain"] = 0;  // תבואה
-    resources["Brick"] = 0;  // לבנים
+    resources["Ore"] = 100;    // ברזל
+    resources["Wool"] = 100;   // צמר
+    resources["Lumber"] = 100; // עץ לבנייה
+    resources["Grain"] = 100;  // תבואה
+    resources["Brick"] = 100;  // לבנים
     playerKnights = 0;
 }
 Player &Player::operator=(const Player &other)
@@ -115,11 +118,28 @@ void Player::addSettlement(int vertexIndex)
     cout << this->getName() << " added Settlement at Vertex " << vertexIndex << endl;
 }
 
+void Player::removeSettlement(int vertexIndex)
+{
+    // Find the settlement in the vector
+    auto it = std::find(settlements.begin(), settlements.end(), vertexIndex);
+    
+    // If the settlement is found, remove it
+    if (it != settlements.end())
+    {
+        settlements.erase(it);
+    }
+    else
+    {
+        cerr << "Settlement not found at vertex index: " << vertexIndex << endl;
+    }
+}
+
 void Player::addRoad(int edgeIndex)
 {
     roads.push_back(edgeIndex);
     cout << this->getName() << " added Road on Edge " << edgeIndex << endl;
 }
+
 void Player::addCity(int cityIndex)
 {
     cities.push_back(cityIndex);
@@ -224,15 +244,15 @@ void Player::removeResource(string resource, int quantity)
 // Assuming Player class structure with necessary includes and definitions
 
 // Method to find the last player who holds the "Largest Army" card and transfer it
-Player *Player::findLastPlayerWithLargestArmy(vector<Player *> &players)
+Player *Player::findLastPlayerWithSpecialCard(vector<Player *> &players, const string& type)
 {
     Player *lastPlayerWithLargestArmy = nullptr;
 
     for (Player *player : players)
     {
-        if (player->hasSpecialCard("Special: Largest Army"))
+        if (player->hasSpecialCard(type))
         {
-                lastPlayerWithLargestArmy = player;
+            lastPlayerWithLargestArmy = player;
         }
     }
 
@@ -248,41 +268,43 @@ void Player::addKnight(vector<Player *> &players)
     if (playerKnights >= 3 && playerKnights > maxKnights)
     {
         maxKnights = playerKnights;
-        //check if has the special largest card.
+        // check if has the special largest card.
         for (Card *card : getSpecialCards())
         {
             if (card->getType() == "Special: Largest Army")
             {
-                HaveLargestArmy = 1;//true
+                HaveLargestArmy = 1; // true
                 break;
             }
         }
-        //if player doesnt have the Largestarmy card but other player has it and need to replace owner.
-        if (!HaveLargestArmy && occupiedLargestArmy)
+        // if player doesnt have the Largestarmy card but other player has it and need to replace owner.
+        if (!HaveLargestArmy && occupiedBiggesttArmy)
         {
             this->add2point(); // Award 2 victory points for Largest Army
             cout << playerName << " has earned the Largest Army card!" << std::endl;
-            for(Player *playerToremoveSpecial : players){
+            for (Player *playerToremoveSpecial : players)
+            {
 
-              //  if-->Transfer the Largest Army card from last player who had it to new largest army of knights.
-                if(playerToremoveSpecial->hasSpecialCard("Special: Largest Army")){
-                    playerToremoveSpecial->transferSpecialCard(*this,"Special: Largest Army" );
-                     std::cout << "Largest Army card transferred from " << playerToremoveSpecial->getName()
-                          << " to " << this->getName() << std::endl;
+                //  if-->Transfer the Largest Army card from last player who had it to new largest army of knights.
+                if (playerToremoveSpecial->hasSpecialCard("Special: Largest Army"))
+                {
+                    playerToremoveSpecial->transferSpecialCard(*this, "Special: Largest Army");
+                    std::cout << "Largest Army card transferred from " << playerToremoveSpecial->getName()
+                              << " to " << this->getName() << std::endl;
                     break;
                 }
             }
         }
-        //if no one had the largest army card.
-        else if(!occupiedLargestArmy){         
-           vector<Card*>  specialCards = Catan::getMainSpecialCards();
+        // if no one had the largest army card.
+        else if (!occupiedBiggesttArmy)
+        {
+            vector<Card *> specialCards = Catan::getMainSpecialCards();
             addSpecialCard(specialCards[1]);
             this->add2point();
-            //now it is occupied by a player.
-            occupiedLargestArmy =1;
+            // now it is occupied by a player.
+            occupiedBiggesttArmy = 1;
             cout << playerName << " has earned the Largest Army card!" << endl;
         }
-
     }
 }
 
@@ -305,20 +327,31 @@ bool Player::hasSpecialCard(const string &type) const
     return false;
 }
 
-// Transfer a specific type of special card to another player
-void Player::transferSpecialCard(Player &playerToadd, const string &type)
-{
-    auto it = std::find_if(specialCards.begin(), specialCards.end(), [&](Card *card)
-                           { return card->getType() == type; });
 
-    if (it != specialCards.end())
+
+// Transfer a specific type of special card to another player
+void Player::transferSpecialCard(Player &playerToAdd, const string &type)
+{    
+    bool cardFound = false; // To check if any card is found and transferred
+
+    auto it = specialCards.begin();
+    while (it != specialCards.end())
     {
-        // Transfer the card to the other player
-        playerToadd.addSpecialCard(*it);
-        this->specialCards.erase(it); // Remove the card from current player's collection
-        this->points -= 2;  //remove his 2 points.
+        if ((*it)->getType() == type)
+        {
+            // Transfer the card to the other player
+            playerToAdd.addSpecialCard(*it);
+            it = specialCards.erase(it); // Remove the card from the current player's collection
+            points -= 2; // Remove 2 points for each card
+            cardFound = true;
+        }
+        else
+        {
+            ++it; // Move to the next card
+        }
     }
 }
+
 
 // Add card to player's hand
 void Player::addCard(Card *card)
@@ -326,44 +359,119 @@ void Player::addCard(Card *card)
     playerCards.push_back(card);
 }
 
-void Player::playCard(Board &board, Card &card)
+void Player::playCard(Board &board, Card &card,vector<Player *> &players)
 {
-   // card.play(*this);
-  cout << "Executing DevelopmentCardStrategy for player: " << this->getName() << " with card: " << card.getType() << std::endl;
+    // card.play(*this);
+    cout << "Executing DevelopmentCardStrategy for player: " << this->getName() << " with card: " << card.getType() << std::endl;
 
-        string cardType = card.getType();
+    string cardType = card.getType();
 
-        if (cardType == "Victory Point")
+    if (cardType == "Victory Point")
+    {
+        // Example implementation for Victory Point card
+        this->add1point();
+    }
+    else if (cardType == "Road Building")
+    {
+        // Example implementation for Road Building card
+        // player can build 2 roads for free
+        board.buildRoadFree(*this);
+        board.buildRoadFree(*this);
+        checkLargestRoad(players, board);
+    }
+    else if (cardType == "Year Of Plenty")
+    {
+        // Print available resources with indices
+        vector<string> availableResources = {"Brick", "Lumber", "Wool", "Grain", "Ore"};
+        cout << "Available resources:" << endl;
+        for (int i = 0; i < availableResources.size(); ++i)
         {
-            // Example implementation for Victory Point card
-            this->add1point();
+            cout << i + 1 << ". " << availableResources[i] << " ";
         }
-        else if (cardType == "Road Building")
+        cout << endl;
+
+        string toADD;
+        string toADD2;
+
+        int choice,choice2;
+        cout << "Choose a resource by entering its index: ";
+        cin >> choice;
+        cout << "\nChoose second resource by entering its index: ";
+        cin >> choice2;
+
+        // Validate input to ensure it's within valid range
+        while (choice < 1 || choice > resources.size() || choice2 < 1 || choice2 > resources.size())
         {
-            // Example implementation for Road Building card
-            // player can build 2 roads for free
-             board.buildRoadFree(*this);
-             board.buildRoadFree(*this);
-        }
-        else if (cardType == "Year Of Plenty")
-        {
+            cout << "Invalid choice. Please enter a valid index: ";
+            cin.clear();                                         // Clear error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer
+            cin >> choice;
+            cin >> choice2;
             // Example implementation for Year Of Plenty card
             // player gets 2 resources of their choice from the bank
-            this->addResource("choice1", 1);
-            this->addResource("choice2", 1);
         }
-        else if (cardType == "Monopoly")
+        toADD = availableResources[choice-1];
+        toADD2 = availableResources[choice2-1];
+
+            this->addResource(toADD, 1);
+            this->addResource(toADD2, 1);
+        
+    }
+    // player chooses a resource, all other players must give all their resources of that type to this player
+    else if (cardType == "Monopoly")
+{
+    // Print available resources with indices
+    vector<string> availableResources = {"Brick", "Lumber", "Wool", "Grain", "Ore"};
+    cout << "Available resources:" << endl;
+    for (int i = 0; i < availableResources.size(); ++i)
+    {
+        cout << i + 1 << ". " << availableResources[i] << " ";
+    }
+    cout << endl;
+
+    int choice;
+    cout << "Choose a resource by entering its index: ";
+    cin >> choice;
+
+    // Validate input to ensure it's within valid range
+    while (choice < 1 || choice > availableResources.size())
+    {
+        cout << "Invalid choice. Please enter a valid index: ";
+        cin.clear(); // Clear error flags
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer
+        cin >> choice;
+    }
+
+    string chosenResource = availableResources[choice - 1];
+
+    int totalCollected = 0;
+
+    // Collect resources from other players
+    for (size_t i = 0; i < players.size(); ++i) 
+    {
+        // Skip the current player
+        if (players[i] == this) 
+            continue;
+        map<string, int> &resources = players[i]->getResources();
+      //  If it is not equal, it means the chosen resource was found in the map.
+        if (resources.find(chosenResource) != resources.end())
         {
-            // Example implementation for Monopoly card
-            // player chooses a resource, all other players must give all their resources of that type to this player
-            // std::string chosenResource = player.chooseResource();
-            // std::unordered_map<std::string, int> totalResources = player.collectResourceFromOthers(chosenResource);
-            // player.addResources(totalResources);
+            totalCollected += resources[chosenResource];
+            resources.erase(chosenResource); // Remove all resources of this type from the player
         }
-        else
-        {
-            std::cerr << "Unknown card type: " << cardType << std::endl;
-        }
+    }
+
+    // Add collected resources to the current player
+    this->addResource(chosenResource, totalCollected);
+
+    cout << "Collected " << totalCollected << " " << chosenResource << " from other players." << endl;
+    cout << "Current player now has " << this->getResources()[chosenResource] << " " << chosenResource << "." << endl;
+}
+
+    else
+    {
+        std::cerr << "Unknown card type: " << cardType << std::endl;
+    }
     // Find the card pointer in playerCards and remove it
     auto it = std::find_if(playerCards.begin(), playerCards.end(), [&](Card *c)
                            {
@@ -398,6 +506,12 @@ bool Player::canBuyDevelopmentCard() const
 }
  */
 
+
+    map<string, int>& Player::getResources(){
+        return resources;
+    }
+
+
 // dev card price is Ore 1, Wool 1, grain 1
 bool Player::buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players)
 {
@@ -419,7 +533,7 @@ bool Player::buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players
         playerCards.push_back(card);
         if (card->getType() == "Knight")
         {
-           
+
             this->addKnight(players);
 
             cout << this->getName() << " have new " << card->getType() << " card." << endl;
@@ -463,7 +577,7 @@ void Player::displayHand() const
     {
         for (size_t i = 0; i < playerCards.size(); ++i)
         {
-            std::cout << playerCards[i]->getType();
+            std::cout << i + 1 << ". " << playerCards[i]->getType();
             if (i != playerCards.size() - 1)
             {
                 cout << ", ";
@@ -473,57 +587,72 @@ void Player::displayHand() const
     }
 }
 
+void Player::checkLargestRoad(vector<Player*> &players, Board &board) {
+    Player *currentHolder = nullptr;
+    
+
+    // Find the player with the longest road
+    for (Player *player : players) {
+        vector<int> roads = player->getRoads();
+        int roadLength = board.pathOfRoads(player->getPlayerNumber(), *player); // Assuming a method to calculate the longest road
+        cout << "Player " << player->getPlayerNumber() << " path is " << roadLength << " longest road: " << longestRoad << endl;
+
+        // Check if the current player already holds the "Special: Largest Road" card
+        bool alreadyHasCard = player->hasSpecialCard("Special: Largest Road");
 
 
-// void Player::useYearOfPlenty(string resource1, string resource2)
-// {
-//     // check if the player has a year of plenty card
-//     for (int i = 0; i < developmentCardCount; i++)
-//     {
-//         if (developmentCards[i] == "Year of Plenty")
-//         {
-//             // check if the player can get the resources
-//             addResource(resource1, 1);
-//             addResource(resource2, 1);
-//             // delete the year of plenty card from the player's deck
-//             developmentCards.erase(developmentCards.begin() + i);
-//             developmentCardCount--;
-//             return;
-//         }
+         // Case 1: Find the player with the current longest road who doesn't already have the card
+        if (roadLength > longestRoad && !alreadyHasCard) {
+            longestRoad = roadLength;
+            currentHolder = player;
+        }
+        // Case 2: First player to achieve a path of 5 roads and the card is not occupied
+        if (roadLength >= 5 && !occupiedLargestRoad) {
+            cout << player->getName() << " achieves the longest road for the first time." << endl;
+            vector<Card *> specialCards = Catan::getMainSpecialCards();
+            player->addSpecialCard(specialCards[0]); // Assuming specialCards[0] is "Special: Largest Road"
+            player->add2point(); // Award 2 victory points
+            occupiedLargestRoad = true;
+            longestRoad = roadLength;
+            //currentHolder = player;
+            cout << player->getName() << " has earned the Largest Road card and 2 victory points!" << endl;
+            return;
+        }
+
+       
+    }
+
+    // Case 3: Transfer the card if a new player has a longer road than the current holder
+    for (Player *playerWithTheCard : players) {
+        bool alreadyHasCard = playerWithTheCard->hasSpecialCard("Special: Longest Road");
+        //if someone has this card, player is not the same as current
+        if (alreadyHasCard && playerWithTheCard != currentHolder && currentHolder) {
+            cout << "Transferring the Largest Road card from " << playerWithTheCard->getName() << " to " << currentHolder->getName() << endl;
+            playerWithTheCard->transferSpecialCard(*currentHolder, "Special: Longest Road");
+            currentHolder->add2point();
+            //playerWithTheCard->points -= 2;
+        }
+    }
+}
+
+// // Transfer a specific type of special card to another player
+// void Player::transferSpecialCard(Player &playerToAdd, const string &type) {
+//     auto it = std::find_if(specialCards.begin(), specialCards.end(), [&](Card *card) {
+//         return card->getType() == type;
+//     });
+
+//     if (it != specialCards.end()) {
+//         // Transfer the card to the other player
+//         playerToAdd.addSpecialCard(*it);
+//         specialCards.erase(it); // Remove the card from current player's collection
+//         points -= 2; // Remove 2 points from the current player
 //     }
-//     cout << "Player " << this->getName() << " does not have a year of plenty card" << endl;
 // }
 
-// void Player::useMonopoly(Board &board, string resource)
-// {
-//     // check if the player has a monopoly card
-//     for (int i = 0; i < developmentCardCount; i++)
-//     {
-//         if (developmentCards[i] == "Monopoly")
-//         {
-//             // check if the player can get the resources
-//             for (int j = 0; j < 3; j++)
-//             {
-//                 if (board.players[j]->getId() != this->getId())
-//                 {
-//                     for (int k = 0; (long unsigned int)k < board.players[j]->resources.size(); k++)
-//                     {
-//                         if (board.players[j]->resources[k].first == resource)
-//                         {
-//                             addResource(resource, board.players[j]->resources[k].second);
-//                             board.players[j]->resources[k].second = 0;
-//                         }
-//                     }
-//                 }
-//             }
-//             // delete the monopoly card from the player's deck
-//             developmentCards.erase(developmentCards.begin() + i);
-//             developmentCardCount--;
-//             return;
-//         }
-//     }
-//     cout << "Player " << this->getName() << " does not have a monopoly card" << endl;
-// }
+
+
+
+
 
 // // A function that allows the player to trade resources with other players
 // // resorce1 is the resource that the player wants to get from the other player
