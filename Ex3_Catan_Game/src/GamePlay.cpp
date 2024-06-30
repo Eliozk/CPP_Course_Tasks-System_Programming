@@ -31,6 +31,8 @@ void GamePlay::nextTurn()
     rollDiceAndDistributeResources();
     playerTurn(currentPlayer);
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    // After player's action, check if they've won
+        checkWinnerAndEndGame();
 }
 
 void GamePlay::rollDiceAndDistributeResources()
@@ -39,7 +41,18 @@ void GamePlay::rollDiceAndDistributeResources()
     int diceRoll = rollDice();
 
     cout << "Rolled a " << diceRoll << "!" << std::endl;
-    board.distribution(players, diceRoll);
+    if (diceRoll == 7)
+    {
+        handleDiceRollEquals7();
+    }
+    else
+    {
+        // Normal resource distribution based on dice roll
+        board.distribution(players, diceRoll);
+    }
+
+    // After player's action, check if they've won
+        checkWinnerAndEndGame();
 }
 
 void GamePlay::playerTurn(Player &player)
@@ -47,7 +60,7 @@ void GamePlay::playerTurn(Player &player)
     bool continueTurn = true;
     while (continueTurn)
     {
-        std::cout << "\n"
+       std::cout << "\n"
                   << player.getName() << ", choose an action:\n"
                   << "1. Show your info\n"
                   << "2. Buy Settlement\n"
@@ -55,8 +68,9 @@ void GamePlay::playerTurn(Player &player)
                   << "4. Buy City\n"
                   << "5. Play Card\n"
                   << "6. Buy Development Card\n"
-                  << "7. End Turn\n"
-                  << "8. Exit game\n";
+                  << "7. Trade with Player\n"
+                  << "8. End Turn\n"
+                  << "9. Exit game\n";
         int choice;
         std::cout << "choice: ";
         std::cin >> choice;
@@ -98,17 +112,15 @@ void GamePlay::playerTurn(Player &player)
             }
             break;
         case 6:
-            if (player.buyDevelopmentCard(cards, players))
-            {
-              //  cout <<"get here?"<<endl;
-            //    player.playCard(*cards[0]);
-            }
-
+            player.buyDevelopmentCard(cards, players);
             break;
-        case 7:
-            continueTurn = false;
+       case 7:
+            tradeResources(player);
             break;
         case 8:
+            continueTurn = false;
+            break;
+        case 9:
             catan.deleteMemory();
             exit(0);
         default:
@@ -116,6 +128,45 @@ void GamePlay::playerTurn(Player &player)
             break;
         }
     }
+}
+
+void GamePlay::tradeResources(Player &currentPlayer)
+{
+    std::cout << "\nTrading resources with another player." << std::endl;
+    int otherPlayerIndex;
+    std::string resource1, resource2;
+    int amount1, amount2;
+    for(int i = 0 ; i < players.size() ; i++){
+            cout<<i+1<<"."<<players[i]->getName()<<" ";
+    }
+    cout << "\nEnter player index to trade with (1-" << players.size() << "): ";
+    
+    cin >> otherPlayerIndex;
+    cout<< "debug player number: "<< currentPlayer.getPlayerNumber() <<", index chosen -1: "<< otherPlayerIndex-1<<endl;
+
+    if (otherPlayerIndex < 1 || otherPlayerIndex > players.size() || currentPlayer.getPlayerNumber() == otherPlayerIndex-1)
+    {
+        if(currentPlayer.getPlayerNumber() == otherPlayerIndex-1){
+            cout<< "Choose another player to trade with and stop play with yourself!"<<endl;
+        }
+        else{
+        cout << "Invalid player index." << endl;
+        }
+        return;
+    }
+
+     // Get the name of the other player
+    string otherPlayerName = players[otherPlayerIndex - 1]->getName();
+    string currentPlayername = currentPlayer.getName();
+    cout << currentPlayername << ":\n"; 
+    // Prompt for resources to trade
+    cout << "Enter resource and amount you want to give to " << otherPlayerName << " (e.g., 'Wood 2'): ";
+    std::cin >> resource1 >> amount1;
+
+    cout << "Enter resource and amount you want to get from " << otherPlayerName << " in return (e.g., 'Brick 1'): ";
+    cin >> resource2 >> amount2;
+
+    currentPlayer.tradeResources(board, players, otherPlayerIndex-1, resource1, amount1, resource2, amount2);
 }
 
 // buy settlement
@@ -259,4 +310,24 @@ int GamePlay::rollDice() const
     int rollResult = die1 + die2;
 
     return rollResult;
+}
+
+void GamePlay::handleDiceRollEquals7() {
+    for (auto& player : players) {
+        if (player->totalResourceCards() > 7) {
+            player->discardHalfCards();
+        }
+    }
+}
+
+
+void GamePlay::checkWinnerAndEndGame() {
+    for (auto player : players) {
+        if (player->getPoints() >= 10) {
+            cout << "Player " << player->getName() << " has reached 10 points and is the winner!" <<endl;
+            cout << "Game Over!" << std::endl;
+            catan.deleteMemory();
+            exit(0); // Exit the program
+        }
+    }
 }

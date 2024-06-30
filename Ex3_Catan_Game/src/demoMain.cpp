@@ -5,7 +5,6 @@
 #include "Board.hpp"
 #include "GamePlay.hpp"
 #include "Catan.hpp"
-#include "CardStrategy.hpp"
 
 using namespace std;
 using namespace ariel;

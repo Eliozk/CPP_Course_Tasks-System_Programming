@@ -28,24 +28,24 @@ namespace ariel
   {
   private:
     int playerNumber;
-    string playerName;               ///< The name of the player.
-    int points;                      ///< The player's points.
+    string playerName; ///< The name of the player.
+    int points;        ///< The player's points.
     int playerKnights;
-    static int maxKnights;  // Static variable to track max knights across all players
+    static int maxKnights; // Static variable to track max knights across all players
     static bool occupiedBiggesttArmy;
     static bool occupiedLargestRoad;
     static int longestRoad;
 
     bool hasMaxKnights;
-    
-    vector<int> settlements;         ///< The player's settlements.
-    int numberOfRoads;               ///< The number of roads the player has built.
-    vector<int> cities;              ///< The player's cities.
-    vector<int> roads;               ///< The player's roads.
-    vector<Tile> tiles;              ///< The player's tiles.
-    vector<Card *> playerCards; ///< The player's cards.
-     vector<Card *> specialCards; ///< The player's special cards.
-    map<string, int> resources;      ///< The player's resources.
+
+    vector<int> settlements;     ///< The player's settlements.
+    int numberOfRoads;           ///< The number of roads the player has built.
+    vector<int> cities;          ///< The player's cities.
+    vector<int> roads;           ///< The player's roads.
+    vector<Tile> tiles;          ///< The player's tiles.
+    vector<Card *> playerCards;  ///< The player's cards.
+    vector<Card *> specialCards; ///< The player's special cards.
+    map<string, int> resources;  ///< The player's resources.
 
   public:
     // Default constructor
@@ -57,7 +57,7 @@ namespace ariel
     ~Player();
     void setName(const string &name);
     int getPoints() const;
-    map<string, int>& getResources();
+    map<string, int> &getResources();
     // Methods to place settlements and roads
 
     void addSettlement(int vertexIndex);
@@ -66,23 +66,28 @@ namespace ariel
     void addCity(int cityindex);
     void add1point();
     void add2point();
-     
-    void addKnight(vector<Player*>& players);
+
+    void addKnight(vector<Player *> &players);
     // bool hasMaxKnights() const;  // Declaration of hasMaxKnights function
-    void transferSpecialCard(Player& otherPlayer, const string& type);
-    Player* findLastPlayerWithSpecialCard(vector<Player*>& players, const string& type );
-    bool hasSpecialCard(const string& type) const;
-    void addSpecialCard(Card* card);
-     vector<Card *> getSpecialCards() const;
+    void transferSpecialCard(Player &otherPlayer, const string &type);
+    Player *findLastPlayerWithSpecialCard(vector<Player *> &players, const string &type);
+    bool hasSpecialCard(const string &type) const;
+    void addSpecialCard(Card *card);
+    vector<Card *> getSpecialCards() const;
     int getPlayerNumber() const;
-    
+
     vector<Card *> getPlayerCards() const;
+
+  // Method to calculate total number of resource cards
+    int totalResourceCards() const ;
+    void discardCards(const std::string& resource, int amount);
+    void discardHalfCards();
 
     vector<int> getRoads() const;
     vector<int> getPlayerSettlements() const;
-     void checkLargestRoad(vector<Player*>& players, Board& board);
-   
- 
+    void checkLargestRoad(vector<Player *> &players, Board &board);
+    void tradeResources(Board &board,vector<Player*> &players, int player, string resource1, int amount, string resource2, int amount2);
+
     // Method to print points
     void printPoints() const;
 
@@ -104,20 +109,18 @@ namespace ariel
 
     // Add card to player's hand
     void addCard(Card *card);
-    void playCard(Board &board, Card &card,vector<Player *> &players);
-  // Method to end turn
-  // void endTurn();
- 
-   bool canBuySettlement();
-   bool canBuyCity();
-   bool canBuyRoad();
+    void playCard(Board &board, Card &card, vector<Player *> &players);
+    // Method to end turn
+    // void endTurn();
 
-   bool canBuyDevelopmentCard() const;
-   bool buyDevelopmentCard(vector<Card *> &cards, vector<Player*>& players);
-  // Method to trade resources
-   void trade(Player& otherPlayer, const std::string& giveResource, const std::string& getResource, int giveAmount, int getAmount);
+    bool canBuySettlement();
+    bool canBuyCity();
+    bool canBuyRoad();
 
-
+    bool canBuyDevelopmentCard() const;
+    bool buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players);
+    // Method to trade resources
+    void trade(Player &otherPlayer, const std::string &giveResource, const std::string &getResource, int giveAmount, int getAmount);
 
     // Display player's hand
     void displayHand() const;
@@ -127,7 +130,6 @@ namespace ariel
     void displayCities() const;
     void displayAll() const;
   };
-
 
   // Method to buy development cards
   // void buyDevelopmentCard();

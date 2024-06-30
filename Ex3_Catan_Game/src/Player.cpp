@@ -654,35 +654,98 @@ void Player::checkLargestRoad(vector<Player*> &players, Board &board) {
 
 
 
-// // A function that allows the player to trade resources with other players
-// // resorce1 is the resource that the player wants to get from the other player
-// void Player::tradeResources(Board &board, int player, string resource1, int amount, string resource2, int amount2)
-// {
-//     // check if the player has the resources
-//     for (int i = 0; i < 5; i++)
-//     {
-//         if (resources[i].first == resource2 && resources[i].second >= amount2)
-//         {
-//             // check if the other player has the resources
-//             for (int j = 0; j < 5; j++)
-//             {
-//                 if (board.players[player - 1]->resources[j].first == resource1 && board.players[player - 1]->resources[j].second >= amount)
-//                 {
-//                     // trade the resources
-//                     resources[j].second += amount2;
-//                     resources[i].second -= amount2;
-//                     board.players[player - 1]->resources[i].second += amount;
-//                     board.players[player - 1]->resources[j].second -= amount;
-//                     cout << "Player " << this->getName() << " traded " << amount << " " << resource1 << " with player " << board.players[player - 1]->getName() << " for " << amount2 << " " << resource2 << endl;
-//                     // print the resources that the player has after trading
-//                     cout << "Player " << this->getName() << " now has resources: Wood: " << resources[0].second << ", Brick: " << resources[1].second << ", Wool: " << resources[2].second << ", Wheat: " << resources[3].second << ", Ore: " << resources[4].second << endl;
-//                     // print the resources that the other player has after trading
-//                     cout << "Player " << board.players[player - 1]->getName() << " now has resources: Wood: " << board.players[player - 1]->resources[0].second << ", Brick: " << board.players[player - 1]->resources[1].second << ", Wool: " << board.players[player - 1]->resources[2].second << ", Wheat: " << board.players[player - 1]->resources[3].second << ", Ore: " << board.players[player - 1]->resources[4].second << endl;
-//                     return;
-//                 }
-//             }
-//         }
-//     }
-//     // print that the trade was not successful
-//     cout << "Player " << this->getName() << " cannot trade " << amount << " " << resource1 << " with player " << board.players[player - 1]->getName() << " for " << amount2 << " " << resource2 << endl;
-// }
+void Player::tradeResources(Board &board, vector<Player *> &players, int playerIndex, string resource1, int amount, string resource2, int amount2)
+{
+    // Check if the player who play the turn has the resources to trade
+    auto it1 = resources.find(resource1); // Find resource1 (e.g., "Brick") in the current player's resources
+    auto it2 = resources.find(resource2); // Find resource2 (e.g., "Grain") in the current player's resources
+
+    if (it1 != resources.end() && it2 != resources.end() && it1->second >= amount && it2->second >= amount2)
+    {
+        // Check if the other player has the resources to trade
+        auto otherPlayerResources = players[playerIndex]->resources; // Get the resources of the other player
+        auto it3 = otherPlayerResources.find(resource1); // Find resource1 (e.g., "Brick") in the other player's resources
+        auto it4 = otherPlayerResources.find(resource2); // Find resource2 (e.g., "Grain") in the other player's resources
+
+        if (it3 != otherPlayerResources.end() && it4 != otherPlayerResources.end() && it3->second >= amount && it4->second >= amount2)
+        {
+            // Trade the resources
+            it1->second -= amount; // Decrease resource1 (e.g., "Brick") by amount in the current player's resources
+            it2->second += amount2; // Increase resource2 (e.g., "Grain") by amount2 in the current player's resources
+            it3->second -= amount; // Decrease resource1 (e.g., "Brick") by amount in the other player's resources
+            it4->second += amount2; // Increase resource2 (e.g., "Grain") by amount2 in the other player's resources
+
+            cout << "Player " << this->getName() << " traded " << amount << " " << resource1 << " with player " << players[playerIndex]->getName() << " for " << amount2 << " " << resource2 << endl;
+
+            // Print the resources that the player has after trading
+            cout << "Player " << this->getName() << " now has resources: ";
+            for (auto& res : resources) {
+                cout << res.first << ": " << res.second << ", "; // Print each resource type and amount in the current player's resources
+            }
+            cout << endl;
+
+            // Print the resources that the other player has after trading
+            cout << "Player " << players[playerIndex]->getName() << " now has resources: ";
+            for (auto& res : players[playerIndex]->resources) {
+                cout << res.first << ": " << res.second << ", "; // Print each resource type and amount in the other player's resources
+            }
+            cout << endl;
+
+            return; // Exit the function after successful trading
+        }
+    }
+
+    // Print that the trade was not successful
+    cout << "Player " << this->getName() << " cannot trade " << amount << " " << resource1 << " with player " << players[playerIndex]->getName() << " for " << amount2 << " " << resource2 << endl;
+}
+
+// Method to calculate total number of resource cards
+    int Player::totalResourceCards() const {
+        int total = 0;
+        for (const auto& pair : resources) {
+            total += pair.second; // Add the count of each resource type
+        }
+        return total;
+    }
+
+ // Method to discard specific amount of resource cards
+    void Player::discardCards(const string& resource, int amount) {
+        auto it = resources.find(resource);
+        if (it != resources.end()) {
+            if (it->second >= amount) {
+                it->second -= amount;
+                std::cout << "Discarded " << amount << " " << resource << " cards." << std::endl;
+            } else {
+                std::cout << "Not enough " << resource << " cards to discard." << std::endl;
+            }
+        } else {
+            cout << "You do not have " << resource << " cards to discard." << std::endl;
+        }
+    }
+
+    // Method to discard half of the resource cards
+    void Player::discardHalfCards() {
+        int totalCards = totalResourceCards();
+        if (totalCards <= 7) {
+            std::cout << "You have 7 or fewer resource cards. No need to discard." << std::endl;
+            return;
+        }
+
+        int cardsToDiscard = totalCards / 2;
+        std::cout << "You have more than 7 resource cards (" << totalCards << "). You must discard " << cardsToDiscard << " cards." << std::endl;
+
+        while (cardsToDiscard > 0) {
+            std::cout << "Your current resources: ";
+            displayResources(); // Implement this method to display current resources
+
+            std::string resource;
+            int amount;
+            std::cout << "Enter resource and amount to discard (e.g., 'Wood 2'): ";
+            std::cin >> resource >> amount;
+
+            discardCards(resource, amount);
+            cardsToDiscard -= amount;
+        }
+
+        std::cout << "Discard phase completed." << std::endl;
+    }

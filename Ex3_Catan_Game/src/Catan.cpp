@@ -123,9 +123,9 @@ void Catan::placeInitialSettlementsAndRoads(Board &catanBoard)
     // player.placeRoad(places, placesNum, board);
     }
 }
-
+ // Clean up dynamically allocated cards
 void Catan::deleteMemory(){
-    // Clean up dynamically allocated cards
+   
 for (Card *card : cards) {
     delete card;
 }
@@ -134,7 +134,6 @@ for (Card *specialCard : specialCards) {
 }
 cards.clear();
 specialCards.clear();
-
 }
 
 void Catan::printWinner() const
