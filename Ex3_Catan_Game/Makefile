@@ -24,6 +24,9 @@ $(BUILD_DIR):
 run: $(EXEC)
 	./$(EXEC)
 
+catan:
+	./$(EXEC)
+
 debug: $(EXEC)
 	gdb ./$(EXEC)
 #gdb ./Ex3_Catan_Game /mnt/wslg/dumps/core.demoMain.188698 -replace only the core

@@ -86,7 +86,7 @@ namespace ariel
     vector<int> getRoads() const;
     vector<int> getPlayerSettlements() const;
     void checkLargestRoad(vector<Player *> &players, Board &board);
-    void tradeResources(Board &board,vector<Player*> &players, int player, string resource1, int amount, string resource2, int amount2);
+    void tradeResources(Player &otherPlayer, const std::string &resource1, int amount1, const std::string &resource2, int amount2);
 
     // Method to print points
     void printPoints() const;

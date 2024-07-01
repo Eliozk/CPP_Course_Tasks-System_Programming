@@ -12,7 +12,7 @@ GamePlay::GamePlay(vector<Player *> &players, Catan &catan, Board &board) : play
 
 void GamePlay::startGame()
 {
-    catan.initializePlayers();
+    // catan.initializePlayers();
     catan.ChooseStartingPlayer();
     cards = catan.createAndShuffleCards();
     catan.placeInitialSettlementsAndRoads(board);
@@ -32,7 +32,7 @@ void GamePlay::nextTurn()
     playerTurn(currentPlayer);
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     // After player's action, check if they've won
-        checkWinnerAndEndGame();
+    checkWinnerAndEndGame();
 }
 
 void GamePlay::rollDiceAndDistributeResources()
@@ -41,18 +41,18 @@ void GamePlay::rollDiceAndDistributeResources()
     int diceRoll = rollDice();
 
     cout << "Rolled a " << diceRoll << "!" << std::endl;
-    if (diceRoll == 7)
-    {
-        handleDiceRollEquals7();
-    }
-    else
-    {
-        // Normal resource distribution based on dice roll
-        board.distribution(players, diceRoll);
-    }
+    // if (diceRoll == 7)
+    // {
+    //     handleDiceRollEquals7();
+    // }
+    // else
+    // {
+    // Normal resource distribution based on dice roll
+    board.distribution(players, diceRoll);
+    // }
 
     // After player's action, check if they've won
-        checkWinnerAndEndGame();
+    checkWinnerAndEndGame();
 }
 
 void GamePlay::playerTurn(Player &player)
@@ -60,7 +60,7 @@ void GamePlay::playerTurn(Player &player)
     bool continueTurn = true;
     while (continueTurn)
     {
-       std::cout << "\n"
+        std::cout << "\n"
                   << player.getName() << ", choose an action:\n"
                   << "1. Show your info\n"
                   << "2. Buy Settlement\n"
@@ -95,26 +95,32 @@ void GamePlay::playerTurn(Player &player)
             playerBuyCity(player);
             break;
         case 5:
-            cout <<endl;
+            cout << endl;
             player.displayHand();
-            std::cout << "Choose a card to play (by index): ";
-            int cardIndex;
-            std::cin >> cardIndex;
-            cardIndex-=1;
-            if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
+            if (player.getPlayerCards().size() != 0)
             {
-                const vector<Card *> specificCard = player.getPlayerCards();
-                player.playCard(board,*specificCard[cardIndex],players);
-            }
-            else
-            {
-                std::cout << "Invalid card index." << std::endl;
+                std::cout << "Choose a card to play (by index): ";
+                int cardIndex;
+                std::cin >> cardIndex;
+                cardIndex -= 1;
+                if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
+                {
+                    const vector<Card *> specificCard = player.getPlayerCards();
+                    player.playCard(board, *specificCard[cardIndex], players);
+                }
+                else
+                {
+                    std::cout << "Invalid card index." << std::endl;
+                }
+            
+            // after playing dev card we continue to next turn of another player.
+            continueTurn = false;
             }
             break;
         case 6:
             player.buyDevelopmentCard(cards, players);
             break;
-       case 7:
+        case 7:
             tradeResources(player);
             break;
         case 8:
@@ -136,37 +142,41 @@ void GamePlay::tradeResources(Player &currentPlayer)
     int otherPlayerIndex;
     std::string resource1, resource2;
     int amount1, amount2;
-    for(int i = 0 ; i < players.size() ; i++){
-            cout<<i+1<<"."<<players[i]->getName()<<" ";
-    }
-    cout << "\nEnter player index to trade with (1-" << players.size() << "): ";
-    
-    cin >> otherPlayerIndex;
-    cout<< "debug player number: "<< currentPlayer.getPlayerNumber() <<", index chosen -1: "<< otherPlayerIndex-1<<endl;
 
-    if (otherPlayerIndex < 1 || otherPlayerIndex > players.size() || currentPlayer.getPlayerNumber() == otherPlayerIndex-1)
+    for (int i = 0; i < players.size(); i++)
     {
-        if(currentPlayer.getPlayerNumber() == otherPlayerIndex-1){
-            cout<< "Choose another player to trade with and stop play with yourself!"<<endl;
+        std::cout << i + 1 << "." << players[i]->getName() << " ";
+    }
+    std::cout << "\nEnter player index to trade with (1-" << players.size() << "): ";
+
+    std::cin >> otherPlayerIndex;
+    std::cout << "debug player number: " << currentPlayer.getPlayerNumber() << ", index chosen -1: " << otherPlayerIndex - 1 << std::endl;
+
+    if (otherPlayerIndex < 1 || otherPlayerIndex > players.size() || currentPlayer.getPlayerNumber() == otherPlayerIndex - 1)
+    {
+        if (currentPlayer.getPlayerNumber() == otherPlayerIndex - 1)
+        {
+            std::cout << "Choose another player to trade with and stop play with yourself!" << std::endl;
         }
-        else{
-        cout << "Invalid player index." << endl;
+        else
+        {
+            std::cout << "Invalid player index." << std::endl;
         }
         return;
     }
 
-     // Get the name of the other player
-    string otherPlayerName = players[otherPlayerIndex - 1]->getName();
-    string currentPlayername = currentPlayer.getName();
-    cout << currentPlayername << ":\n"; 
+    std::string otherPlayerName = players[otherPlayerIndex - 1]->getName();
+    std::string currentPlayerName = currentPlayer.getName();
+    std::cout << currentPlayerName << ":\n";
+
     // Prompt for resources to trade
-    cout << "Enter resource and amount you want to give to " << otherPlayerName << " (e.g., 'Wood 2'): ";
+    std::cout << "Enter resource and amount you want to give to " << otherPlayerName << " (e.g., 'Wood 2'): ";
     std::cin >> resource1 >> amount1;
 
-    cout << "Enter resource and amount you want to get from " << otherPlayerName << " in return (e.g., 'Brick 1'): ";
-    cin >> resource2 >> amount2;
+    std::cout << "Enter resource and amount you want to get from " << otherPlayerName << " in return (e.g., 'Brick 1'): ";
+    std::cin >> resource2 >> amount2;
 
-    currentPlayer.tradeResources(board, players, otherPlayerIndex-1, resource1, amount1, resource2, amount2);
+    currentPlayer.tradeResources(*players[otherPlayerIndex - 1], resource1, amount1, resource2, amount2);
 }
 
 // buy settlement
@@ -203,7 +213,7 @@ void GamePlay::playerBuyRoad(Player &player)
     int vertexIndex1, vertexIndex2;
     cout << "Enter two vertex indices to place the road between: ";
     cin >> vertexIndex1 >> vertexIndex2;
-    
+
     vector<Vertex> boardVertices1 = board.getBoardVertices();
 
     // Check if the vertex indices are valid
@@ -312,19 +322,24 @@ int GamePlay::rollDice() const
     return rollResult;
 }
 
-void GamePlay::handleDiceRollEquals7() {
-    for (auto& player : players) {
-        if (player->totalResourceCards() > 7) {
+void GamePlay::handleDiceRollEquals7()
+{
+    for (auto &player : players)
+    {
+        if (player->totalResourceCards() > 7)
+        {
             player->discardHalfCards();
         }
     }
 }
 
-
-void GamePlay::checkWinnerAndEndGame() {
-    for (auto player : players) {
-        if (player->getPoints() >= 10) {
-            cout << "Player " << player->getName() << " has reached 10 points and is the winner!" <<endl;
+void GamePlay::checkWinnerAndEndGame()
+{
+    for (auto player : players)
+    {
+        if (player->getPoints() >= 10)
+        {
+            cout << "Player " << player->getName() << " has reached 10 points and is the winner!" << endl;
             cout << "Game Over!" << std::endl;
             catan.deleteMemory();
             exit(0); // Exit the program

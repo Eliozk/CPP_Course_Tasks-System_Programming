@@ -49,10 +49,11 @@ std::vector<Card *> Catan::createAndShuffleCards() {
     specialCards.clear();
 
     // Create and add development cards
-    for (int i = 0; i < 14; ++i) {
+    //knights 3,Victory pt 4 - as requested in Git of Benjamin.
+    for (int i = 0; i < 3; ++i) {
         cards.push_back(new DevelopmentCard("Knight"));
     }
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
         cards.push_back(new DevelopmentCard("Victory Point"));
     }
     for (int i = 0; i < 2; ++i) {

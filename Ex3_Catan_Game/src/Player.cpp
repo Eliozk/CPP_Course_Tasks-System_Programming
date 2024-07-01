@@ -95,6 +95,7 @@ void Player::add2point()
 }
 bool Player::canBuySettlement()
 {
+    //grain תבואה,wool-צמר
     // Check if the player has enough resources for a settlement
     return (resources["Lumber"] >= 1 && resources["Brick"] >= 1 &&
             resources["Grain"] >= 1 && resources["Wool"] >= 1);
@@ -103,12 +104,13 @@ bool Player::canBuySettlement()
 bool Player::canBuyCity()
 {
     // Check if the player has enough resources for a city
+    //Grain שיבולת
     return (resources["Ore"] >= 3 && resources["Grain"] >= 2);
 }
 
 bool Player::canBuyRoad()
 {
-    // Check if the player has enough resources for a road
+    // Check if the player has enough resources for a road עץ,לבנים
     return (resources["Brick"] >= 1 && resources["Lumber"] >= 1);
 }
 
@@ -590,7 +592,6 @@ void Player::displayHand() const
 void Player::checkLargestRoad(vector<Player*> &players, Board &board) {
     Player *currentHolder = nullptr;
     
-
     // Find the player with the longest road
     for (Player *player : players) {
         vector<int> roads = player->getRoads();
@@ -635,69 +636,40 @@ void Player::checkLargestRoad(vector<Player*> &players, Board &board) {
     }
 }
 
-// // Transfer a specific type of special card to another player
-// void Player::transferSpecialCard(Player &playerToAdd, const string &type) {
-//     auto it = std::find_if(specialCards.begin(), specialCards.end(), [&](Card *card) {
-//         return card->getType() == type;
-//     });
-
-//     if (it != specialCards.end()) {
-//         // Transfer the card to the other player
-//         playerToAdd.addSpecialCard(*it);
-//         specialCards.erase(it); // Remove the card from current player's collection
-//         points -= 2; // Remove 2 points from the current player
-//     }
-// }
-
-
-
-
-
-
-void Player::tradeResources(Board &board, vector<Player *> &players, int playerIndex, string resource1, int amount, string resource2, int amount2)
+void Player::tradeResources(Player &otherPlayer, const std::string &resource1, int amount1, const std::string &resource2, int amount2)
 {
-    // Check if the player who play the turn has the resources to trade
-    auto it1 = resources.find(resource1); // Find resource1 (e.g., "Brick") in the current player's resources
-    auto it2 = resources.find(resource2); // Find resource2 (e.g., "Grain") in the current player's resources
-
-    if (it1 != resources.end() && it2 != resources.end() && it1->second >= amount && it2->second >= amount2)
+    // Check if the current player has the resources to trade
+    if (resources[resource1] >= amount1 && otherPlayer.resources[resource2] >= amount2)
     {
-        // Check if the other player has the resources to trade
-        auto otherPlayerResources = players[playerIndex]->resources; // Get the resources of the other player
-        auto it3 = otherPlayerResources.find(resource1); // Find resource1 (e.g., "Brick") in the other player's resources
-        auto it4 = otherPlayerResources.find(resource2); // Find resource2 (e.g., "Grain") in the other player's resources
+        // Perform the trade
+        resources[resource1] -= amount1;
+        resources[resource2] += amount2;
+        otherPlayer.resources[resource1] += amount1;
+        otherPlayer.resources[resource2] -= amount2;
 
-        if (it3 != otherPlayerResources.end() && it4 != otherPlayerResources.end() && it3->second >= amount && it4->second >= amount2)
-        {
-            // Trade the resources
-            it1->second -= amount; // Decrease resource1 (e.g., "Brick") by amount in the current player's resources
-            it2->second += amount2; // Increase resource2 (e.g., "Grain") by amount2 in the current player's resources
-            it3->second -= amount; // Decrease resource1 (e.g., "Brick") by amount in the other player's resources
-            it4->second += amount2; // Increase resource2 (e.g., "Grain") by amount2 in the other player's resources
+        std::cout << "Player " << this->getName() << " traded " << amount1 << " " << resource1 << " with player " << otherPlayer.getName() << " for " << amount2 << " " << resource2 << std::endl;
 
-            cout << "Player " << this->getName() << " traded " << amount << " " << resource1 << " with player " << players[playerIndex]->getName() << " for " << amount2 << " " << resource2 << endl;
-
-            // Print the resources that the player has after trading
-            cout << "Player " << this->getName() << " now has resources: ";
-            for (auto& res : resources) {
-                cout << res.first << ": " << res.second << ", "; // Print each resource type and amount in the current player's resources
-            }
-            cout << endl;
-
-            // Print the resources that the other player has after trading
-            cout << "Player " << players[playerIndex]->getName() << " now has resources: ";
-            for (auto& res : players[playerIndex]->resources) {
-                cout << res.first << ": " << res.second << ", "; // Print each resource type and amount in the other player's resources
-            }
-            cout << endl;
-
-            return; // Exit the function after successful trading
+        // Print the resources that the player has after trading
+        std::cout << "Player " << this->getName() << " now has resources: ";
+        for (const auto &res : resources) {
+            std::cout << res.first << ": " << res.second << ", ";
         }
-    }
+        std::cout << std::endl;
 
-    // Print that the trade was not successful
-    cout << "Player " << this->getName() << " cannot trade " << amount << " " << resource1 << " with player " << players[playerIndex]->getName() << " for " << amount2 << " " << resource2 << endl;
+        // Print the resources that the other player has after trading
+        std::cout << "Player " << otherPlayer.getName() << " now has resources: ";
+        for (const auto &res : otherPlayer.resources) {
+            std::cout << res.first << ": " << res.second << ", ";
+        }
+        std::cout << std::endl;
+    }
+    else
+    {
+        // Print that the trade was not successful
+        std::cout << "Trade not possible. Check the resource amounts." << std::endl;
+    }
 }
+
 
 // Method to calculate total number of resource cards
     int Player::totalResourceCards() const {
