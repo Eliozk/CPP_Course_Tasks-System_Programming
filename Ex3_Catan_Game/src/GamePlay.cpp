@@ -148,7 +148,6 @@ void GamePlay::tradeResources(Player &currentPlayer)
     std::cout << "\nEnter player index to trade with (1-" << players.size() << "): ";
 
     std::cin >> otherPlayerIndex;
-    std::cout << "debug player number: " << currentPlayer.getPlayerNumber() << ", index chosen -1: " << otherPlayerIndex - 1 << std::endl;
 
     if (otherPlayerIndex < 1 || otherPlayerIndex > players.size() || currentPlayer.getPlayerNumber() == otherPlayerIndex - 1)
     {

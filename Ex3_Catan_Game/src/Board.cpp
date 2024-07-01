@@ -31,7 +31,6 @@ void Board::initializeBoard()
 {
 
     cout << "Initializing board..." << endl;
-    int hexagonsPerRow[5] = {3, 4, 5, 4, 3};
 
     // predefine map:
     vector<string> tileNames = {

@@ -18,6 +18,7 @@ Catan is a popular strategy board game where players collect resources and build
 - **src/Edge.cpp**: Contains the implementation of the Edge class.
 - **src/Catan.cpp**: Contains the implementation of the Catan class.
 - **src/GamePlay.cpp**: Contains the implementation of the GamePlay class.
+- **src/testCatan.cpp**: contains various tests for the game.
 
 ### Makefile
 The Makefile contains the rules to compile the project and manage the build process.
@@ -34,6 +35,7 @@ make all
 - `run`: Runs the executable.
 - `catan`: Runs the executable without recompiling.
 - `debug`: Runs the executable in gdb.
+- `testCatan`: to run tests.
 - `clean`: Removes the executable and object files.
 
 ### Game Rules
