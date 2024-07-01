@@ -5,13 +5,10 @@
 #include <vector>
 #include <Edge.hpp>
 #include "Vertex.hpp"
-//using namespace std;
+
 namespace ariel
 {
-    // Forward declaration
-    //  class Vertex;
-
-    // Include necessary headers in the implementation file
+   
     class Tile
     {
     private:

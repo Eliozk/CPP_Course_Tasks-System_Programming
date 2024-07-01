@@ -60,11 +60,6 @@ void Tile::setVertex(Vertex &vertex)
         vertices.push_back(&vertex);
 }
 
-// vector<Vertex *>& Tile::getVertices()
-// {
-//     return vertices;
-// }
-
 void Tile::setEdge(int position, const Edge &edge)
 {
     if (position >= 0 && position < 6)

@@ -119,8 +119,6 @@ namespace ariel
 
     bool canBuyDevelopmentCard() const;
     bool buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players);
-    // Method to trade resources
-    void trade(Player &otherPlayer, const std::string &giveResource, const std::string &getResource, int giveAmount, int getAmount);
 
     // Display player's hand
     void displayHand() const;
@@ -130,9 +128,5 @@ namespace ariel
     void displayCities() const;
     void displayAll() const;
   };
-
-  // Method to buy development cards
-  // void buyDevelopmentCard();
-
 }
 #endif

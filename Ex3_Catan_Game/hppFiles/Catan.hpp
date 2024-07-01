@@ -29,14 +29,11 @@ namespace ariel
         vector<Card *> createAndShuffleCards(); // responsible for all kind of cards including the specials.
         static vector<Card*> getMainSpecialCards();
         void placeInitialSettlementsAndRoads(Board &catanbBoard);
-        //void distributeInitialResources();
-        //void distribution(vector<Player *> &players, int diceRoll);
 
         void ChooseStartingPlayer() const;
 
         Board &getBoard();
 
-        void printWinner() const;
         void deleteMemory();
     };
 }

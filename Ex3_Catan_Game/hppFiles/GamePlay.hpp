@@ -30,8 +30,6 @@ namespace ariel
         void tradeResources(Player &currentPlayer);
         void handleDiceRollEquals7();
         void checkWinnerAndEndGame(); // Declaration for checking winner and ending the game
-
-        // void displayGameState();
     };
 }
 #endif // GAMEPLAY_HPP

@@ -12,11 +12,10 @@ GamePlay::GamePlay(vector<Player *> &players, Catan &catan, Board &board) : play
 
 void GamePlay::startGame()
 {
-    // catan.initializePlayers();
+    catan.initializePlayers();
     catan.ChooseStartingPlayer();
     cards = catan.createAndShuffleCards();
     catan.placeInitialSettlementsAndRoads(board);
-    // displayGameState();
 
     while (true)
     {
@@ -41,16 +40,15 @@ void GamePlay::rollDiceAndDistributeResources()
     int diceRoll = rollDice();
 
     cout << "Rolled a " << diceRoll << "!" << std::endl;
-    // if (diceRoll == 7)
-    // {
-    //     handleDiceRollEquals7();
-    // }
-    // else
-    // {
+    if (diceRoll == 7)
+    {
+        handleDiceRollEquals7();
+    }
+    else
+    {
     // Normal resource distribution based on dice roll
     board.distribution(players, diceRoll);
-    // }
-
+    }
     // After player's action, check if they've won
     checkWinnerAndEndGame();
 }
@@ -299,14 +297,6 @@ void GamePlay::playerBuyCity(Player &player)
     cout << "Settlement upgraded to a city at vertex " << vertexIndex << "." << endl;
 }
 
-// void GamePlay::displayGameState() {
-//     std::cout << "Current Game State:" << std::endl;
-//     for (const auto &player : players) {
-//         player.displayResources();
-//     }
-//     // Display board state if necessary
-// }
-
 // This function return number of rolled 2 dices.
 int GamePlay::rollDice() const
 {
@@ -339,7 +329,7 @@ void GamePlay::checkWinnerAndEndGame()
     {
         if (player->getPoints() >= 10)
         {
-            cout << "Player " << player->getName() << " has reached 10 points and is the winner!" << endl;
+            cout << "Player " << player->getName() << " has reached 10 points and he is the winner!" << endl;
             cout << "Game Over!" << std::endl;
             catan.deleteMemory();
             exit(0); // Exit the program

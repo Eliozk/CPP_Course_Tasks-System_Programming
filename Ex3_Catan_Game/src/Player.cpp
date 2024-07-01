@@ -23,11 +23,11 @@ Player::Player() {}
 Player::Player(int num, const string &name) : playerNumber(num), playerName(name), points(0)
 {
     // init resources
-    resources["Ore"] = 100;    // ברזל
-    resources["Wool"] = 100;   // צמר
-    resources["Lumber"] = 100; // עץ לבנייה
-    resources["Grain"] = 100;  // תבואה
-    resources["Brick"] = 100;  // לבנים
+    resources["Ore"] = 0;    // ברזל
+    resources["Wool"] = 0;   // צמר
+    resources["Lumber"] = 0; // עץ לבנייה
+    resources["Grain"] = 0;  // תבואה
+    resources["Brick"] = 0;  // לבנים
     playerKnights = 0;
 }
 Player &Player::operator=(const Player &other)
@@ -203,32 +203,12 @@ void Player::displayAll() const
     displayCities();
 }
 
-// void Player::trade(Player& otherPlayer, const string& giveResource, const string& getResource, int giveAmount, int getAmount) {
-//     // Implementation for trading resources
-//     if (resources[giveResource] >= giveAmount) {
-//         resources[giveResource] -= giveAmount;
-//         resources[getResource] += getAmount;
-//         otherPlayer.resources[giveResource] += giveAmount;
-//         otherPlayer.resources[getResource] -= getAmount;
-//     } else {
-//         throw std::runtime_error("Insufficient resources for trade");
-//     }
-// }
 
-void playDevelopmentCard(const DevelopmentCard &card)
-{
-    // Implementation for playing a development card
-    // this->playCard(card);
-}
 
 void Player::printPoints() const
 {
     std::cout << playerName << " has " << points << " points." << std::endl;
 }
-
-// void Player::endTurn() {
-//     // Implementation to end turn
-// }
 
 // Methods to manage resources to each player.
 void Player::addResource(const string &resource, int quantity)
@@ -498,17 +478,6 @@ bool Player::canBuyDevelopmentCard() const
     return resources.at("Ore") >= 1 && resources.at("Wool") >= 1 && resources.at("Grain") >= 1;
 }
 
-/**
- * bool Player::buyDevelopmentCard(std::vector<Card *> &developmentCards) {
-
-
-
-    std::cout << name << " bought a " << card->getType() << " card." << std::endl;
-    return true;
-}
- */
-
-
     map<string, int>& Player::getResources(){
         return resources;
     }
@@ -699,15 +668,15 @@ void Player::tradeResources(Player &otherPlayer, const std::string &resource1, i
     void Player::discardHalfCards() {
         int totalCards = totalResourceCards();
         if (totalCards <= 7) {
-            std::cout << "You have 7 or fewer resource cards. No need to discard." << std::endl;
+            std::cout << this->getName()<<" have 7 or fewer resource cards. No need to discard." << std::endl;
             return;
         }
 
         int cardsToDiscard = totalCards / 2;
-        std::cout << "You have more than 7 resource cards (" << totalCards << "). You must discard " << cardsToDiscard << " cards." << std::endl;
+        std::cout << this->getName()<< " You have more than 7 resource cards (" << totalCards << "). You must discard " << cardsToDiscard << " cards." << std::endl;
 
         while (cardsToDiscard > 0) {
-            std::cout << "Your current resources: ";
+            cout << "\nAmount of cards to discard " << cardsToDiscard<<endl;
             displayResources(); // Implement this method to display current resources
 
             std::string resource;
