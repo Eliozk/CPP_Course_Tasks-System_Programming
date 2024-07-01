@@ -61,7 +61,9 @@ Road: Costs 1 wood and 1 brick. Extends the player's network.
 
 #### Game Review
 
-This C++ implementation captures the essence of the game, allowing three players to compete in a turn-based manner. It includes all the core components such as resource generation, trading, building, and using development cards. The game logic ensures a fair and competitive experience for all players.
+This C++ implementation captures the essence of the game, allowing three players to compete in a turn-based manner.
+It includes all the core components such as resource generation, trading, building, and using development cards.
+The game logic ensures a fair and competitive experience for all players.
 
 #### Gameplay Mechanics
 - Resource Generation: Resources are generated based on dice rolls and the placement of settlements.
