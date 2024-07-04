@@ -1,26 +1,34 @@
-CC=g++
-CFLAGS=-std=c++17 -Wall -Wextra -g
-LDFLAGS=
+CXX = g++
+# Compiler flags including debugging symbols
+CXXFLAGS = -std=c++14 -Wall -Wextra -pedantic -g -O3
+# Linker flags for profiling (you can keep this if needed)
+LDFLAGS = -pg
+# Executable name
+TARGET = run
 
-SRCS=main.cpp  # Only main.cpp here
-OBJS=$(SRCS:.cpp=.o)
-EXEC=main
+# List of source files
+SOURCES = main.cpp KaryTree.cpp 
 
-all: $(EXEC)
+# Object files (automatically generated)
+OBJECTS = $(SOURCES:.cpp=.o)
 
-$(EXEC): $(OBJS) KaryTree.tpp  # Add KaryTree.tpp here as a dependency
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $@
+# Main target
+all: $(TARGET)
 
-.cpp.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+# Linking step
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
 
+# Compiling step for each source file
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Run the executable using gdb
+debug: $(TARGET)
+	gdb ./$(TARGET)
+
+# Clean generated files
 clean:
-	rm -f $(OBJS) $(EXEC)
+	rm -f $(OBJECTS) $(TARGET) gmon.out
 
-debug: CFLAGS += -DDEBUG
-debug: all
-#equal for "make run" to run main
-tree: all
-	./$(EXEC)
-
-.PHONY: all clean debug tree
+.PHONY: all debug clean
