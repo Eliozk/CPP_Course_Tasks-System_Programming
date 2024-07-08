@@ -1,4 +1,4 @@
-# Project of Trees implementing by Templates, Iterators and GUI
+# Project involve Tree's Templates, Iterators and GUI
  
 - **My mail:** `kolanielioz@gmail.com` 
 
@@ -7,7 +7,7 @@ This project implements a generic tree structure using C++ templates. The projec
 
 - **Tree.hpp**: Header file defining the `Node`, `Tree`, and `Complex` classes.
 - **Tree.tpp**: Implementation file for the `Tree` class methods.
-- **main.cpp**: A test file demonstrating the usage of the `Tree` class.
+- **main.cpp**: A file demonstrating the usage of the `Tree` class.
 - **test_cases.cpp**: Additional test cases covering various tree operations, including traversal and node finding functionalities.
 
 - **Makefile**: A makefile to compile and run the project.
