@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "WSL",
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/llvm-14/llvm/CodeGen/PBQP",
@@ -19,7 +19,18 @@
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "/usr/include",
+                    "/usr/local/include",
+                    "/usr/include/x86_64-linux-gnu",
+                    "/usr/lib/gcc/x86_64-linux-gnu/11/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
         }
     ],
     "version": 4

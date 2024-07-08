@@ -58,8 +58,15 @@ Player::~Player()
 {
     for (Card *card : playerCards)
     {
+        
         delete card; // Free memory for each card
     }
+    for (Card *special : specialCards)
+    {
+        
+        delete special; // Free memory for each card
+    }
+
 }
 void Player::setName(const string &name)
 {

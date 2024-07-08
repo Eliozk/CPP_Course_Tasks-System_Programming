@@ -5,7 +5,6 @@
 #include <random>
 #include <iostream>
 #include "Player.hpp"
-#include "Game.hpp"
 #include "Tile.hpp"
 #include "Settlement.hpp"
 #include "Card.hpp"
@@ -26,6 +25,16 @@ Board::Board(Player &player1, Player &player2, Player &player3)
     boardVertices.resize(54);
 }
 Board::Board() {}
+
+ // Destructor
+    Board::~Board() {
+        // Clear vectors to release memory
+     std::cout<<"inside board destrctour??"<<std::endl;
+     boardVertices.clear();
+    boardTiles.clear();
+    boardEdges.clear();
+
+    }
 
 void Board::initializeBoard()
 {

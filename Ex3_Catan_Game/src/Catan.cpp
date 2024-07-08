@@ -19,6 +19,7 @@ Catan::Catan(Player &p1, Player &p2, Player &p3, Board &board) : player1(p1), pl
     players.emplace_back(&p3);
 }
 
+
 void Catan::ChooseStartingPlayer() const
 {
     std::cout << "Starting player: " << player1.getName() << std::endl;
@@ -187,6 +188,9 @@ void Catan::deleteMemory()
     }
     specialCards.clear();
 
-    // Clear players vector without deleting objects
-    players.clear(); // This assumes ownership of Player objects is elsewhere
+     // Delete players
+    for (Player* player : players) {
+        delete player;
+    }
+    players.clear(); 
 }

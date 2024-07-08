@@ -4,6 +4,7 @@
 #include <ctime>   // Include the header for time functions
 #include <cstdlib> // Include the header for random number functions
 #include "Edge.hpp"
+#include <limits>
 using namespace std;
 using namespace ariel;
 
@@ -39,7 +40,7 @@ void GamePlay::rollDiceAndDistributeResources()
     // Generate random dice roll
     int diceRoll = rollDice();
 
-    cout << "Rolled a " << diceRoll << "!" << std::endl;
+    cout << "Rolled a " << diceRoll << "! here need to change back resoursces and dice roll in game play 43 and Player" << std::endl;
     if (diceRoll == 7)
     {
         handleDiceRollEquals7();
@@ -71,7 +72,13 @@ void GamePlay::playerTurn(Player &player)
                   << "9. Exit game\n";
         int choice;
         std::cout << "choice: ";
-        std::cin >> choice;
+        
+        // Input validation loop
+        while (!(std::cin >> choice)) {
+            std::cin.clear();  // Clear error state
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard incorrect input
+            std::cout << "Invalid input. Please enter a number from the list: ";
+        }
 
         switch (choice)
         {
@@ -87,32 +94,37 @@ void GamePlay::playerTurn(Player &player)
         case 3:
             playerBuyRoad(player);
             // player.checkLargestRoad(players, board);
-
             break;
         case 4:
             playerBuyCity(player);
             break;
         case 5:
-            cout << endl;
             player.displayHand();
             if (player.getPlayerCards().size() != 0)
             {
                 std::cout << "Choose a card to play (by index): ";
                 int cardIndex;
-                std::cin >> cardIndex;
-                cardIndex -= 1;
-                if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
+                if (std::cin >> cardIndex)
                 {
-                    const vector<Card *> specificCard = player.getPlayerCards();
-                    player.playCard(board, *specificCard[cardIndex], players);
+                    cardIndex -= 1;
+                    if (cardIndex >= 0 && cardIndex < player.getPlayerCards().size())
+                    {
+                        const vector<Card *> specificCard = player.getPlayerCards();
+                        player.playCard(board, *specificCard[cardIndex], players);
+                    }
+                    else
+                    {
+                        std::cout << "Invalid card index." << std::endl;
+                    }
                 }
                 else
                 {
-                    std::cout << "Invalid card index." << std::endl;
+                    std::cout << "Invalid input. Please enter a valid card index." << std::endl;
+                    std::cin.clear();  // Clear error state
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Discard incorrect input
                 }
-            
-            // after playing dev card we continue to next turn of another player.
-            continueTurn = false;
+                // After playing a card, continue to the next turn
+                continueTurn = false;
             }
             break;
         case 6:
@@ -133,6 +145,7 @@ void GamePlay::playerTurn(Player &player)
         }
     }
 }
+
 
 void GamePlay::tradeResources(Player &currentPlayer)
 {

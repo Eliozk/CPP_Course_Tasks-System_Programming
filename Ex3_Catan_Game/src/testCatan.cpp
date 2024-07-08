@@ -36,7 +36,11 @@ TEST_CASE("Initialization and basic functionality tests") {
         CHECK(board.isEdgeOwned(0) == 0);
         
     }
-    
+    // Delete players to avoid memory leaks
+    for (Player* player : players) {
+        delete player;
+    }
+    players.clear();
 }
 
 

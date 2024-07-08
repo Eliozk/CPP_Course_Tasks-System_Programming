@@ -1,34 +1,28 @@
 CXX = g++
-# Compiler flags including debugging symbols
-CXXFLAGS = -std=c++14 -Wall -Wextra -pedantic -g -O3
-# Linker flags for profiling (you can keep this if needed)
-LDFLAGS = -pg
-# Executable name
-TARGET = run
+CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+TARGET = main
+TEST_TARGET = test_cases
 
-# List of source files
-SOURCES = main.cpp KaryTree.cpp 
+all: $(TARGET) $(TEST_TARGET)
 
-# Object files (automatically generated)
-OBJECTS = $(SOURCES:.cpp=.o)
+$(TARGET): main.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Main target
-all: $(TARGET)
+main.o: main.cpp Tree.hpp Tree.tpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
 
-# Linking step
-$(TARGET): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
+$(TEST_TARGET): test_cases.o
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Compiling step for each source file
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+test_cases.o: test_cases.cpp Tree.hpp Tree.tpp 
+	$(CXX) $(CXXFLAGS) -c test_cases.cpp
 
-# Run the executable using gdb
-debug: $(TARGET)
-	gdb ./$(TARGET)
+tree:
+	./$(TARGET)
 
-# Clean generated files
+test: $(TEST_TARGET)
+	./$(TEST_TARGET)
+
 clean:
-	rm -f $(OBJECTS) $(TARGET) gmon.out
-
-.PHONY: all debug clean
+	rm -f $(TARGET) $(TEST_TARGET) *.o
