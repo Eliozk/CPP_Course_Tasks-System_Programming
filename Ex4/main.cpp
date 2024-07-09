@@ -31,7 +31,7 @@ int main() {
      *   /  \      /
      *  1.4  1.5  1.6
      */
-
+    //The loop starts with auto node = tree.begin_pre_order(), which initializes node to an iterator pointing to the first node in the pre-order traversal.
     std::cout << "Double tree of K=2 Pre-Order: ";
     for (auto node = tree.begin_pre_order(); node != tree.end_pre_order(); ++node) {
         cout << node->get_value() << " ";
@@ -76,22 +76,16 @@ int main() {
      tree.print();// Should print the graph using GUI.
 
 
-/**
- * Tree<double> tree; // Binary tree that contains doubles.
-    
-    Node<double> root_node(1.1);
-    tree.add_root(root_node); */ 
-    
  // Example usage of Tree with Complex number type and 3-ary structure (K=3)
     Tree<Complex, 3> complex_tree3;
 
       // Create nodes with Complex values
     Node<Complex> c_root_node(Complex(1.1, 2.2));
-    Node<Complex> c_n1(Complex(3.3, 4.4));
+    Node<Complex> c_n1(Complex(10.0, 11.0));
     Node<Complex> c_n2(Complex(5.5, 6.6));
     Node<Complex> c_n3(Complex(7.7, 8.8));
     Node<Complex> c_n4(Complex(9.9, 10.1));
-    Node<Complex> c_n5(Complex(11.1, 12.2));
+    Node<Complex> c_n5(Complex(3.5, 4.5));
 
     // Build the complex tree structure
     complex_tree3.add_root(c_root_node);
@@ -99,7 +93,7 @@ int main() {
     complex_tree3.add_sub_node(c_root_node, c_n2);
     complex_tree3.add_sub_node(c_root_node, c_n3);
     complex_tree3.add_sub_node(c_n1, c_n4);
-    complex_tree3.add_sub_node(c_n2, c_n5);
+    complex_tree3.add_sub_node(c_n1, c_n5);
 
     // Print pre-order traversal of complex tree
     cout << "\nThree-ary tree of K=3 Pre-Order: ";
@@ -142,6 +136,7 @@ int main() {
         cout << node->get_value() << " ";
     }
     cout << endl;
+
 
    complex_tree3.print();
 }

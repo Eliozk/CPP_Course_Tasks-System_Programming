@@ -1,3 +1,5 @@
+# Mail: kolanielioz@gmail.com 
+
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system

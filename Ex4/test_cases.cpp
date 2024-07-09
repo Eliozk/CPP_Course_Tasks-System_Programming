@@ -2,7 +2,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 #include "Tree.hpp"
-
+//test traversal of binary tree and init success
 TEST_CASE("Binary Tree Operations")
 {
     Tree<int> tree;
@@ -30,7 +30,6 @@ TEST_CASE("Binary Tree Operations")
             CHECK((*it)->get_value() == expected_node->get_value());
             ++it;
         }
-        // REQUIRE(it == tree.end_pre_order());
     }
 
     SUBCASE("Post-Order Traversal")
@@ -42,7 +41,6 @@ TEST_CASE("Binary Tree Operations")
             CHECK((*it)->get_value() == expected_node->get_value());
             ++it;
         }
-        // REQUIRE(it == tree.end_post_order());
     }
 
     SUBCASE("Post-Order Traversal")
@@ -57,7 +55,7 @@ TEST_CASE("Binary Tree Operations")
     }
 }
 
-
+//test complex tree traversal and init
 TEST_CASE("Complex Tree Operations")
 {
     Tree<double, 3> complex_tree3;
@@ -85,7 +83,6 @@ TEST_CASE("Complex Tree Operations")
             CHECK((*it)->get_value() == expected_node->get_value());
             ++it;
         }
-        // REQUIRE(it == complex_tree3.end_pre_order());
     }
 
     SUBCASE("Post-Order Traversal")
@@ -97,6 +94,5 @@ TEST_CASE("Complex Tree Operations")
             CHECK((*it)->get_value() == expected_node->get_value());
             ++it;
         }
-        // REQUIRE(it == complex_tree3.end_post_order());
     }
 }
