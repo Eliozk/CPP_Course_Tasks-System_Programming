@@ -187,10 +187,15 @@ void Catan::deleteMemory()
         delete specialCard;
     }
     specialCards.clear();
-
-     // Delete players
-    for (Player* player : players) {
-        delete player;
-    }
-    players.clear(); 
+    
+}
+void Catan::cleanup()
+{
+    
+    player1.~Player();
+    player2.~Player();
+    player3.~Player();
+    deleteMemory();
+    board.~Board();
+    //players.clear();
 }

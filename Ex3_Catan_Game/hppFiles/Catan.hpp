@@ -28,7 +28,7 @@ namespace ariel
         vector<Card *> createAndShuffleCards(); // responsible for all kind of cards including the specials.
         static vector<Card*> getMainSpecialCards();
         void placeInitialSettlementsAndRoads(Board &catanbBoard);
-
+        void cleanup();
         void ChooseStartingPlayer() const;
 
         Board &getBoard();

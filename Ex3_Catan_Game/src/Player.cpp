@@ -61,11 +61,15 @@ Player::~Player()
         
         delete card; // Free memory for each card
     }
+    playerCards.clear(); // Clear the vector
     for (Card *special : specialCards)
     {
         
         delete special; // Free memory for each card
     }
+     specialCards.clear(); // Clear the vector
+    
+    
 
 }
 void Player::setName(const string &name)
@@ -507,7 +511,9 @@ bool Player::buyDevelopmentCard(vector<Card *> &cards, vector<Player *> &players
 
         // Take the top card from the deck
         Card *card = cards.back();
+        //remove top card from cards
         cards.pop_back();
+        //add to the player
         playerCards.push_back(card);
         if (card->getType() == "Knight")
         {

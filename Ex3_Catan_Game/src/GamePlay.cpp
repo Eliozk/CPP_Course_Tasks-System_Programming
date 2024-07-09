@@ -137,7 +137,7 @@ void GamePlay::playerTurn(Player &player)
             continueTurn = false;
             break;
         case 9:
-            catan.deleteMemory();
+            catan.cleanup();
             exit(0);
         default:
             std::cout << "Invalid choice. Please try again." << std::endl;
@@ -343,7 +343,7 @@ void GamePlay::checkWinnerAndEndGame()
         {
             cout << "Player " << player->getName() << " has reached 10 points and he is the winner!" << endl;
             cout << "Game Over!" << std::endl;
-            catan.deleteMemory();
+            catan.cleanup();
             exit(0); // Exit the program
         }
     }

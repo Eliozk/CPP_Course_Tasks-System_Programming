@@ -29,7 +29,6 @@ Board::Board() {}
  // Destructor
     Board::~Board() {
         // Clear vectors to release memory
-     std::cout<<"inside board destrctour??"<<std::endl;
      boardVertices.clear();
     boardTiles.clear();
     boardEdges.clear();
