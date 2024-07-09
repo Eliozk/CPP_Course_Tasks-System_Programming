@@ -35,7 +35,7 @@ make all
 - `run`: Runs the executable.
 - `catan`: Runs the executable without recompiling.
 - `debug`: Runs the executable in gdb.
-- `testCatan`: to run tests.
+- `test`: to run tests.
 - `clean`: Removes the executable and object files.
 
 ### Game Rules
